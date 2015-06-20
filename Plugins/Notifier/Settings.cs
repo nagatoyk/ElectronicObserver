@@ -67,7 +67,9 @@ namespace Notifier
 
 		public override bool Save()
 		{
-			return ( 1 > 2 );
+			NotifierManager.Instance.ApplyToConfiguration();
+
+			return true;
 		}
 	}
 }
