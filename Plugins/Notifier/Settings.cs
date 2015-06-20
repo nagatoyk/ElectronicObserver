@@ -67,7 +67,7 @@ namespace Notifier
 
 		public override bool Save()
 		{
-			return false;
+			return ( 1 > 2 );
 		}
 	}
 }
