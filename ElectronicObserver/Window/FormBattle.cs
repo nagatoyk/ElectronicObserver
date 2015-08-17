@@ -54,7 +54,7 @@ namespace ElectronicObserver.Window {
 					lbl.ShowText = !Utility.Configuration.Config.FormBattle.IsShortDamage;
 					lbl.Size = new Size( 56, 20 );
 					lbl.Margin = new Padding( 2, 0, 2, 0 );
-					lbl.Anchor = AnchorStyles.None;
+					lbl.Anchor = AnchorStyles.Left | AnchorStyles.Right;
 					lbl.Font = MainFont;
 				}
 				if ( i < 6 ) {
@@ -68,7 +68,7 @@ namespace ElectronicObserver.Window {
 				HPBars.Add( new ShipStatusHP() );
 				HPBars[i].Size = new Size( 80, 20 );
 				HPBars[i].Margin = new Padding( 2, 0, 2, 0 );
-				HPBars[i].Anchor = AnchorStyles.None;
+				HPBars[i].Anchor = AnchorStyles.Left | AnchorStyles.Right;
 				HPBars[i].MainFont = MainFont;
 				HPBars[i].SubFont = SubFont;
 				HPBars[i].MainFontColor = Utility.Configuration.Config.UI.ForeColor;
@@ -1553,8 +1553,8 @@ td,th,tr {text-align:left; padding:2px 4px;}
 				TableBottom.ClientSize = new System.Drawing.Size( (int)( 3 * singleWidth ), TableBottom.ClientSize.Height );
 			}
 
-			TableTop.ResumeLayout();
-			TableBottom.ResumeLayout();
+			TableTop.ResumeLayout( false );
+			TableBottom.ResumeLayout( false );
 
 			if ( DamageLabels == null )
 				return;
