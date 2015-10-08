@@ -69,8 +69,7 @@
     <Reference Include="FiddlerCore4">
       <HintPath>..\packages\FiddlerCore.4.4.8.4\lib\net40\FiddlerCore4.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\assemblies\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -370,6 +369,18 @@
     <Compile Include="Window\Dialog\DialogShipGroupCSVOutput.Designer.cs">
       <DependentUpon>DialogShipGroupCSVOutput.cs</DependentUpon>
     </Compile>
+    <Compile Include="Window\Dialog\DialogShipGroupFilter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Window\Dialog\DialogShipGroupFilter.Designer.cs">
+      <DependentUpon>DialogShipGroupFilter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Window\Dialog\DialogShipGroupSortOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Window\Dialog\DialogShipGroupSortOrder.Designer.cs">
+      <DependentUpon>DialogShipGroupSortOrder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Window\Dialog\DialogTextInput.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -504,6 +515,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Window\Dialog\DialogShipGroupCSVOutput.resx">
       <DependentUpon>DialogShipGroupCSVOutput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Window\Dialog\DialogShipGroupFilter.resx">
+      <DependentUpon>DialogShipGroupFilter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Window\Dialog\DialogShipGroupSortOrder.resx">
+      <DependentUpon>DialogShipGroupSortOrder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Window\Dialog\DialogTextInput.resx">
       <DependentUpon>DialogTextInput.cs</DependentUpon>
