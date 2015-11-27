@@ -22,6 +22,11 @@ namespace Browser {
 					"情報", MessageBoxButtons.OK, MessageBoxIcon.Information );
 				return;
 			}
+
+			var settings = new CefSharp.CefSettings();
+			
+			CefSharp.Cef.Initialize( settings, shutdownOnProcessExit: true, performDependencyCheck: true );
+
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault( false );
 			try

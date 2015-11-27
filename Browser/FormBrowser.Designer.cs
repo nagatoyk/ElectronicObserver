@@ -30,7 +30,7 @@
         {
 			this.components = new System.ComponentModel.Container();
 			this.SizeAdjuster = new System.Windows.Forms.Panel();
-			this.Browser = new Browser.ExtraWebBrowser();
+			this.Browser = new CefSharp.WinForms.ChromiumWebBrowser("about:blank");
 			this.ContextMenuTool = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.ContextMenuTool_ShowToolMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ToolMenu = new System.Windows.Forms.ToolStrip();
@@ -120,18 +120,18 @@
 			// 
 			// Browser
 			// 
-			this.Browser.AllowWebBrowserDrop = false;
+			//this.Browser.AllowWebBrowserDrop = false;
 			this.Browser.ContextMenuStrip = this.ContextMenuTool;
-			this.Browser.IsWebBrowserContextMenuEnabled = false;
+			//this.Browser.IsWebBrowserContextMenuEnabled = false;
 			this.Browser.Location = new System.Drawing.Point(0, 0);
 			this.Browser.MinimumSize = new System.Drawing.Size(20, 20);
 			this.Browser.Name = "Browser";
-			this.Browser.ScriptErrorsSuppressed = true;
+			//this.Browser.ScriptErrorsSuppressed = true;
 			this.Browser.Size = new System.Drawing.Size(284, 236);
 			this.Browser.TabIndex = 0;
-			this.Browser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.Browser_DocumentCompleted);
-			this.Browser.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.Browser_Navigating);
-			this.Browser.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.Browser_Navigated);
+			this.Browser.FrameLoadEnd += new System.EventHandler<CefSharp.FrameLoadEndEventArgs>(this.Browser_DocumentCompleted);
+			//this.Browser.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.Browser_Navigating);
+			this.Browser.LoadingStateChanged += new System.EventHandler<CefSharp.LoadingStateChangedEventArgs>(this.Browser_Navigated);
 			// 
 			// ContextMenuTool
 			// 
@@ -586,7 +586,7 @@
         #endregion
 
         private System.Windows.Forms.Panel SizeAdjuster;
-		private ExtraWebBrowser Browser;
+		private CefSharp.WinForms.ChromiumWebBrowser Browser;
 		private System.Windows.Forms.ToolStrip ToolMenu;
 		private System.Windows.Forms.ToolStripButton ToolMenu_ScreenShot;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;

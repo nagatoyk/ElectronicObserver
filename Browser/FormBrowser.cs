@@ -1,6 +1,5 @@
 ﻿using Browser.Win32;
 using BrowserLib;
-using mshtml;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -98,7 +97,7 @@ namespace Browser {
 #if !NOVOL
 			_volumeManager = new VolumeManager( (uint)System.Diagnostics.Process.GetCurrentProcess().Id );
 #endif
-			Browser.ReplacedKeyDown += Browser_ReplacedKeyDown;
+			//Browser.ReplacedKeyDown += Browser_ReplacedKeyDown;
 
 			// 音量設定用コントロールの追加
 			{
@@ -267,79 +266,79 @@ namespace Browser {
 
 		}
 
-		private void Browser_Navigated( object sender, WebBrowserNavigatedEventArgs e ) {
+		private void Browser_Navigated( object sender, CefSharp.LoadingStateChangedEventArgs e ) {
 
-			ToolMenu_Url.Text = Browser.Url.ToString();
+			ToolMenu_Url.Text = Browser.Address;
 
 		}
 
-		private void Browser_DocumentCompleted( object sender, WebBrowserDocumentCompletedEventArgs e ) {
-			ReplaceEmbedHtml();
+		private void Browser_DocumentCompleted( object sender, CefSharp.FrameLoadEndEventArgs e ) {
+			//ReplaceEmbedHtml();
 
 			StyleSheetApplied = false;
 			ApplyStyleSheet();
 
 			ApplyZoom();
 
-			ToolMenu_Url.Text = Browser.Url.ToString();
+			ToolMenu_Url.Text = Browser.Address;
 		}
 
 		/// <summary>
 		/// 应用embed元素
 		/// </summary>
-		private void ReplaceEmbedHtml() {
-			if ( string.IsNullOrEmpty( Configuration.EmbedHtml ) )
-				return;
+		//private void ReplaceEmbedHtml() {
+		//	if ( string.IsNullOrEmpty( Configuration.EmbedHtml ) )
+		//		return;
 
-			try {
-				var document = Browser.Document;
-				string url;
-				if ( document != null && ( url = document.Url.ToString() ).Contains( ".swf?" ) ) {
-					document.Body.InnerHtml = string.Format( Configuration.EmbedHtml, url, Configuration.FlashWmode, Configuration.FlashQuality );
-				}
-			} catch ( Exception ex ) {
-				BrowserHost.AsyncRemoteRun( () =>
-					BrowserHost.Proxy.SendErrorReport( ex.ToString(), "embed元素应用失败。" ) );
-			}
-		}
+		//	try {
+		//		var document = Browser.Document;
+		//		string url;
+		//		if ( document != null && ( url = document.Url.ToString() ).Contains( ".swf?" ) ) {
+		//			document.Body.InnerHtml = string.Format( Configuration.EmbedHtml, url, Configuration.FlashWmode, Configuration.FlashQuality );
+		//		}
+		//	} catch ( Exception ex ) {
+		//		BrowserHost.AsyncRemoteRun( () =>
+		//			BrowserHost.Proxy.SendErrorReport( ex.ToString(), "embed元素应用失败。" ) );
+		//	}
+		//}
 
 		/// <summary>
 		/// スタイルシートを適用します。
 		/// </summary>
 		public void ApplyStyleSheet() {
 
-			if ( !Configuration.AppliesStyleSheet )
-				return;
+			//if ( !Configuration.AppliesStyleSheet )
+			//	return;
 
-			try {
+			//try {
 
-				var document = Browser.Document;
-				if ( document == null ) return;
+			//	var document = Browser.Document;
+			//	if ( document == null ) return;
 
-				if ( document.Url.ToString().Contains( ".swf?" ) ) {
+			//	if ( document.Url.ToString().Contains( ".swf?" ) ) {
 
-					var swf = document.Body.Children.OfType<HtmlElement>().FirstOrDefault( e => e.TagName == "EMBED" );
-					if ( swf == null ) return;
+			//		var swf = document.Body.Children.OfType<HtmlElement>().FirstOrDefault( e => e.TagName == "EMBED" );
+			//		if ( swf == null ) return;
 
-					swf.SetAttribute( "width", "100%" );
-					swf.SetAttribute( "height", "100%" );
+			//		swf.SetAttribute( "width", "100%" );
+			//		swf.SetAttribute( "height", "100%" );
 
-				} else {
-					var swf = getFrameElementById( document, "externalswf" );
-					if ( swf == null ) return;
+			//	} else {
+			//		var swf = getFrameElementById( document, "externalswf" );
+			//		if ( swf == null ) return;
 
-					// InvokeScriptは関数しか呼べないようなので、スクリプトをevalで渡す
-					document.InvokeScript( "eval", new object[] { PageScript } );
-					swf.Document.InvokeScript( "eval", new object[] { FrameScript } );
-				}
+			//		// InvokeScriptは関数しか呼べないようなので、スクリプトをevalで渡す
+			//		document.InvokeScript( "eval", new object[] { PageScript } );
+			//		swf.Document.InvokeScript( "eval", new object[] { FrameScript } );
+			//	}
 
-				StyleSheetApplied = true;
+			//	StyleSheetApplied = true;
 
-			} catch ( Exception ex ) {
+			//} catch ( Exception ex ) {
 
-				BrowserHost.AsyncRemoteRun( () =>
-					BrowserHost.Proxy.SendErrorReport( ex.ToString(), "スタイルシートの適用に失敗しました。" ) );
-			}
+			//	BrowserHost.AsyncRemoteRun( () =>
+			//		BrowserHost.Proxy.SendErrorReport( ex.ToString(), "スタイルシートの適用に失敗しました。" ) );
+			//}
 
 		}
 
@@ -348,7 +347,7 @@ namespace Browser {
 		/// </summary>
 		public void Navigate( string url ) {
 			StyleSheetApplied = false;
-			Browser.Navigate( url );
+			Browser.Load( url );
 			ToolMenu_Url.Text = url;
 		}
 
@@ -357,59 +356,59 @@ namespace Browser {
 		/// </summary>
 		public void RefreshBrowser() {
 			//Browser.Refresh( WebBrowserRefreshOption.Completely );
-			Browser.Navigate( Browser.Url );
+			Browser.Load( Browser.Address );
 		}
 
 		/// <summary>
 		/// ズームを適用します。
 		/// </summary>
 		public void ApplyZoom() {
-			int zoomRate = Configuration.ZoomRate;
-			bool fit = Configuration.ZoomFit && StyleSheetApplied;
+			//int zoomRate = Configuration.ZoomRate;
+			//bool fit = Configuration.ZoomFit && StyleSheetApplied;
 
-			try {
-				var wb = Browser.ActiveXInstance as SHDocVw.IWebBrowser2;
-				if ( wb == null || wb.ReadyState == SHDocVw.tagREADYSTATE.READYSTATE_UNINITIALIZED || wb.Busy ) return;
+			//try {
+			//	var wb = Browser.ActiveXInstance as SHDocVw.IWebBrowser2;
+			//	if ( wb == null || wb.ReadyState == SHDocVw.tagREADYSTATE.READYSTATE_UNINITIALIZED || wb.Busy ) return;
 
-				double zoomFactor;
-				object pin;
+			//	double zoomFactor;
+			//	object pin;
 
-				if ( fit ) {
-					pin = 100;
-					double rateX = (double)SizeAdjuster.Width / KanColleSize.Width;
-					double rateY = (double)SizeAdjuster.Height / KanColleSize.Height;
-					zoomFactor = Math.Min( rateX, rateY );
-				} else {
-					if ( zoomRate < 10 )
-						zoomRate = 10;
-					if ( zoomRate > 1000 )
-						zoomRate = 1000;
+			//	if ( fit ) {
+			//		pin = 100;
+			//		double rateX = (double)SizeAdjuster.Width / KanColleSize.Width;
+			//		double rateY = (double)SizeAdjuster.Height / KanColleSize.Height;
+			//		zoomFactor = Math.Min( rateX, rateY );
+			//	} else {
+			//		if ( zoomRate < 10 )
+			//			zoomRate = 10;
+			//		if ( zoomRate > 1000 )
+			//			zoomRate = 1000;
 
-					pin = zoomRate;
-					zoomFactor = zoomRate / 100.0;
-				}
+			//		pin = zoomRate;
+			//		zoomFactor = zoomRate / 100.0;
+			//	}
 
-				object pout = null;
-				wb.ExecWB( SHDocVw.OLECMDID.OLECMDID_OPTICAL_ZOOM, SHDocVw.OLECMDEXECOPT.OLECMDEXECOPT_DODEFAULT, ref pin, ref pout );
+			//	object pout = null;
+			//	wb.ExecWB( SHDocVw.OLECMDID.OLECMDID_OPTICAL_ZOOM, SHDocVw.OLECMDEXECOPT.OLECMDEXECOPT_DODEFAULT, ref pin, ref pout );
 
-				if ( StyleSheetApplied ) {
-					Browser.Size = Browser.MinimumSize = new Size(
-						(int)( KanColleSize.Width * zoomFactor ),
-						(int)( KanColleSize.Height * zoomFactor )
-						);
-					CenteringBrowser();
-				}
+			//	if ( StyleSheetApplied ) {
+			//		Browser.Size = Browser.MinimumSize = new Size(
+			//			(int)( KanColleSize.Width * zoomFactor ),
+			//			(int)( KanColleSize.Height * zoomFactor )
+			//			);
+			//		CenteringBrowser();
+			//	}
 
-				if ( fit ) {
-					ToolMenu_Other_Zoom_Current.Text = string.Format( "現在: ぴったり" );
-				} else {
-					ToolMenu_Other_Zoom_Current.Text = string.Format( "現在: {0}%", zoomRate );
-				}
+			//	if ( fit ) {
+			//		ToolMenu_Other_Zoom_Current.Text = string.Format( "現在: ぴったり" );
+			//	} else {
+			//		ToolMenu_Other_Zoom_Current.Text = string.Format( "現在: {0}%", zoomRate );
+			//	}
 
 
-			} catch ( Exception ex ) {
-				AddLog( 3, "ズームの適用に失敗しました。" + ex.Message );
-			}
+			//} catch ( Exception ex ) {
+			//	AddLog( 3, "ズームの適用に失敗しました。" + ex.Message );
+			//}
 
 		}
 
@@ -450,31 +449,31 @@ namespace Browser {
 		}
 
 		// ラッパークラスに戻す
-		private static HtmlDocument WrapHTMLDocument( IHTMLDocument2 document ) {
-			ConstructorInfo[] constructor = typeof( HtmlDocument ).GetConstructors(
-				BindingFlags.NonPublic | BindingFlags.Instance );
-			return (HtmlDocument)constructor[0].Invoke( new object[] { null, document } );
-		}
+		//private static HtmlDocument WrapHTMLDocument( IHTMLDocument2 document ) {
+		//	ConstructorInfo[] constructor = typeof( HtmlDocument ).GetConstructors(
+		//		BindingFlags.NonPublic | BindingFlags.Instance );
+		//	return (HtmlDocument)constructor[0].Invoke( new object[] { null, document } );
+		//}
 
 		// 中のフレームからidにマッチする要素を返す
-		private static HtmlElement getFrameElementById( HtmlDocument document, String id ) {
-			foreach ( HtmlWindow frame in document.Window.Frames ) {
+		//private static HtmlElement getFrameElementById( HtmlDocument document, String id ) {
+		//	foreach ( HtmlWindow frame in document.Window.Frames ) {
 
-				// frameが別ドメインだとセキュリティ上の問題（クロスフレームスクリプティング）
-				// からアクセスができないのでアクセスできるドキュメントに変換する
-				IServiceProvider provider = (IServiceProvider)frame.DomWindow;
-				object ppvobj;
-				provider.QueryService( typeof( SHDocVw.IWebBrowserApp ).GUID, typeof( SHDocVw.IWebBrowser2 ).GUID, out ppvobj );
-				var htmlDocument = WrapHTMLDocument( (IHTMLDocument2)( (SHDocVw.IWebBrowser2)ppvobj ).Document );
-				var htmlElement = htmlDocument.GetElementById( id );
-				if ( htmlElement == null )
-					continue;
+		//		// frameが別ドメインだとセキュリティ上の問題（クロスフレームスクリプティング）
+		//		// からアクセスができないのでアクセスできるドキュメントに変換する
+		//		IServiceProvider provider = (IServiceProvider)frame.DomWindow;
+		//		object ppvobj;
+		//		provider.QueryService( typeof( SHDocVw.IWebBrowserApp ).GUID, typeof( SHDocVw.IWebBrowser2 ).GUID, out ppvobj );
+		//		var htmlDocument = WrapHTMLDocument( (IHTMLDocument2)( (SHDocVw.IWebBrowser2)ppvobj ).Document );
+		//		var htmlElement = htmlDocument.GetElementById( id );
+		//		if ( htmlElement == null )
+		//			continue;
 
-				return htmlElement;
-			}
+		//		return htmlElement;
+		//	}
 
-			return null;
-		}
+		//	return null;
+		//}
 
 
 		/// <summary>
@@ -484,86 +483,86 @@ namespace Browser {
 		/// <param name="format">画像のフォーマット。</param>
 		private void SaveScreenShot( string path, System.Drawing.Imaging.ImageFormat format ) {
 
-			var wb = Browser;
+			//var wb = Browser;
 
-			//if ( !IsKanColleLoaded ) {
-			//	AddLog( 3, string.Format( "艦これが読み込まれていないため、スクリーンショットを撮ることはできません。" ) );
+			////if ( !IsKanColleLoaded ) {
+			////	AddLog( 3, string.Format( "艦これが読み込まれていないため、スクリーンショットを撮ることはできません。" ) );
+			////	System.Media.SystemSounds.Beep.Play();
+			////	return;
+			////}
+
+			//try {
+			//	IViewObject viewobj = null;
+			//	//int width = 0, height = 0;
+
+			//	if ( wb.Document.Url.ToString().Contains( ".swf?" ) ) {
+
+			//		viewobj = wb.Document.GetElementsByTagName( "embed" )[0].DomElement as IViewObject;
+			//		if ( viewobj == null ) {
+			//			throw new InvalidOperationException( "embed 要素の取得に失敗しました。" );
+			//		}
+
+			//		//width = ( (HTMLEmbed)viewobj ).clientWidth;
+			//		//height = ( (HTMLEmbed)viewobj ).clientHeight;
+
+			//	} else {
+
+			//		var swf = getFrameElementById( wb.Document, "externalswf" );
+			//		if ( swf == null ) {
+			//			viewobj = wb.Document.GetElementsByTagName( "embed" )[0].DomElement as IViewObject;
+			//			if ( viewobj == null ) {
+			//				throw new InvalidOperationException( "swf 对象未发现，并且获取 embed 元素失败。" );
+			//			}
+			//		}
+
+			//		Func<dynamic, bool> isvalid = target => {
+
+			//			if ( target == null ) return false;
+			//			viewobj = target as IViewObject;
+			//			if ( viewobj == null ) return false;
+			//			//if ( !int.TryParse( target.width, out width ) ) return false;
+			//			//if ( !int.TryParse( target.height, out height ) ) return false;
+			//			return true;
+			//		};
+
+			//		if ( viewobj == null && !isvalid( swf.DomElement as HTMLEmbed ) && !isvalid( swf.DomElement as HTMLObjectElement ) ) {
+			//			string name = null;
+			//			if ( swf.DomElement != null ) {
+			//				name = swf.DomElement.GetType().FullName;
+			//			}
+			//			throw new InvalidOperationException( string.Format( "swf对象无效，该对象为：{0}.", name ) );
+			//		}
+			//	}
+
+
+			//	if ( viewobj != null ) {
+			//		var rect = new RECT { left = 0, top = 0, width = KanColleSize.Width, height = KanColleSize.Height };
+
+			//		using ( var image = new Bitmap( rect.width, rect.height, System.Drawing.Imaging.PixelFormat.Format24bppRgb ) ) {
+
+			//			var device = new DVTARGETDEVICE { tdSize = 0 };
+
+			//			using ( var g = Graphics.FromImage( image ) ) {
+			//				var hdc = g.GetHdc();
+			//				viewobj.Draw( 1, 0, IntPtr.Zero, device, IntPtr.Zero, hdc, rect, null, IntPtr.Zero, IntPtr.Zero );
+			//				g.ReleaseHdc( hdc );
+			//			}
+
+			//			image.Save( path, format );
+			//		}
+
+			//	}
+
+
+			//	AddLog( 2, string.Format( "スクリーンショットを {0} に保存しました。", path ) );
+
+			//} catch ( Exception ex ) {
+
+			//	BrowserHost.AsyncRemoteRun( () =>
+			//		BrowserHost.Proxy.SendErrorReport( ex.ToString(), "スクリーンショットの保存時にエラーが発生しました。" ) );
 			//	System.Media.SystemSounds.Beep.Play();
-			//	return;
+
 			//}
-
-			try {
-				IViewObject viewobj = null;
-				//int width = 0, height = 0;
-
-				if ( wb.Document.Url.ToString().Contains( ".swf?" ) ) {
-
-					viewobj = wb.Document.GetElementsByTagName( "embed" )[0].DomElement as IViewObject;
-					if ( viewobj == null ) {
-						throw new InvalidOperationException( "embed 要素の取得に失敗しました。" );
-					}
-
-					//width = ( (HTMLEmbed)viewobj ).clientWidth;
-					//height = ( (HTMLEmbed)viewobj ).clientHeight;
-
-				} else {
-
-					var swf = getFrameElementById( wb.Document, "externalswf" );
-					if ( swf == null ) {
-						viewobj = wb.Document.GetElementsByTagName( "embed" )[0].DomElement as IViewObject;
-						if ( viewobj == null ) {
-							throw new InvalidOperationException( "swf 对象未发现，并且获取 embed 元素失败。" );
-						}
-					}
-
-					Func<dynamic, bool> isvalid = target => {
-
-						if ( target == null ) return false;
-						viewobj = target as IViewObject;
-						if ( viewobj == null ) return false;
-						//if ( !int.TryParse( target.width, out width ) ) return false;
-						//if ( !int.TryParse( target.height, out height ) ) return false;
-						return true;
-					};
-
-					if ( viewobj == null && !isvalid( swf.DomElement as HTMLEmbed ) && !isvalid( swf.DomElement as HTMLObjectElement ) ) {
-						string name = null;
-						if ( swf.DomElement != null ) {
-							name = swf.DomElement.GetType().FullName;
-						}
-						throw new InvalidOperationException( string.Format( "swf对象无效，该对象为：{0}.", name ) );
-					}
-				}
-
-
-				if ( viewobj != null ) {
-					var rect = new RECT { left = 0, top = 0, width = KanColleSize.Width, height = KanColleSize.Height };
-
-					using ( var image = new Bitmap( rect.width, rect.height, System.Drawing.Imaging.PixelFormat.Format24bppRgb ) ) {
-
-						var device = new DVTARGETDEVICE { tdSize = 0 };
-
-						using ( var g = Graphics.FromImage( image ) ) {
-							var hdc = g.GetHdc();
-							viewobj.Draw( 1, 0, IntPtr.Zero, device, IntPtr.Zero, hdc, rect, null, IntPtr.Zero, IntPtr.Zero );
-							g.ReleaseHdc( hdc );
-						}
-
-						image.Save( path, format );
-					}
-
-				}
-
-
-				AddLog( 2, string.Format( "スクリーンショットを {0} に保存しました。", path ) );
-
-			} catch ( Exception ex ) {
-
-				BrowserHost.AsyncRemoteRun( () =>
-					BrowserHost.Proxy.SendErrorReport( ex.ToString(), "スクリーンショットの保存時にエラーが発生しました。" ) );
-				System.Media.SystemSounds.Beep.Play();
-
-			}
 
 
 		}
@@ -867,7 +866,7 @@ namespace Browser {
 		}
 
 		private void ToolMenu_Other_Navigate_Click( object sender, EventArgs e ) {
-			BrowserHost.AsyncRemoteRun( () => BrowserHost.Proxy.RequestNavigation( Browser.Url == null ? null : Browser.Url.ToString() ) );
+			BrowserHost.AsyncRemoteRun( () => BrowserHost.Proxy.RequestNavigation( Browser.Address ) );
 		}
 
 		private void ToolMenu_Other_AppliesStyleSheet_Click( object sender, EventArgs e ) {
@@ -1169,72 +1168,72 @@ namespace Browser {
 	/// WebBrowserShortCutEnabled = false だとメニューのショートカットキーが無効化されるため、
 	/// わざわざ手動で実装しています。
 	/// </summary>
-	internal class ExtraWebBrowser : WebBrowser {
+	//internal class ExtraWebBrowser : WebBrowser {
 
-		public event KeyEventHandler ReplacedKeyDown = delegate { };
+	//	public event KeyEventHandler ReplacedKeyDown = delegate { };
 
 
-		public ExtraWebBrowser()
-			: base() { }
+	//	public ExtraWebBrowser()
+	//		: base() { }
 
-		public override bool PreProcessMessage( ref Message msg ) {
+	//	public override bool PreProcessMessage( ref Message msg ) {
 
-			if ( msg.Msg == 0x100 ) {		//WM_KEYDOWN
+	//		if ( msg.Msg == 0x100 ) {		//WM_KEYDOWN
 
-				var e = new KeyEventArgs( (Keys)msg.WParam | ModifierKeys );
-				ReplacedKeyDown( this, e );
+	//			var e = new KeyEventArgs( (Keys)msg.WParam | ModifierKeys );
+	//			ReplacedKeyDown( this, e );
 
-				if ( e.Handled )
-					return true;
-			}
+	//			if ( e.Handled )
+	//				return true;
+	//		}
 
-			return base.PreProcessMessage( ref msg );
-		}
-	}
+	//		return base.PreProcessMessage( ref msg );
+	//	}
+	//}
 
 
 	#region struct
 
-	[ComImport(), Guid( "0000010d-0000-0000-C000-000000000046" ), InterfaceType( ComInterfaceType.InterfaceIsIUnknown )]
-	internal interface IViewObject {
-		[PreserveSig]
-		int Draw(
-			[In, MarshalAs( UnmanagedType.U4 )] int dwDrawAspect,
-			int lindex,
-			IntPtr pvAspect,
-			[In] DVTARGETDEVICE ptd,
-			IntPtr hdcTargetDev,
-			IntPtr hdcDraw,
-			[In] RECT lprcBounds,
-			[In] RECT lprcWBounds,
-			IntPtr pfnContinue,
-			[In] IntPtr dwContinue );
-	}
+	//[ComImport(), Guid( "0000010d-0000-0000-C000-000000000046" ), InterfaceType( ComInterfaceType.InterfaceIsIUnknown )]
+	//internal interface IViewObject {
+	//	[PreserveSig]
+	//	int Draw(
+	//		[In, MarshalAs( UnmanagedType.U4 )] int dwDrawAspect,
+	//		int lindex,
+	//		IntPtr pvAspect,
+	//		[In] DVTARGETDEVICE ptd,
+	//		IntPtr hdcTargetDev,
+	//		IntPtr hdcDraw,
+	//		[In] RECT lprcBounds,
+	//		[In] RECT lprcWBounds,
+	//		IntPtr pfnContinue,
+	//		[In] IntPtr dwContinue );
+	//}
 
-	[StructLayout( LayoutKind.Sequential )]
-	internal class DVTARGETDEVICE {
-		public ushort tdSize;
-		public uint tdDeviceNameOffset;
-		public ushort tdDriverNameOffset;
-		public ushort tdExtDevmodeOffset;
-		public ushort tdPortNameOffset;
-		public byte tdData;
-	}
+	//[StructLayout( LayoutKind.Sequential )]
+	//internal class DVTARGETDEVICE {
+	//	public ushort tdSize;
+	//	public uint tdDeviceNameOffset;
+	//	public ushort tdDriverNameOffset;
+	//	public ushort tdExtDevmodeOffset;
+	//	public ushort tdPortNameOffset;
+	//	public byte tdData;
+	//}
 
-	[StructLayout( LayoutKind.Sequential )]
-	internal class RECT {
-		public int left;
-		public int top;
-		public int width;
-		public int height;
-	}
+	//[StructLayout( LayoutKind.Sequential )]
+	//internal class RECT {
+	//	public int left;
+	//	public int top;
+	//	public int width;
+	//	public int height;
+	//}
 
-	[ComImport, Guid( "6d5140c1-7436-11ce-8034-00aa006009fa" ), InterfaceType( ComInterfaceType.InterfaceIsIUnknown ), ComVisible( false )]
-	internal interface IServiceProvider {
-		[return: MarshalAs( UnmanagedType.I4 )]
-		[PreserveSig]
-		int QueryService( ref Guid guidService, ref Guid riid, [MarshalAs( UnmanagedType.Interface )] out object ppvObject );
-	}
+	//[ComImport, Guid( "6d5140c1-7436-11ce-8034-00aa006009fa" ), InterfaceType( ComInterfaceType.InterfaceIsIUnknown ), ComVisible( false )]
+	//internal interface IServiceProvider {
+	//	[return: MarshalAs( UnmanagedType.I4 )]
+	//	[PreserveSig]
+	//	int QueryService( ref Guid guidService, ref Guid riid, [MarshalAs( UnmanagedType.Interface )] out object ppvObject );
+	//}
 
 	#endregion
 }
