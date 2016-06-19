@@ -47,7 +47,10 @@ namespace ElectronicObserver.Observer.kcsapi {
 				ShipDataMaster ship = db.MasterShips[id];
 				if ( ship != null ) {
 					ship.ResourceName = elem.api_filename;
-					ship.ResourceVersion = elem.api_version;
+					string[] versions = elem.api_version;
+					ship.ResourceGraphicVersion = versions[0];
+					ship.ResourceVoiceVersion = versions[1];
+					ship.ResourcePortVoiceVersion = versions[2];
 				}
 			}
 
@@ -174,8 +177,12 @@ namespace ElectronicObserver.Observer.kcsapi {
 				}
 			}
 
+            foreach (var elem in data.api_mst_bgm)
+            {
+                db.BGM_List[(int)elem.api_id] = elem.api_name;
+            }
 
-			Utility.Logger.Add( 2, "提督が鎮守府に着任しました。これより艦隊の指揮を執ります。" );
+            Utility.Logger.Add(2, "提督が鎮守府に着任しました。これより艦隊の指揮を執ります。");
 
 			base.OnResponseReceived( (object)data );
 		}

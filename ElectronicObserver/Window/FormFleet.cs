@@ -110,10 +110,10 @@ namespace ElectronicObserver.Window {
 				table.ResumeLayout();
 
 				int row = 0;
-				#region set RowStyle
-				RowStyle rs = new RowStyle( SizeType.Absolute, 21 );
+                #region set RowStyle
+                RowStyle rs = new RowStyle(SizeType.Absolute, Utility.Configuration.Config.UI.MainFont.FontData.Height + 6);
 
-				if ( table.RowStyles.Count > row )
+                if ( table.RowStyles.Count > row )
 					table.RowStyles[row] = rs;
 				else
 					while ( table.RowStyles.Count <= row )
@@ -178,23 +178,41 @@ namespace ElectronicObserver.Window {
                 }
 
 
-                //索敵能力計算
-                SearchingAbility.Text = fleet.GetSearchingAbilityString();
-                ToolTipInfo.SetToolTip(SearchingAbility,
-                    string.Format("(旧)2-5式: {0}\r\n2-5式(秋): {1}\r\n2-5新秋簡易式: {2}\r\n",
-                    fleet.GetSearchingAbilityString(0),
-                    fleet.GetSearchingAbilityString(1),
-                    fleet.GetSearchingAbilityString(2)));
+				//索敵能力計算
+				SearchingAbility.Text = fleet.GetSearchingAbilityString();
+				{
+					StringBuilder sb = new StringBuilder();
+					double probStart = fleet.GetContactProbability();
+					var probSelect = fleet.GetContactSelectionProbability();
 
-                // 舰队防空值计算
-                AAValue.Text = CalculatorEx.GetFleetAAValue(fleet, 0).ToString();
-                ToolTipInfo.SetToolTip(AAValue,
-                    string.Format("单纵阵: {0}\r\n复纵阵: {1}\r\n轮形阵: {2}\r\n梯形阵: {3}\r\n单横阵: {4}\r\n",
-                    CalculatorEx.GetFleetAAValue(fleet, 1),
-                    CalculatorEx.GetFleetAAValue(fleet, 2),
-                    CalculatorEx.GetFleetAAValue(fleet, 3),
-                    CalculatorEx.GetFleetAAValue(fleet, 4),
-                    CalculatorEx.GetFleetAAValue(fleet, 5)));
+					var ss = Utility.Configuration.Config.FormFleet.SearchingAbilities.Split( ';' );
+					for ( int i = 0; i < ss.Length; i++ ) {
+						sb.AppendFormat( "{0}: {1}\r\n", ss[i], fleet.GetSearchingAbilityString( i ) );
+					}
+					sb.AppendFormat( "\r\n触接開始率: \r\n　確保 {0:p1} / 優勢 {1:p1}\r\n",
+						probStart,
+						probStart * 0.6 );
+
+					if ( probSelect.Count > 0 ) {
+						sb.AppendLine( "触接選択率: " );
+
+						foreach ( var p in probSelect.OrderBy( p => p.Key ) ) {
+							sb.AppendFormat( "　命中{0} : {1:p1}\r\n", p.Key, p.Value );
+						}
+					}
+
+					ToolTipInfo.SetToolTip( SearchingAbility, sb.ToString() );
+
+					// 舰队防空值计算
+					AAValue.Text = CalculatorEx.GetFleetAAValue(fleet, 0).ToString();
+					ToolTipInfo.SetToolTip(AAValue,
+					string.Format("单纵阵: {0}\r\n复纵阵: {1}\r\n轮形阵: {2}\r\n梯形阵: {3}\r\n单横阵: {4}\r\n",
+						CalculatorEx.GetFleetAAValue(fleet, 1),
+						CalculatorEx.GetFleetAAValue(fleet, 2),
+						CalculatorEx.GetFleetAAValue(fleet, 3),
+						CalculatorEx.GetFleetAAValue(fleet, 4),
+						CalculatorEx.GetFleetAAValue(fleet, 5)));
+				}
 
             }
 
@@ -212,10 +230,11 @@ namespace ElectronicObserver.Window {
 			public void ConfigurationChanged( FormFleet parent ) {
 				Name.Font = parent.MainFont;
 				StateMain.Font = parent.MainFont;
+				StateMain.BackColor = Color.Transparent;
 				AirSuperiority.Font = parent.MainFont;
 				AirSuperiority.Font = parent.MainFont;
 				SearchingAbility.Font = parent.MainFont;
-				
+
 			}
 
 		}
@@ -349,10 +368,10 @@ namespace ElectronicObserver.Window {
 				table.Controls.Add( Equipments, 5, row );
 				table.ResumeLayout();
 
-				#region set RowStyle
-				RowStyle rs = new RowStyle( SizeType.Absolute, 21 );
+                #region set RowStyle
+                RowStyle rs = new RowStyle(SizeType.Absolute, Utility.Configuration.Config.UI.MainFont.FontData.Height + 6);
 
-				if ( table.RowStyles.Count > row )
+                if ( table.RowStyles.Count > row )
 					table.RowStyles[row] = rs;
 				else
 					while ( table.RowStyles.Count <= row )
@@ -568,7 +587,7 @@ namespace ElectronicObserver.Window {
 						else
 							sb.AppendFormat( " - 威力: {0}", shelling );
 					} else if ( aircraft > 0 )
-							sb.AppendFormat( " - 威力: {0}", aircraft );
+						sb.AppendFormat( " - 威力: {0}", aircraft );
 				}
 				sb.AppendLine();
 
@@ -699,7 +718,7 @@ namespace ElectronicObserver.Window {
 			o.APIList["api_req_kaisou/remodeling"].RequestReceived += ChangeOrganization;
 			o.APIList["api_req_kaisou/powerup"].ResponseReceived += ChangeOrganization;
 			o.APIList["api_req_hensei/preset_select"].ResponseReceived += ChangeOrganization;
-			
+
 			o.APIList["api_req_nyukyo/start"].RequestReceived += Updated;
 			o.APIList["api_req_nyukyo/speedchange"].RequestReceived += Updated;
 			o.APIList["api_req_hensei/change"].RequestReceived += Updated;
@@ -724,6 +743,8 @@ namespace ElectronicObserver.Window {
 			o.APIList["api_get_member/ship_deck"].ResponseReceived += Updated;
 			o.APIList["api_req_hensei/preset_select"].ResponseReceived += Updated;
 			o.APIList["api_req_kaisou/slot_exchange_index"].ResponseReceived += Updated;
+			o.APIList["api_get_member/require_info"].ResponseReceived += Updated;
+			o.APIList["api_req_kaisou/slot_deprive"].ResponseReceived += Updated;
 
 
 			//追加するときは FormFleetOverview にも同様に追加してください
@@ -735,7 +756,8 @@ namespace ElectronicObserver.Window {
 		void Updated( string apiname, dynamic data ) {
 
 			if ( IsRemodeling ) {
-				if ( apiname == "api_get_member/slot_item" )
+				if ( apiname == "api_get_member/slot_item" ||
+					 apiname == "api_get_member/require_info" )
 					IsRemodeling = false;
 				else
 					return;
@@ -893,7 +915,9 @@ namespace ElectronicObserver.Window {
 					int eqcount = 1;
 					foreach ( var eq in ship.SlotInstance ) {
 						if ( eq == null ) break;
-						sb.AppendFormat( @"""i{0}"":{{""id"":{1},""rf"":{2}}},", eqcount, eq.EquipmentID, Math.Max( eq.Level, eq.AircraftLevel ) );
+
+						// 水偵は改修レベル優先(熟練度にすると改修レベルに誤解されて 33式 の結果がずれるため)
+						sb.AppendFormat( @"""i{0}"":{{""id"":{1},""rf"":{2}}},", eqcount, eq.EquipmentID, eq.MasterEquipment.CategoryType == 10 ? eq.Level : Math.Max( eq.Level, eq.AircraftLevel ) );
 
 						eqcount++;
 					}
@@ -951,11 +975,11 @@ namespace ElectronicObserver.Window {
 				bool showAircraft = c.FormFleet.ShowAircraft;
 				bool fixShipNameWidth = c.FormFleet.FixShipNameWidth;
 				bool shortHPBar = c.FormFleet.ShortenHPBar;
-				bool colorMorphing = c.FormFleet.BarColorMorphing;
+				bool colorMorphing = c.UI.BarColorMorphing;
+				//Color[] colorScheme = c.UI.BarColorScheme.Select( col => col.ColorData ).ToArray();
 				bool showNext = c.FormFleet.ShowNextExp;
+				var levelVisibility = c.FormFleet.EquipmentLevelVisibility;
 				bool textProficiency = c.FormFleet.ShowTextProficiency;
-				bool showEquipmentLevel = c.FormFleet.ShowEquipmentLevel;
-
 				for ( int i = 0; i < ControlMember.Length; i++ ) {
 					ControlMember[i].Equipments.ShowAircraft = showAircraft;
 					if ( fixShipNameWidth ) {
@@ -967,11 +991,14 @@ namespace ElectronicObserver.Window {
 
 					ControlMember[i].HP.Text = shortHPBar ? "" : "HP:";
 					ControlMember[i].HP.HPBar.ColorMorphing = colorMorphing;
+					ControlMember[i].HP.HPBar.ReloadBarSettings();
 					ControlMember[i].Level.TextNext = showNext ? "next:" : null;
+					ControlMember[i].Equipments.LevelVisibility = levelVisibility;
 					ControlMember[i].Equipments.TextProficiency = textProficiency;
-					ControlMember[i].Equipments.ShowEquipmentLevel = showEquipmentLevel;
 					ControlMember[i].ShipResource.BarFuel.ColorMorphing =
 					ControlMember[i].ShipResource.BarAmmo.ColorMorphing = colorMorphing;
+					ControlMember[i].ShipResource.BarFuel.ReloadBarSettings();
+					ControlMember[i].ShipResource.BarAmmo.ReloadBarSettings();
 
 					ControlMember[i].ConfigurationChanged( this );
 				}

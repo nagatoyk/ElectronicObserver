@@ -28,12 +28,18 @@ namespace ElectronicObserver.Window.Dialog {
 
 		private System.Windows.Forms.Control _UIControl;
 
+		private Dictionary<SyncBGMPlayer.SoundHandleID, SyncBGMPlayer.SoundHandle> BGMHandles;
+
+
+
 
 		public DialogConfiguration() {
 			this.SuspendLayoutForDpiScale();
 			InitializeComponent();
 
-			CustomInitialize();
+			// 加载索敌式列表
+			FormFleet_SearchingAbilityMethod.Items.AddRange( Configuration.Config.FormFleet.SearchingAbilities.Split( ';' ) );
+
 			this.ResumeLayoutForDpiScale();
 		}
 
@@ -55,6 +61,9 @@ namespace ElectronicObserver.Window.Dialog {
 		}
 
 		private void Connection_EnableSslUpstreamProxy_CheckedChanged( object sender, EventArgs e ) {
+
+			Connection_UpstreamProxySSLHost.Visible =
+			Connection_UpstreamProxySSLPort.Visible = Connection_EnableSslUpstreamProxy.Checked;
 
 			if ( Connection_EnableSslUpstreamProxy.Checked ) {
 				Connection_UseUpstreamProxy.Checked = true;
@@ -82,7 +91,6 @@ namespace ElectronicObserver.Window.Dialog {
 
 			Connection_SaveReceivedData_CheckedChanged( null, new EventArgs() );
 			Connection_SaveDataPath_TextChanged( null, new EventArgs() );
-			textCacheFolder_TextChanged(null, EventArgs.Empty);
 
 		}
 
@@ -207,6 +215,7 @@ namespace ElectronicObserver.Window.Dialog {
 
 
 
+
 		private void Life_LayoutFilePathSearch_Click( object sender, EventArgs e ) {
 
 			Life_LayoutFilePath.Text = PathHelper.ProcessOpenFileDialog( Life_LayoutFilePath.Text, LayoutFileBrowser );
@@ -243,12 +252,23 @@ namespace ElectronicObserver.Window.Dialog {
 			Connection_UseUpstreamProxy.Checked = config.Connection.UseUpstreamProxy;
 			Connection_UpstreamProxyHost.Text = config.Connection.UpstreamProxyAddress;
 			Connection_UpstreamProxyPort.Value = config.Connection.UpstreamProxyPort;
+            if ( config.Connection.UpstreamProxyPortSSL == 0 ) {
+                Connection_UpstreamProxySSLHost.Text = config.Connection.UpstreamProxyAddress;
+                Connection_UpstreamProxySSLPort.Value = config.Connection.UpstreamProxyPort;
+            } else {
+                Connection_UpstreamProxySSLHost.Text = config.Connection.UpstreamProxyAddressSSL;
+                Connection_UpstreamProxySSLPort.Value = config.Connection.UpstreamProxyPortSSL;
+            }
+			Connection_UpstreamProxySSLHost.Visible =
+			Connection_UpstreamProxySSLPort.Visible = config.Connection.EnableSslUpstreamProxy;
+
 
 			//[UI]
 			UI_MainFont.Font = config.UI.MainFont.FontData;
 			UI_MainFont.Text = config.UI.MainFont.SerializeFontAttribute;
 			UI_SubFont.Font = config.UI.SubFont.FontData;
 			UI_SubFont.Text = config.UI.SubFont.SerializeFontAttribute;
+			UI_BarColorMorphing.Checked = config.UI.BarColorMorphing;
 
 			comboUITheme.SelectedIndex = config.UI.ThemeID;
 			colorBackColor.SelectedColor = config.UI.BackColor.ColorData;
@@ -262,6 +282,8 @@ namespace ElectronicObserver.Window.Dialog {
 			colorFailedColor.SelectedColor = config.UI.FailedColor.ColorData;
 			colorEliteColor.SelectedColor = config.UI.EliteColor.ColorData;
 			colorFlagshipColor.SelectedColor = config.UI.FlagshipColor.ColorData;
+			colorLateModelEliteColor.SelectedColor = config.UI.LateModelEliteColor.ColorData;
+			colorLateModelFlagshipColor.SelectedColor = config.UI.LateModelFlagshipColor.ColorData;
 			colorLateModelColor.SelectedColor = config.UI.LateModelColor.ColorData;
 
 			colorHp0Color.SelectedColor = config.UI.Hp0Color.ColorData;
@@ -302,6 +324,9 @@ namespace ElectronicObserver.Window.Dialog {
 			//[動作]
 			Control_ConditionBorder.Value = config.Control.ConditionBorder;
 			Control_RecordAutoSaving.SelectedIndex = config.Control.RecordAutoSaving;
+			Control_UseSystemVolume.Checked = config.Control.UseSystemVolume;
+			Control_PowerEngagementForm.SelectedIndex = config.Control.PowerEngagementForm - 1;
+
 
 			//[起動と終了]
 			Life_ConfirmOnClosing.Checked = config.Life.ConfirmOnClosing;
@@ -311,23 +336,27 @@ namespace ElectronicObserver.Window.Dialog {
 			Life_ShowStatusBar.Checked = config.Life.ShowStatusBar;
 			Life_ClockFormat.SelectedIndex = config.Life.ClockFormat;
 			Life_AutoScaleDpi.Checked = config.UI.AutoScaleDpi;
+			Life_LockLayout.Checked = config.Life.IsLocked;
+			Life_CanCloseFloatWindowInLock.Checked = config.Life.CanCloseFloatWindowInLock;
+            Life_ScreenDock.Checked = config.Life.CanScreenDock;
 
-			//[サブウィンドウ]
-			FormFleet_ShowAircraft.Checked = config.FormFleet.ShowAircraft;
+            //[サブウィンドウ]
+            FormFleet_ShowAircraft.Checked = config.FormFleet.ShowAircraft;
 			FormFleet_SearchingAbilityMethod.SelectedIndex = config.FormFleet.SearchingAbilityMethod;
 			FormFleet_IsScrollable.Checked = config.FormFleet.IsScrollable;
 			FormFleet_FixShipNameWidth.Checked = config.FormFleet.FixShipNameWidth;
 			FormFleet_ShortenHPBar.Checked = config.FormFleet.ShortenHPBar;
 			FormFleet_ShowNextExp.Checked = config.FormFleet.ShowNextExp;
+			FormFleet_EquipmentLevelVisibility.SelectedIndex = (int)config.FormFleet.EquipmentLevelVisibility;
 			FormFleet_BlinkHPBar.Checked = config.UI.NotExpeditionBlink;
 			FormFleet_TextProficiency.Checked = config.FormFleet.ShowTextProficiency;
-			FormFleet_ShowEquipmentLevel.Checked = config.FormFleet.ShowEquipmentLevel;
 			FormFleet_AirSuperiorityMethod.SelectedIndex = config.FormFleet.AirSuperiorityMethod;
 			FormFleet_ShowAnchorageRepairingTimer.Checked = config.FormFleet.ShowAnchorageRepairingTimer;
-			FormFleet_BarColorMorphing.Checked = config.FormFleet.BarColorMorphing;
+			FormFleet_BlinkAtCompletion.Checked = config.FormFleet.BlinkAtCompletion;
 
 			FormShipGroup_AutoUpdate.Checked = config.FormShipGroup.AutoUpdate;
 			FormShipGroup_ShowStatusBar.Checked = config.FormShipGroup.ShowStatusBar;
+			FormShipGroup_ShipNameSortMethod.SelectedIndex = config.FormShipGroup.ShipNameSortMethod;
 
 			FormBrowser_IsEnabled.Checked = config.FormBrowser.IsEnabled;
 			FormBrowser_ZoomRate.Value = config.FormBrowser.ZoomRate;
@@ -387,10 +416,15 @@ namespace ElectronicObserver.Window.Dialog {
 			FormBrowser_FlashQuality.Text = config.FormBrowser.FlashQuality;
 			FormBrowser_FlashWMode.Text = config.FormBrowser.FlashWmode;
 
-			// [缓存]
-			textCacheFolder.Text = config.CacheSettings.CacheFolder;
-			checkCache.Checked = config.CacheSettings.CacheEnabled;
+			FormCompass_CandidateDisplayCount.Value = config.FormCompass.CandidateDisplayCount;
 
+			//[データベース]
+
+			//[BGM]
+			BGMPlayer_Enabled.Checked = config.BGMPlayer.Enabled;
+			BGMHandles = config.BGMPlayer.Handles.ToDictionary( h => h.HandleID );
+			BGMPlayer_SyncBrowserMute.Checked = config.BGMPlayer.SyncBrowserMute;
+			UpdateBGMPlayerUI();
 
 			//finalize
 			UpdateParameter();
@@ -425,13 +459,20 @@ namespace ElectronicObserver.Window.Dialog {
 				config.Connection.UseUpstreamProxy = Connection_UseUpstreamProxy.Checked;
 				changed |= config.Connection.EnableSslUpstreamProxy != Connection_EnableSslUpstreamProxy.Checked;
 				config.Connection.EnableSslUpstreamProxy = Connection_EnableSslUpstreamProxy.Checked;
+                if ( config.Connection.EnableSslUpstreamProxy ) {
+                    changed |= config.Connection.UpstreamProxyAddressSSL != Connection_UpstreamProxySSLHost.Text;
+                    config.Connection.UpstreamProxyAddressSSL = Connection_UpstreamProxySSLPort.Value == 0 ? Connection_UpstreamProxyHost.Text : Connection_UpstreamProxySSLHost.Text;
+                    changed |= config.Connection.UpstreamProxyPortSSL != (ushort)Connection_UpstreamProxySSLPort.Value;
+                    config.Connection.UpstreamProxyPortSSL = Connection_UpstreamProxySSLPort.Value == 0 ? (ushort)Connection_UpstreamProxyPort.Value : (ushort)Connection_UpstreamProxySSLPort.Value;
+                }
 
-				changed |= config.Connection.UpstreamProxyAddress != Connection_UpstreamProxyHost.Text;
+                changed |= config.Connection.UpstreamProxyAddress != Connection_UpstreamProxyHost.Text;
 				config.Connection.UpstreamProxyAddress = Connection_UpstreamProxyHost.Text;
 				changed |= config.Connection.UpstreamProxyPort != (ushort)Connection_UpstreamProxyPort.Value;
 				config.Connection.UpstreamProxyPort = (ushort)Connection_UpstreamProxyPort.Value;
 
 				if ( changed ) {
+					APIObserver.Instance.Stop();
 					APIObserver.Instance.Start( config.Connection.Port, _UIControl );
 				}
 
@@ -440,6 +481,7 @@ namespace ElectronicObserver.Window.Dialog {
 			//[UI]
 			config.UI.MainFont = UI_MainFont.Font;
 			config.UI.SubFont = UI_SubFont.Font;
+			config.UI.BarColorMorphing = UI_BarColorMorphing.Checked;
 
 			config.UI.ThemeID = comboUITheme.SelectedIndex;
 			config.UI.BackColor = colorBackColor.SelectedColor;
@@ -453,6 +495,8 @@ namespace ElectronicObserver.Window.Dialog {
 			config.UI.FailedColor = colorFailedColor.SelectedColor;
 			config.UI.EliteColor = colorEliteColor.SelectedColor;
 			config.UI.FlagshipColor = colorFlagshipColor.SelectedColor;
+			config.UI.LateModelEliteColor = colorLateModelEliteColor.SelectedColor;
+			config.UI.LateModelFlagshipColor = colorLateModelFlagshipColor.SelectedColor;
 			config.UI.LateModelColor = colorLateModelColor.SelectedColor;
 
 			config.UI.Hp0Color = colorHp0Color.SelectedColor;
@@ -498,6 +542,9 @@ namespace ElectronicObserver.Window.Dialog {
 			//[動作]
 			config.Control.ConditionBorder = (int)Control_ConditionBorder.Value;
 			config.Control.RecordAutoSaving = Control_RecordAutoSaving.SelectedIndex;
+			config.Control.UseSystemVolume = Control_UseSystemVolume.Checked;
+			config.Control.PowerEngagementForm = Control_PowerEngagementForm.SelectedIndex + 1;
+
 
 			//[起動と終了]
 			config.Life.ConfirmOnClosing = Life_ConfirmOnClosing.Checked;
@@ -507,23 +554,27 @@ namespace ElectronicObserver.Window.Dialog {
 			config.Life.ShowStatusBar = Life_ShowStatusBar.Checked;
 			config.Life.ClockFormat = Life_ClockFormat.SelectedIndex;
 			config.UI.AutoScaleDpi = Life_AutoScaleDpi.Checked;
+			config.Life.IsLocked = Life_LockLayout.Checked;
+			config.Life.CanCloseFloatWindowInLock = Life_CanCloseFloatWindowInLock.Checked;
+            config.Life.CanScreenDock = Life_ScreenDock.Checked;
 
-			//[サブウィンドウ]
-			config.FormFleet.ShowAircraft = FormFleet_ShowAircraft.Checked;
+            //[サブウィンドウ]
+            config.FormFleet.ShowAircraft = FormFleet_ShowAircraft.Checked;
 			config.FormFleet.SearchingAbilityMethod = FormFleet_SearchingAbilityMethod.SelectedIndex;
 			config.FormFleet.IsScrollable = FormFleet_IsScrollable.Checked;
 			config.FormFleet.FixShipNameWidth = FormFleet_FixShipNameWidth.Checked;
 			config.FormFleet.ShortenHPBar = FormFleet_ShortenHPBar.Checked;
 			config.FormFleet.ShowNextExp = FormFleet_ShowNextExp.Checked;
+			config.FormFleet.EquipmentLevelVisibility = (Window.Control.ShipStatusEquipment.LevelVisibilityFlag)FormFleet_EquipmentLevelVisibility.SelectedIndex;
 			config.UI.NotExpeditionBlink = FormFleet_BlinkHPBar.Checked;
 			config.FormFleet.ShowTextProficiency = FormFleet_TextProficiency.Checked;
-			config.FormFleet.ShowEquipmentLevel = FormFleet_ShowEquipmentLevel.Checked;
 			config.FormFleet.AirSuperiorityMethod = FormFleet_AirSuperiorityMethod.SelectedIndex;
 			config.FormFleet.ShowAnchorageRepairingTimer = FormFleet_ShowAnchorageRepairingTimer.Checked;
-			config.FormFleet.BarColorMorphing = FormFleet_BarColorMorphing.Checked;
+			config.FormFleet.BlinkAtCompletion = FormFleet_BlinkAtCompletion.Checked;
 
 			config.FormShipGroup.AutoUpdate = FormShipGroup_AutoUpdate.Checked;
 			config.FormShipGroup.ShowStatusBar = FormShipGroup_ShowStatusBar.Checked;
+			config.FormShipGroup.ShipNameSortMethod = FormShipGroup_ShipNameSortMethod.SelectedIndex;
 
 			config.FormBrowser.IsEnabled = FormBrowser_IsEnabled.Checked;
 			config.FormBrowser.ZoomRate = (int)FormBrowser_ZoomRate.Value;
@@ -541,20 +592,39 @@ namespace ElectronicObserver.Window.Dialog {
 			config.FormBrowser.FlashQuality = FormBrowser_FlashQuality.Text;
 			config.FormBrowser.FlashWmode = FormBrowser_FlashWMode.Text;
 
+			config.FormCompass.CandidateDisplayCount = (int)FormCompass_CandidateDisplayCount.Value;
 
-			// [缓存]
-			if (checkCache.Checked)
-			{
-				if ( !config.CacheSettings.CacheEnabled || config.CacheSettings.CacheFolder != textCacheFolder.Text ) {
-					Utility.Logger.Add( 2, string.Format( "缓存设置更新。“{0}”", textCacheFolder.Text ) );
-				}
-			} else if ( config.CacheSettings.CacheEnabled ) {
-				Utility.Logger.Add( 2, string.Format( "缓存已关闭。" ) );
+			//[データベース]
+
+			//[BGM]
+			config.BGMPlayer.Enabled = BGMPlayer_Enabled.Checked;
+			for ( int i = 0; i < BGMPlayer_ControlGrid.Rows.Count; i++ ) {
+				BGMHandles[(SyncBGMPlayer.SoundHandleID)BGMPlayer_ControlGrid[BGMPlayer_ColumnContent.Index, i].Value].Enabled = (bool)BGMPlayer_ControlGrid[BGMPlayer_ColumnEnabled.Index, i].Value;
+			}
+			config.BGMPlayer.Handles = new List<SyncBGMPlayer.SoundHandle>( BGMHandles.Values.ToList() );
+			config.BGMPlayer.SyncBrowserMute = BGMPlayer_SyncBrowserMute.Checked;
+
+		}
+
+
+		private void UpdateBGMPlayerUI() {
+
+			BGMPlayer_ControlGrid.Rows.Clear();
+
+			var rows = new DataGridViewRow[BGMHandles.Count];
+
+			int i = 0;
+			foreach ( var h in BGMHandles.Values ) {
+				var row = new DataGridViewRow();
+				row.CreateCells( BGMPlayer_ControlGrid );
+				row.SetValues( h.Enabled, h.HandleID, h.Path );
+				rows[i] = row;
+				i++;
 			}
 
-			config.CacheSettings.CacheEnabled = checkCache.Checked;
-			config.CacheSettings.CacheFolder = textCacheFolder.Text;
+			BGMPlayer_ControlGrid.Rows.AddRange( rows );
 
+			BGMPlayer_VolumeAll.Value = (int)BGMHandles.Values.Average( h => h.Volume );
 		}
 
 
@@ -617,108 +687,58 @@ namespace ElectronicObserver.Window.Dialog {
 			}
 		}
 
-		private void buttonCacheFolderBrowse_Click( object sender, EventArgs e )
-		{
-			textCacheFolder.Text = PathHelper.ProcessFolderBrowserDialog( textCacheFolder.Text, FolderBrowser );
-		}
 
-		private void textCacheFolder_TextChanged( object sender, EventArgs e )
-		{
-			if ( Directory.Exists( textCacheFolder.Text ) )
-			{
-				textCacheFolder.BackColor = SystemColors.Window;
-				ToolTipInfo.SetToolTip( textCacheFolder, null );
+
+
+		// BGMPlayer
+		private void BGMPlayer_ControlGrid_CellContentClick( object sender, DataGridViewCellEventArgs e ) {
+			if ( e.ColumnIndex == BGMPlayer_ColumnSetting.Index ) {
+
+				var handleID = (SyncBGMPlayer.SoundHandleID)BGMPlayer_ControlGrid[BGMPlayer_ColumnContent.Index, e.RowIndex].Value;
+
+				using ( var dialog = new DialogConfigurationBGMPlayer( BGMHandles[handleID] ) ) {
+					if ( dialog.ShowDialog( this ) == System.Windows.Forms.DialogResult.OK ) {
+						BGMHandles[handleID] = dialog.ResultHandle;
+					}
+				}
+
+				UpdateBGMPlayerUI();
 			}
-			else
-			{
-				textCacheFolder.BackColor = Color.MistyRose;
-				ToolTipInfo.SetToolTip( textCacheFolder, "指定的文件夹不存在。" );
+		}
+
+		private void BGMPlayer_ControlGrid_CellFormatting( object sender, DataGridViewCellFormattingEventArgs e ) {
+
+			if ( e.ColumnIndex == BGMPlayer_ColumnContent.Index ) {
+				e.Value = SyncBGMPlayer.SoundHandleIDToString( (SyncBGMPlayer.SoundHandleID)e.Value );
+				e.FormattingApplied = true;
+			}
+
+		}
+
+		//for checkbox
+		private void BGMPlayer_ControlGrid_CurrentCellDirtyStateChanged( object sender, EventArgs e ) {
+			if ( BGMPlayer_ControlGrid.Columns[BGMPlayer_ControlGrid.CurrentCellAddress.X] is DataGridViewCheckBoxColumn ) {
+				if ( BGMPlayer_ControlGrid.IsCurrentCellDirty ) {
+					BGMPlayer_ControlGrid.CommitEdit( DataGridViewDataErrorContexts.Commit );
+				}
 			}
 		}
 
+		private void BGMPlayer_SetVolumeAll_Click( object sender, EventArgs e ) {
 
+			if ( MessageBox.Show( "すべてのBGMに対して音量 " + (int)BGMPlayer_VolumeAll.Value + " を適用します。\r\nよろしいですか？\r\n", "音量一括設定の確認",
+				MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1 ) == System.Windows.Forms.DialogResult.Yes ) {
 
-		#region - Added config pages -
+				foreach ( var h in BGMHandles.Values ) {
+					h.Volume = (int)BGMPlayer_VolumeAll.Value;
+				}
 
-		private void CustomInitialize()
-		{
-			this.tabPageCache = new System.Windows.Forms.TabPage();
-			this.labelCache = new System.Windows.Forms.Label();
-			this.textCacheFolder = new System.Windows.Forms.TextBox();
-			this.buttonCacheFolderBrowse = new System.Windows.Forms.Button();
-			this.checkCache = new System.Windows.Forms.CheckBox();
+				UpdateBGMPlayerUI();
+			}
 
-			this.tabControl1.SuspendLayout();
-			this.tabPageCache.SuspendLayout();
-			this.tabControl1.Controls.Add( this.tabPageCache );
-			// 
-			// tabPageCache
-			// 
-			this.tabPageCache.Controls.Add( this.buttonCacheFolderBrowse );
-			this.tabPageCache.Controls.Add( this.textCacheFolder );
-			this.tabPageCache.Controls.Add( this.labelCache );
-			this.tabPageCache.Controls.Add( this.checkCache );
-			this.tabPageCache.Location = new System.Drawing.Point( 4, 44 );
-			this.tabPageCache.Name = "tabPageCache";
-			this.tabPageCache.Padding = new System.Windows.Forms.Padding( 3 );
-			this.tabPageCache.Size = new System.Drawing.Size( 392, 211 );
-			this.tabPageCache.TabIndex = 8;
-			this.tabPageCache.Text = "缓存";
-			this.tabPageCache.UseVisualStyleBackColor = true;
-			// 
-			// labelCache
-			// 
-			this.labelCache.AutoSize = true;
-			this.labelCache.Location = new System.Drawing.Point( 8, 9 );
-			this.labelCache.Name = "labelCache";
-			this.labelCache.Size = new System.Drawing.Size( 103, 15 );
-			this.labelCache.TabIndex = 0;
-			this.labelCache.Text = "缓存文件夹路径：";
-			// 
-			// textCacheFolder
-			// 
-			this.textCacheFolder.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left )
-			| System.Windows.Forms.AnchorStyles.Right ) ) );
-			this.textCacheFolder.Location = new System.Drawing.Point( 118, 6 );
-			this.textCacheFolder.Name = "textCacheFolder";
-			this.textCacheFolder.Size = new System.Drawing.Size( 199, 23 );
-			this.textCacheFolder.TabIndex = 1;
-			this.textCacheFolder.TextChanged += new System.EventHandler( this.textCacheFolder_TextChanged );
-			// 
-			// buttonCacheFolderBrowse
-			// 
-			this.buttonCacheFolderBrowse.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right ) ) );
-			this.buttonCacheFolderBrowse.Location = new System.Drawing.Point( 323, 6 );
-			this.buttonCacheFolderBrowse.Name = "buttonCacheFolderBrowse";
-			this.buttonCacheFolderBrowse.Size = new System.Drawing.Size( 61, 23 );
-			this.buttonCacheFolderBrowse.TabIndex = 2;
-			this.buttonCacheFolderBrowse.Text = "浏览";
-			this.buttonCacheFolderBrowse.UseVisualStyleBackColor = true;
-			this.buttonCacheFolderBrowse.Click += new System.EventHandler( this.buttonCacheFolderBrowse_Click );
-			// 
-			// checkCache
-			// 
-			this.checkCache.AutoSize = true;
-			this.checkCache.Location = new System.Drawing.Point( 8, 38 );
-			this.checkCache.Name = "checkCache";
-			this.checkCache.Size = new System.Drawing.Size( 139, 19 );
-			this.checkCache.TabIndex = 3;
-			this.checkCache.Text = "启用缓存";
-			this.checkCache.UseVisualStyleBackColor = true;
-			//
-			// End
-			//
-			this.tabControl1.ResumeLayout( false );
-			this.tabPageCache.ResumeLayout( false );
 		}
 
-		// custom config
-		private System.Windows.Forms.TabPage tabPageCache;
-		private System.Windows.Forms.Label labelCache;
-		private System.Windows.Forms.TextBox textCacheFolder;
-		private System.Windows.Forms.Button buttonCacheFolderBrowse;
-		private System.Windows.Forms.CheckBox checkCache;
+
 	}
 
-	#endregion
 }

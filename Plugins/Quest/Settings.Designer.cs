@@ -31,6 +31,9 @@
 			this.components = new System.ComponentModel.Container();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage10 = new System.Windows.Forms.TabPage();
+			this.FormQuest_AllowUserToSortRows = new System.Windows.Forms.CheckBox();
+			this.FormQuest_ProgressAutoSaving = new System.Windows.Forms.ComboBox();
+			this.label27 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.FormQuest_ShowMonthly = new System.Windows.Forms.CheckBox();
 			this.FormQuest_ShowWeekly = new System.Windows.Forms.CheckBox();
@@ -55,77 +58,112 @@
 			// 
 			// tabPage10
 			// 
-			this.tabPage10.Controls.Add( this.groupBox1 );
-			this.tabPage10.Controls.Add( this.FormQuest_ShowRunningOnly );
-			this.tabPage10.Location = new System.Drawing.Point( 4, 24 );
+			this.tabPage10.Controls.Add(this.FormQuest_AllowUserToSortRows);
+			this.tabPage10.Controls.Add(this.FormQuest_ProgressAutoSaving);
+			this.tabPage10.Controls.Add(this.label27);
+			this.tabPage10.Controls.Add(this.groupBox1);
+			this.tabPage10.Controls.Add(this.FormQuest_ShowRunningOnly);
+			this.tabPage10.Location = new System.Drawing.Point(4, 24);
 			this.tabPage10.Name = "tabPage10";
-			this.tabPage10.Padding = new System.Windows.Forms.Padding( 3 );
-			this.tabPage10.Size = new System.Drawing.Size( 442, 199 );
+			this.tabPage10.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage10.Size = new System.Drawing.Size(442, 199);
 			this.tabPage10.TabIndex = 2;
-			this.tabPage10.Text = "任务";
+			this.tabPage10.Text = "任務";
 			this.tabPage10.UseVisualStyleBackColor = true;
+			// 
+			// FormQuest_AllowUserToSortRows
+			// 
+			this.FormQuest_AllowUserToSortRows.AutoSize = true;
+			this.FormQuest_AllowUserToSortRows.Location = new System.Drawing.Point(141, 35);
+			this.FormQuest_AllowUserToSortRows.Name = "FormQuest_AllowUserToSortRows";
+			this.FormQuest_AllowUserToSortRows.Size = new System.Drawing.Size(150, 19);
+			this.FormQuest_AllowUserToSortRows.TabIndex = 6;
+			this.FormQuest_AllowUserToSortRows.Text = "ソート順を変更可能にする";
+			this.FormQuest_AllowUserToSortRows.UseVisualStyleBackColor = true;
+			// 
+			// FormQuest_ProgressAutoSaving
+			// 
+			this.FormQuest_ProgressAutoSaving.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.FormQuest_ProgressAutoSaving.FormattingEnabled = true;
+			this.FormQuest_ProgressAutoSaving.Items.AddRange(new object[] {
+            "しない",
+            "1時間ごと",
+            "1日ごと"});
+			this.FormQuest_ProgressAutoSaving.Location = new System.Drawing.Point(269, 6);
+			this.FormQuest_ProgressAutoSaving.Name = "FormQuest_ProgressAutoSaving";
+			this.FormQuest_ProgressAutoSaving.Size = new System.Drawing.Size(121, 23);
+			this.FormQuest_ProgressAutoSaving.TabIndex = 5;
+			// 
+			// label27
+			// 
+			this.label27.AutoSize = true;
+			this.label27.Location = new System.Drawing.Point(138, 9);
+			this.label27.Name = "label27";
+			this.label27.Size = new System.Drawing.Size(125, 15);
+			this.label27.TabIndex = 4;
+			this.label27.Text = "任務進捗の自動保存：";
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Controls.Add( this.FormQuest_ShowMonthly );
-			this.groupBox1.Controls.Add( this.FormQuest_ShowWeekly );
-			this.groupBox1.Controls.Add( this.FormQuest_ShowDaily );
-			this.groupBox1.Controls.Add( this.FormQuest_ShowOnce );
-			this.groupBox1.Location = new System.Drawing.Point( 6, 31 );
+			this.groupBox1.Controls.Add(this.FormQuest_ShowMonthly);
+			this.groupBox1.Controls.Add(this.FormQuest_ShowWeekly);
+			this.groupBox1.Controls.Add(this.FormQuest_ShowDaily);
+			this.groupBox1.Controls.Add(this.FormQuest_ShowOnce);
+			this.groupBox1.Location = new System.Drawing.Point(6, 31);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size( 156, 123 );
+			this.groupBox1.Size = new System.Drawing.Size(126, 123);
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "显示过滤";
+			this.groupBox1.Text = "フィルタ";
 			// 
 			// FormQuest_ShowMonthly
 			// 
 			this.FormQuest_ShowMonthly.AutoSize = true;
-			this.FormQuest_ShowMonthly.Location = new System.Drawing.Point( 6, 97 );
+			this.FormQuest_ShowMonthly.Location = new System.Drawing.Point(6, 97);
 			this.FormQuest_ShowMonthly.Name = "FormQuest_ShowMonthly";
-			this.FormQuest_ShowMonthly.Size = new System.Drawing.Size( 83, 27 );
+			this.FormQuest_ShowMonthly.Size = new System.Drawing.Size(70, 19);
 			this.FormQuest_ShowMonthly.TabIndex = 4;
-			this.FormQuest_ShowMonthly.Text = "月常";
+			this.FormQuest_ShowMonthly.Text = "マンスリー";
 			this.FormQuest_ShowMonthly.UseVisualStyleBackColor = true;
 			// 
 			// FormQuest_ShowWeekly
 			// 
 			this.FormQuest_ShowWeekly.AutoSize = true;
-			this.FormQuest_ShowWeekly.Location = new System.Drawing.Point( 6, 72 );
+			this.FormQuest_ShowWeekly.Location = new System.Drawing.Point(6, 72);
 			this.FormQuest_ShowWeekly.Name = "FormQuest_ShowWeekly";
-			this.FormQuest_ShowWeekly.Size = new System.Drawing.Size( 90, 27 );
+			this.FormQuest_ShowWeekly.Size = new System.Drawing.Size(77, 19);
 			this.FormQuest_ShowWeekly.TabIndex = 3;
-			this.FormQuest_ShowWeekly.Text = "周常";
+			this.FormQuest_ShowWeekly.Text = "ウィークリー";
 			this.FormQuest_ShowWeekly.UseVisualStyleBackColor = true;
 			// 
 			// FormQuest_ShowDaily
 			// 
 			this.FormQuest_ShowDaily.AutoSize = true;
-			this.FormQuest_ShowDaily.Location = new System.Drawing.Point( 6, 47 );
+			this.FormQuest_ShowDaily.Location = new System.Drawing.Point(6, 47);
 			this.FormQuest_ShowDaily.Name = "FormQuest_ShowDaily";
-			this.FormQuest_ShowDaily.Size = new System.Drawing.Size( 75, 27 );
+			this.FormQuest_ShowDaily.Size = new System.Drawing.Size(62, 19);
 			this.FormQuest_ShowDaily.TabIndex = 2;
-			this.FormQuest_ShowDaily.Text = "日常";
+			this.FormQuest_ShowDaily.Text = "デイリー";
 			this.FormQuest_ShowDaily.UseVisualStyleBackColor = true;
 			// 
 			// FormQuest_ShowOnce
 			// 
 			this.FormQuest_ShowOnce.AutoSize = true;
-			this.FormQuest_ShowOnce.Location = new System.Drawing.Point( 6, 22 );
+			this.FormQuest_ShowOnce.Location = new System.Drawing.Point(6, 22);
 			this.FormQuest_ShowOnce.Name = "FormQuest_ShowOnce";
-			this.FormQuest_ShowOnce.Size = new System.Drawing.Size( 120, 27 );
+			this.FormQuest_ShowOnce.Size = new System.Drawing.Size(107, 19);
 			this.FormQuest_ShowOnce.TabIndex = 1;
-			this.FormQuest_ShowOnce.Text = "一次性任务以及其他";
+			this.FormQuest_ShowOnce.Text = "一回限り・その他";
 			this.FormQuest_ShowOnce.UseVisualStyleBackColor = true;
 			// 
 			// FormQuest_ShowRunningOnly
 			// 
 			this.FormQuest_ShowRunningOnly.AutoSize = true;
-			this.FormQuest_ShowRunningOnly.Location = new System.Drawing.Point( 6, 6 );
+			this.FormQuest_ShowRunningOnly.Location = new System.Drawing.Point(6, 6);
 			this.FormQuest_ShowRunningOnly.Name = "FormQuest_ShowRunningOnly";
-			this.FormQuest_ShowRunningOnly.Size = new System.Drawing.Size( 139, 27 );
+			this.FormQuest_ShowRunningOnly.Size = new System.Drawing.Size(126, 19);
 			this.FormQuest_ShowRunningOnly.TabIndex = 0;
-			this.FormQuest_ShowRunningOnly.Text = "显示执行中的任务";
+			this.FormQuest_ShowRunningOnly.Text = "遂行中のみ表示する";
 			this.FormQuest_ShowRunningOnly.UseVisualStyleBackColor = true;
 			// 
 			// Settings
@@ -154,5 +192,8 @@
 		private System.Windows.Forms.CheckBox FormQuest_ShowDaily;
 		private System.Windows.Forms.CheckBox FormQuest_ShowOnce;
 		private System.Windows.Forms.TabPage tabPage10;
+		private System.Windows.Forms.ComboBox FormQuest_ProgressAutoSaving;
+		private System.Windows.Forms.Label label27;
+		private System.Windows.Forms.CheckBox FormQuest_AllowUserToSortRows;
 	}
 }

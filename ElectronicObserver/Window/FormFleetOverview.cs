@@ -1,6 +1,7 @@
 ﻿using ElectronicObserver.Data;
 using ElectronicObserver.Observer;
 using ElectronicObserver.Resource;
+using ElectronicObserver.Utility.Data;
 using ElectronicObserver.Utility.Mathematics;
 using ElectronicObserver.Window.Control;
 using ElectronicObserver.Window.Support;
@@ -103,7 +104,7 @@ namespace ElectronicObserver.Window {
 			public void ConfigurationChanged( FormFleetOverview parent ) {
 				Number.Font = parent.Font;
 				State.Font = parent.Font;
-
+				State.BackColor = Color.Transparent;
 			}
 		}
 
@@ -225,6 +226,9 @@ namespace ElectronicObserver.Window {
 			o.APIList["api_get_member/ship_deck"].ResponseReceived += Updated;
 			o.APIList["api_req_hensei/preset_select"].ResponseReceived += Updated;
 			o.APIList["api_req_kaisou/slot_exchange_index"].ResponseReceived += Updated;
+			o.APIList["api_get_member/require_info"].ResponseReceived += Updated;
+			o.APIList["api_req_kaisou/slot_deprive"].ResponseReceived += Updated;
+
 
 			Utility.Configuration.Instance.ConfigurationChanged += ConfigurationChanged;
 		}
@@ -238,6 +242,8 @@ namespace ElectronicObserver.Window {
 			fleetSortie = new SolidBrush( Utility.Configuration.Config.UI.FleetSortieColor );
 			fleetNotReady = new SolidBrush( Utility.Configuration.Config.UI.FleetNotReadyColor );
 			fleetDamage = new SolidBrush( Utility.Configuration.Config.UI.FleetDamageColor );
+
+			AutoScroll = Utility.Configuration.Config.FormFleet.IsScrollable;
 
 			foreach ( var c in ControlFleet )
 				c.ConfigurationChanged( this );
@@ -258,11 +264,12 @@ namespace ElectronicObserver.Window {
 				CombinedTag.Text = Constants.GetCombinedFleet( KCDatabase.Instance.Fleet.CombinedFlag );
 
 				if ( KCDatabase.Instance.Fleet.CombinedFlag == 3 ) {
-					ToolTipInfo.SetToolTip( CombinedTag, string.Format( "ドラム缶搭載: {0}個\r\n大発動艇搭載: {1}個\r\n",
+					ToolTipInfo.SetToolTip( CombinedTag, string.Format( "ドラム缶搭載: {0}個\r\n大発動艇搭載: {1}個\r\n輸送量(TP): {2}\r\n",
 						KCDatabase.Instance.Fleet[1].MembersWithoutEscaped.Sum( s => s == null ? 0 : s.AllSlotInstanceMaster.Count( eq => eq != null && eq.CategoryType == 30 ) ) +
 						KCDatabase.Instance.Fleet[2].MembersWithoutEscaped.Sum( s => s == null ? 0 : s.AllSlotInstanceMaster.Count( eq => eq != null && eq.CategoryType == 30 ) ),
 						KCDatabase.Instance.Fleet[1].MembersWithoutEscaped.Sum( s => s == null ? 0 : s.AllSlotInstanceMaster.Count( eq => eq != null && eq.CategoryType == 24 ) ) +
-						KCDatabase.Instance.Fleet[2].MembersWithoutEscaped.Sum( s => s == null ? 0 : s.AllSlotInstanceMaster.Count( eq => eq != null && eq.CategoryType == 24 ) )
+						KCDatabase.Instance.Fleet[2].MembersWithoutEscaped.Sum( s => s == null ? 0 : s.AllSlotInstanceMaster.Count( eq => eq != null && eq.CategoryType == 24 ) ),
+						Calculator.GetTPDamage( KCDatabase.Instance.Fleet[1] ) + Calculator.GetTPDamage( KCDatabase.Instance.Fleet[2] )
 						) );
 				} else {
 					ToolTipInfo.SetToolTip( CombinedTag, null );

@@ -131,6 +131,11 @@ namespace ElectronicObserver.Resource {
 			ParameterAircraft,
 			ParameterSpeed,
 			ParameterRange,
+			BattleFormationEnemyLineAhead,
+			BattleFormationEnemyDoubleLine,
+			BattleFormationEnemyDiamond,
+			BattleFormationEnemyEchelon,
+			BattleFormationEnemyLineAbreast,
 		}
 
 		public enum EquipmentContent {
@@ -170,6 +175,9 @@ namespace ElectronicObserver.Resource {
 			FlyingBoat,
 			Ration,
 			Supplies,
+			AmphibiousVehicle,
+			LandAttacker,
+			Interceptor,
 			Locked,
 			Unknown,
 		}
@@ -316,6 +324,11 @@ namespace ElectronicObserver.Resource {
 					LoadImageFromArchive( Icons, archive, mstpath + @"Parameter/Speed.png", "Parameter_Speed" );
 					LoadImageFromArchive( Icons, archive, mstpath + @"Parameter/Range.png", "Parameter_Range" );
 
+					LoadImageFromArchive( Icons, archive, mstpath + @"Battle/FormationEnemy01.png", "Battle_FormationEnemy_LineAhead" );
+					LoadImageFromArchive( Icons, archive, mstpath + @"Battle/FormationEnemy02.png", "Battle_FormationEnemy_DoubleLine" );
+					LoadImageFromArchive( Icons, archive, mstpath + @"Battle/FormationEnemy03.png", "Battle_FormationEnemy_Diamond" );
+					LoadImageFromArchive( Icons, archive, mstpath + @"Battle/FormationEnemy04.png", "Battle_FormationEnemy_Echelon" );
+					LoadImageFromArchive( Icons, archive, mstpath + @"Battle/FormationEnemy05.png", "Battle_FormationEnemy_LineAbreast" );
 
 
 					// ------------------------ equipments ------------------------
@@ -356,6 +369,9 @@ namespace ElectronicObserver.Resource {
 					LoadImageFromArchive( Equipments, archive, mstpath + @"Equipment/FlyingBoat.png", "Equipment_FlyingBoat" );
 					LoadImageFromArchive( Equipments, archive, mstpath + @"Equipment/Ration.png", "Equipment_Ration" );
 					LoadImageFromArchive( Equipments, archive, mstpath + @"Equipment/Supplies.png", "Equipment_Supplies" );
+					LoadImageFromArchive( Equipments, archive, mstpath + @"Equipment/AmphibiousVehicle.png", "Equipment_AmphibiousVehicle" );
+					LoadImageFromArchive( Equipments, archive, mstpath + @"Equipment/LandAttacker.png", "Equipment_LandAttacker" );
+					LoadImageFromArchive( Equipments, archive, mstpath + @"Equipment/Interceptor.png", "Equipment_Interceptor" );
 					LoadImageFromArchive( Equipments, archive, mstpath + @"Equipment/Locked.png", "Equipment_Locked" );
 					LoadImageFromArchive( Equipments, archive, mstpath + @"Equipment/Unknown.png", "Equipment_Unknown" );
 

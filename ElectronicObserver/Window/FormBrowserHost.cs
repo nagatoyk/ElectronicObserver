@@ -220,6 +220,10 @@ namespace ElectronicObserver.Window {
 			c.ShowURL = config.ShowURL;
 			c.ModifyCookieRegion = config.ModifyCookieRegion;
 
+			// volume
+			if ( Utility.Configuration.Config.BGMPlayer.SyncBrowserMute ) {
+				Utility.SyncBGMPlayer.Instance.IsMute = config.IsMute;
+			}
 		}
 
 		public void GetIconResource() {
@@ -295,11 +299,9 @@ namespace ElectronicObserver.Window {
 					( string apiname, dynamic data ) => InitialAPIReceived( apiname, data );
 
 				// プロキシをセット
-				Browser.AsyncRemoteRun( () =>
-					Browser.Proxy.SetProxy( Observer.APIObserver.Instance.ProxyPort.ToString() ) );
+				Browser.AsyncRemoteRun( () => Browser.Proxy.SetProxy( BuildDownstreamProxy() ) );
 				Observer.APIObserver.Instance.ProxyStarted += () => {
-					Browser.AsyncRemoteRun( () =>
-						Browser.Proxy.SetProxy( Observer.APIObserver.Instance.ProxyPort.ToString() ) );
+					Browser.AsyncRemoteRun( () => Browser.Proxy.SetProxy( BuildDownstreamProxy() ) );
 				};
 
 				++initializeCompletionCount;
@@ -309,6 +311,21 @@ namespace ElectronicObserver.Window {
 					}
 				}
 			} ) );
+		}
+
+
+		private string BuildDownstreamProxy() {
+			var config = Utility.Configuration.Config.Connection;
+
+			if ( config.UseUpstreamProxy && config.EnableSslUpstreamProxy ) {
+				return string.Format(
+					"http=127.0.0.1:{0};https={1}:{2}",
+					APIObserver.Instance.ProxyPort,
+					config.UpstreamProxyPortSSL == 0 ? config.UpstreamProxyAddress : config.UpstreamProxyAddressSSL,
+					config.UpstreamProxyPortSSL == 0 ? config.UpstreamProxyPort : config.UpstreamProxyPortSSL );
+			} else {
+				return string.Format( "127.0.0.1:{0}", APIObserver.Instance.ProxyPort );
+			}
 		}
 
 

@@ -8,9 +8,10 @@ using Configuration = ElectronicObserver.Utility.Configuration;
 
 namespace ElectronicObserver.Observer.Cache {
 	enum Direction {
-		Discharge_Response,		//无关请求，或需要下载文件 -> 忽略请求
-		Return_LocalFile,		//存在无需验证的本地文件 -> 返回本地文件
-		Verify_LocalFile,		//验证文件有效性 -> 向服务器发送验证请求
+		Discharge_Response,		// 无关请求，或需要下载文件 -> 忽略请求
+		Return_LocalFile,		// 存在无需验证的本地文件 -> 返回本地文件
+		Verify_LocalFile,		// 验证文件有效性 -> 向服务器发送验证请求
+		NoCache_LocalFile,		// 返回本地文件并禁止缓存
 	}
 
 	enum filetype {
@@ -46,7 +47,7 @@ namespace ElectronicObserver.Observer.Cache {
 
 	class CacheCore {
 
-
+		/*/ - 缓存列表 -
 		private Dictionary<string, string> _cacheList;
 
 		private const string CACHE_LIST_FILE = @"\CacheList.txt";
@@ -118,6 +119,7 @@ namespace ElectronicObserver.Observer.Cache {
 				Utility.ErrorReporter.SendErrorReport( ex, "保存缓存列表时出错。" );
 			}
 		}
+		//*/
 
 
 		/// <summary>
@@ -181,7 +183,7 @@ namespace ElectronicObserver.Observer.Cache {
 				  type == filetype.image ) && Configuration.Config.CacheSettings.CacheResourceFiles > 0 ) ) {
 				filepath = Configuration.Config.CacheSettings.CacheFolder + uri.AbsolutePath.Replace( '/', '\\' );
 
-				// 检查缓存列表中是否有对应版本
+				/*/ 检查缓存列表中是否有对应版本
 				string query = uri.PathAndQuery;
 				int index = query.LastIndexOf( '?' );
 				bool changed = false;
@@ -200,6 +202,7 @@ namespace ElectronicObserver.Observer.Cache {
 						_cacheList[key] = value;
 					}
 				}
+				//*/
 
 				//检查Hack文件地址
 				if ( Configuration.Config.CacheSettings.HackEnabled ) {
@@ -217,11 +220,11 @@ namespace ElectronicObserver.Observer.Cache {
 				//检查缓存文件
 				if ( File.Exists( filepath ) ) {
 
-					if ( changed ) {
-						// 版本发生变动，则重新下载
-						_RecordTask( url, filepath );
-						return Direction.Discharge_Response;
-					}
+					//if ( changed ) {
+					//	// 版本发生变动，则重新下载
+					//	_RecordTask( url, filepath );
+					//	return Direction.Discharge_Response;
+					//}
 
 					//存在本地缓存文件 -> 检查文件的最后修改时间
 					//（验证所有文件 或 只验证非资源文件）
@@ -240,7 +243,7 @@ namespace ElectronicObserver.Observer.Cache {
 					//文件不需验证
 					//->返回本地缓存文件
 					result = filepath;
-					return Direction.Return_LocalFile;
+					return type == filetype.sound ? Direction.NoCache_LocalFile : Direction.Return_LocalFile;
 
 				} else {
 

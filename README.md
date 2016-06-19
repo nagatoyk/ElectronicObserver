@@ -39,9 +39,9 @@
 
 *このリンクの更新は遅れる可能性があります。最新版は[こちら](http://electronicobserver.blog.fc2.com/)で確認してください。*  
 
-[ver. 2.0.3 (2015/12/10)](http://bit.ly/1REF50I)  
+[ver. 2.3.1 (2016/06/10)](http://bit.ly/24FrlWO)  
 
-更新内容・履歴は[こちら](https://github.com/andanteyk/ElectronicObserver/wiki/ChangeLog)で確認できます。  
+[更新内容・履歴はこちらで確認できます。](https://github.com/andanteyk/ElectronicObserver/wiki/ChangeLog)  
 
 ### 開発者の皆様へ
 ---

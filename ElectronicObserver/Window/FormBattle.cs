@@ -97,7 +97,7 @@ namespace ElectronicObserver.Window {
 
 
 			ConfigurationChanged();
-			
+
 			BaseLayoutPanel.Visible = false;
 
 
@@ -105,7 +105,7 @@ namespace ElectronicObserver.Window {
 			this.ResumeLayoutForDpiScale();
 
 			DamageWidth = TableBottom.ColumnStyles[1].Width;
-        }
+		}
 
 		float DamageWidth = 60;
 
@@ -121,11 +121,13 @@ namespace ElectronicObserver.Window {
 			o.APIList["api_req_battle_midnight/battle"].ResponseReceived += Updated;
 			o.APIList["api_req_battle_midnight/sp_midnight"].ResponseReceived += Updated;
 			o.APIList["api_req_sortie/airbattle"].ResponseReceived += Updated;
+			o.APIList["api_req_sortie/ld_airbattle"].ResponseReceived += Updated;
 			o.APIList["api_req_combined_battle/battle"].ResponseReceived += Updated;
 			o.APIList["api_req_combined_battle/midnight_battle"].ResponseReceived += Updated;
 			o.APIList["api_req_combined_battle/sp_midnight"].ResponseReceived += Updated;
 			o.APIList["api_req_combined_battle/airbattle"].ResponseReceived += Updated;
 			o.APIList["api_req_combined_battle/battle_water"].ResponseReceived += Updated;
+			o.APIList["api_req_combined_battle/ld_airbattle"].ResponseReceived += Updated;
 			o.APIList["api_req_combined_battle/battleresult"].ResponseReceived += Updated;
 			o.APIList["api_req_practice/battle"].ResponseReceived += Updated;
 			o.APIList["api_req_practice/midnight_battle"].ResponseReceived += Updated;
@@ -224,6 +226,20 @@ td,th,tr {text-align:left; padding:2px 4px;}
 			{
 				if ( day != null && day.IsAvailable )
 				{
+                    try
+                    {
+                        if (day.BaseAirAttack != null && day.BaseAirAttack.IsAvailable)
+                        {
+                            for (int i = 0; i < day.BaseAirAttack.AirAttackUnits.Count; i++)
+                            {
+                                FillAirBaseDamage(i, builder, day, enemys, hps, maxHps);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Utility.ErrorReporter.SendErrorReport(ex, "陆航支援解析出错。", "battle day", day.RawData.ToString());
+                    }
 					try
 					{
 						var pd1 = day.AirBattle;
@@ -297,7 +313,7 @@ td,th,tr {text-align:left; padding:2px 4px;}
 	( !fire[1] || !s1available[1] ? "-" : string.Format( "{0}<br/>{1} (#{2})", pd2.AACutInShip.NameWithLevel, Constants.GetAACutinKind( cutinID[1] ), cutinID[1] ) )
 	);
 
-
+                        
 						// 航空战血量变化
 						if ( day.AirBattle.IsAvailable && day.AirBattle.IsStage3Available )
 						{
@@ -431,7 +447,130 @@ td,th,tr {text-align:left; padding:2px 4px;}
 			new Dialog.DialogBattleReport( builder.ToString() ).Show();
 		}
 
-		private void FillAirDamage( StringBuilder builder, int[] flagsfriend, int[] flagsenemy, int[] damages, string[] friends, string[] accompany, string[] enemys, int[] hps, int[] maxHps )
+        private void FillAirBaseDamage(int index, StringBuilder builder, BattleDay day, string[] enemys, int[] hps, int[] maxHps)
+        {
+
+            var AirBaseAttack = day.BaseAirAttack.AirAttackUnits[index];
+
+            bool s1available = AirBaseAttack.IsStage1Available;
+            bool s2available = AirBaseAttack.IsStage2Available;
+            int[] touches =
+            {
+                            AirBaseAttack.TouchAircraftFriend,
+                            AirBaseAttack.TouchAircraftEnemy
+                        };
+            EquipmentDataMaster[] planes =
+            {
+                            KCDatabase.Instance.MasterEquipments[touches[0]],
+                            KCDatabase.Instance.MasterEquipments[touches[1]]
+                        };
+
+
+            // 接触信息
+            builder.AppendFormat(@"<h2>第{0}基地航空队支援</h2>
+<hr/>
+<table cellspacing=""2"" cellpadding=""0"">
+<tbody>
+<tr>
+<th width=""90""></th><th width=""110"">我方</th><th width=""110""></th><th width=""110"">敌方</th><th width=""110""></th>
+</tr>", AirBaseAttack.AirUnitID);
+
+            for (int i = 0; i < AirBaseAttack.SquadronPlane.Length; i++)
+            {
+                builder.AppendFormat(@"
+<tr><th width=""90""></th><td>{0}</td><td>{1}</td><td colspan=""2""></td>
+</tr>", 
+  KCDatabase.Instance.MasterEquipments[ AirBaseAttack.SquadronPlane[i].Plane].Name,
+   AirBaseAttack.SquadronPlane[i].Count
+ );
+            }
+            builder.AppendFormat(@"
+<tr><th width=""90"">制空</th><td>{0}</td><td></td><td colspan=""2""></td>
+</tr>
+<tr>
+<th width=""90"">接触信息</th><td>{1}</td><td></td><td>{2}</td><td></td>
+</tr>
+<tr>
+<th width=""90"">stage1</th><td>{3}</td><td></td><td>{4}</td><td></td>
+</tr>
+<tr>
+<th width=""90"">stage2</th><td>{5}</td><td></td><td>{6}</td><td></td>
+</tr>
+</tbody>
+</table>
+",
+Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
+
+(!s1available || planes[0] == null ? "-" : planes[0].Name),
+(!s1available || planes[1] == null ? null : planes[1].Name),
+
+
+(!s1available ? "-" : string.Format("-{0}/{1}", AirBaseAttack.AircraftLostStage1Friend, AirBaseAttack.AircraftTotalStage1Friend)),
+
+(!s1available ? null : string.Format("-{0}/{1}", AirBaseAttack.AircraftLostStage1Enemy, AirBaseAttack.AircraftTotalStage1Enemy)),
+
+
+(!s2available ? "-" : string.Format("-{0}/{1}", AirBaseAttack.AircraftLostStage2Friend, AirBaseAttack.AircraftTotalStage2Friend)),
+
+(!s2available ? null : string.Format("-{0}/{1}", AirBaseAttack.AircraftLostStage2Enemy, AirBaseAttack.AircraftTotalStage2Enemy))
+
+
+);
+
+            if (AirBaseAttack.IsStage3Available)
+            {
+
+                builder.AppendLine(@"<table cellspacing = ""2"" cellpadding = ""0"" >
+<thead><th width=""160"">敌方</th>
+<th width=""90"">所受伤害</th>
+<th width=""90"">血量</th>
+<th width=""90"">雷 爆 暴击</th>
+</tr>
+</thead>
+<tbody>");
+
+           
+                var damages = AirBaseAttack.Damages;
+                for (int i = 0; i < 6; i++)
+                {
+                    builder.AppendLine("<tr>");
+
+                    if (enemys[i] != null)
+                    {
+                        int before = hps[i + 6];
+                        hps[i + 6] = Math.Max(hps[i + 6] - damages[i + 6], 0);
+                        builder.AppendFormat("<td>{5}.{0}</td><td>{6}</td><td{4}>{1}→{2}/{3}</td><td>{7}</td>\r\n",
+                            enemys[i], before, hps[i + 6], maxHps[i + 6],
+                            (before == hps[i + 6] ? null : @" class=""changed"""),
+                            (i + 1),
+                            (damages[i + 6] > 0 ? damages[i + 6].ToString() : null),
+                            GetAirFlag(AirBaseAttack,i));
+
+                    }
+                    else
+                    {
+                        builder.AppendLine("<td>&nbsp;</td><td>&nbsp;</td>");
+                    }
+
+                    builder.AppendLine("</tr>");
+                }
+            }
+            builder.AppendLine("</tbody>\r\n</table>");
+
+        }
+
+        string GetAirFlag(PhaseBaseAirAttack.PhaseBaseAirAttackUnit Unit, int index)
+        {
+            int[] raiFlag = (int[])Unit.AirBattleData.api_stage3.api_erai_flag;
+            int[] bakFlag = (int[])Unit.AirBattleData.api_stage3.api_ebak_flag;
+            int[] clFlag = (int[])Unit.AirBattleData.api_stage3.api_ecl_flag;
+            string flag = raiFlag[index + 1] == 1 ? "√" : "×";
+            flag+=" "+ (bakFlag[index + 1] == 1 ? "√" : "×");
+            flag += " " + (clFlag[index + 1] == 1 ? "√" : "×");
+            return flag;
+        }
+
+        private void FillAirDamage( StringBuilder builder, int[] flagsfriend, int[] flagsenemy, int[] damages, string[] friends, string[] accompany, string[] enemys, int[] hps, int[] maxHps )
 		{
 			builder.AppendLine( @"<table cellspacing=""2"" cellpadding=""0"">
 <thead>
@@ -747,7 +886,8 @@ td,th,tr {text-align:left; padding:2px 4px;}
 
 
 				case "api_req_sortie/battle":
-				case "api_req_practice/battle": {
+				case "api_req_practice/battle":
+				case "api_req_sortie/ld_airbattle": {
 
 						SetFormation( bm.BattleDay );
 						SetSearchingResult( bm.BattleDay );
@@ -792,7 +932,8 @@ td,th,tr {text-align:left; padding:2px 4px;}
 					} break;
 
 				case "api_req_combined_battle/battle":
-				case "api_req_combined_battle/battle_water": {
+				case "api_req_combined_battle/battle_water":
+				case "api_req_combined_battle/ld_airbattle": {
 
 						SetFormation( bm.BattleDay );
 						SetSearchingResult( bm.BattleDay );
@@ -1303,7 +1444,7 @@ td,th,tr {text-align:left; padding:2px 4px;}
 			var initialHPs = bd.Initial.InitialHPs;
 			var maxHPs = bd.Initial.MaxHPs;
 			var resultHPs = bd.ResultHPs;
-			var attackDamages = bd.AttackDamages;
+            var attackDamages = bd.AttackDamages;
 			var attackAirDamages = bd.AttackAirDamages;
 
 			for ( int i = 0; i < 12; i++ ) {
@@ -1363,9 +1504,13 @@ td,th,tr {text-align:left; padding:2px 4px;}
 				}
 			}
 
-			//HPBars[bd.MVPShipIndex].BackColor = Color.Moccasin;
-			DamageLabels[bd.MVPShipIndex].ImageIndex = (int)ResourceManager.IconContent.ConditionSparkle;
+			if ( bd.Initial.IsBossDamaged )
+				HPBars[6].BackColor = Color.MistyRose;
 
+
+			foreach ( int i in bd.MVPShipIndexes )
+				//HPBars[i].BackColor = Color.Moccasin;
+				DamageLabels[i].ImageIndex = (int)ResourceManager.IconContent.ConditionSparkle;
 			FleetCombined.Visible = false;
 			for ( int i = 12; i < 18; i++ ) {
 				HPBars[i].Visible = false;
@@ -1412,6 +1557,7 @@ td,th,tr {text-align:left; padding:2px 4px;}
 					HPBars[i].Value = resultHPs[i];
 					HPBars[i].PrevValue = initialHPs[i];
 					HPBars[i].MaximumValue = maxHPs[i];
+					HPBars[i].BackColor = SystemColors.Control;
 					HPBars[i].Visible = true;
 					if ( i < 6 )
 					{
@@ -1502,11 +1648,15 @@ td,th,tr {text-align:left; padding:2px 4px;}
 				}
 			}
 
+			if ( bd.Initial.IsBossDamaged )
+				HPBars[6].BackColor = Color.MistyRose;
 
-			//HPBars[bd.MVPShipIndex].BackColor = Color.Moccasin;
-			//HPBars[12 + bd.MVPShipCombinedIndex].BackColor = Color.Moccasin;
-			DamageLabels[bd.MVPShipIndex].ImageIndex = (int)ResourceManager.IconContent.ConditionSparkle;
-			DamageLabels[6 + bd.MVPShipCombinedIndex].ImageIndex = (int)ResourceManager.IconContent.ConditionSparkle;
+			foreach ( int i in bd.MVPShipIndexes )
+				//HPBars[i].BackColor = Color.Moccasin;
+				DamageLabels[i].ImageIndex = (int)ResourceManager.IconContent.ConditionSparkle;
+			foreach ( int i in bd.MVPShipCombinedIndexes )
+				//HPBars[12 + i].BackColor = Color.Moccasin;
+				DamageLabels[6 + i].ImageIndex = (int)ResourceManager.IconContent.ConditionSparkle;
 
 			TableTop.ResumeLayout();
 			TableBottom.ResumeLayout();
@@ -1584,6 +1734,37 @@ td,th,tr {text-align:left; padding:2px 4px;}
 
 
 		/// <summary>
+		/// 空襲戦における勝利ランクを計算します。情報不足のため正確ではありません。
+		/// </summary>
+		/// <param name="countFriend">戦闘に参加した自軍艦数。</param>
+		/// <param name="sunkFriend">撃沈された自軍艦数。</param>
+		/// <param name="friendrate">自軍損害率。</param>
+		private static int GetWinRankAirRaid( int countFriend, int sunkFriend, double friendrate ) {
+			int rank;
+
+			if ( friendrate <= 0.0 )
+				rank = 7;	//SS
+			else if ( friendrate < 0.1 )
+				rank = 5;	//A
+			else if ( friendrate < 0.2 )
+				rank = 4;	//B
+			else if ( friendrate < 0.5 )
+				rank = 3;	//C
+			else if ( friendrate < 0.8 )
+				rank = 2;	//D
+			else
+				rank = 1;	//E
+
+			/*/// 撃沈艦があってもランクは変わらない(撃沈ありA勝利が確認されている)
+			if ( sunkFriend > 0 )
+				rank--;
+			//*/
+
+			return rank;
+		}
+
+
+		/// <summary>
 		/// 損害率と戦績予測を設定します。
 		/// </summary>
 		private void SetDamageRateNormal( BattleData bd, int[] initialHPs ) {
@@ -1617,7 +1798,11 @@ td,th,tr {text-align:left; padding:2px 4px;}
 				int sunkFriend = resultHPs.Take( countFriend ).Count( v => v <= 0 );
 				int sunkEnemy = resultHPs.Skip( 6 ).Take( countEnemy ).Count( v => v <= 0 );
 
-				int rank = GetWinRank( countFriend, countEnemy, sunkFriend, sunkEnemy, friendrate, enemyrate, resultHPs[6] <= 0 );
+				int rank;
+				if ( bd is BattleAirRaid )
+					rank = GetWinRankAirRaid( countFriend, sunkFriend, friendrate );
+				else
+					rank = GetWinRank( countFriend, countEnemy, sunkFriend, sunkEnemy, friendrate, enemyrate, resultHPs[6] <= 0 );
 
 
 				WinRank.Text = Constants.GetWinRank( rank );
@@ -1663,7 +1848,11 @@ td,th,tr {text-align:left; padding:2px 4px;}
 				int sunkFriend = resultHPs.Take( countFriend ).Count( v => v <= 0 ) + resultHPs.Skip( 12 ).Take( countFriendCombined ).Count( v => v <= 0 );
 				int sunkEnemy = resultHPs.Skip( 6 ).Take( countEnemy ).Count( v => v <= 0 );
 
-				int rank = GetWinRank( countFriend + countFriendCombined, countEnemy, sunkFriend, sunkEnemy, friendrate, enemyrate, resultHPs[6] <= 0 );
+				int rank;
+				if ( bd is BattleCombinedAirRaid )
+					rank = GetWinRankAirRaid( countFriend, sunkFriend, friendrate );
+				else
+					rank = GetWinRank( countFriend + countFriendCombined, countEnemy, sunkFriend, sunkEnemy, friendrate, enemyrate, resultHPs[6] <= 0 );
 
 
 				WinRank.Text = Constants.GetWinRank( rank );
@@ -1704,6 +1893,7 @@ td,th,tr {text-align:left; padding:2px 4px;}
 				int index = pd.SearchlightIndexEnemy;
 				if ( index != -1 ) {
 					AirStage1Enemy.Text = "#" + ( index + 1 );
+					//AirStage1Enemy.ForeColor = SystemColors.ControlText;	
 					AirStage1Enemy.ForeColor = Utility.Configuration.Config.UI.ForeColor;	
 					AirStage1Enemy.ImageAlign = ContentAlignment.MiddleLeft;
 					AirStage1Enemy.ImageIndex = (int)ResourceManager.EquipmentContent.Searchlight;
@@ -1778,7 +1968,8 @@ td,th,tr {text-align:left; padding:2px 4px;}
 				foreach ( var b in HPBars ) {
 					b.MainFont = MainFont;
 					b.SubFont = SubFont;
-					b.HPBar.ColorMorphing = Utility.Configuration.Config.FormFleet.BarColorMorphing;
+					b.HPBar.ColorMorphing = Utility.Configuration.Config.UI.BarColorMorphing;
+					b.HPBar.ReloadBarSettings();
 				}
 			}
 			LinePen = new Pen( Utility.Configuration.Config.UI.LineColor.ColorData );

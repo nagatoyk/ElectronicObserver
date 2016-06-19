@@ -31,8 +31,13 @@ namespace ElectronicObserver.Data.Battle {
 		/// </summary>
 		public ReadOnlyCollection<int> AttackAirDamages { get { return Array.AsReadOnly( _attackAirDamages ); } }
 
+        protected int[] _attackAirBaseDamages;
+        /// <summary>
+        /// AirBaseダメージ
+        /// </summary>
+        public ReadOnlyCollection<int> AttackAirBaseDamages { get { return Array.AsReadOnly(_attackAirBaseDamages); } }
 
-		public PhaseInitial Initial { get; protected set; }
+        public PhaseInitial Initial { get; protected set; }
 		public PhaseSearching Searching { get; protected set; }
 
 
@@ -47,60 +52,47 @@ namespace ElectronicObserver.Data.Battle {
 				_attackDamages = new int[_resultHPs.Length];
 			if ( _attackAirDamages == null )
 				_attackAirDamages = new int[_resultHPs.Length];
-
-		}
+            if (_attackAirBaseDamages == null)
+                _attackAirBaseDamages = new int[_resultHPs.Length];
+        }
 
 
 		/// <summary>
-		/// MVPを取得した艦のインデックス
+		/// MVP 取得候補艦のインデックス [0-5]
 		/// </summary>
-		public int MVPShipIndex {
+		public IEnumerable<int> MVPShipIndexes {
 			get {
-				int index = 0;
-				int max = -1;
-				for ( int i = 0; i < 6; i++ ) {
-					if ( _attackDamages[i] + _attackAirDamages[i] > max ) {
-						max = _attackDamages[i] + _attackAirDamages[i];
-						index = i;
+				int max = _attackDamages.Take( 6 ).Zip( _attackAirDamages.Take( 6 ), ( dmg, air ) => ( dmg + air ) ).Max();
+				if ( max == 0 ) {		// 全員ノーダメージなら旗艦MVP
+					yield return 0;
+
+				} else {
+					for ( int i = 0; i < 6; i++ ) {
+						if ( _attackDamages[i] + _attackAirDamages[i] == max )
+							yield return i;
 					}
 				}
-				return index < 0 ? 0 : index;
-			}
-		}
-
-		/// <summary>
-		/// MVPを取得した艦
-		/// </summary>
-		public ShipData MVPShip {
-			get {
-				return Initial.FriendFleet.MembersInstance[MVPShipIndex];
+				//return index < 0 ? 0 : index;
 			}
 		}
 
 
 		/// <summary>
-		/// MVPを取得した艦のインデックス(随伴護衛部隊)
+		/// 連合艦隊随伴艦隊の MVP 取得候補艦のインデックス [0-5]
 		/// </summary>
-		public int MVPShipCombinedIndex {
+		public IEnumerable<int> MVPShipCombinedIndexes {
 			get {
-				int index = 0;
-				int max = -1;
-				for ( int i = 0; i < 6; i++ ) {
-					if ( _attackDamages[i + 12] + _attackAirDamages[i + 12] > max ) {
-						max = _attackDamages[i + 12] + _attackAirDamages[i + 12];
-						index = i;
+				int max = _attackDamages.Skip( 12 ).Take( 6 ).Zip( _attackAirDamages.Skip( 12 ).Take( 6 ), ( dmg, air ) => ( dmg + air ) ).Max();
+				if ( max == 0 ) {		// 全員ノーダメージなら旗艦MVP
+					yield return 0;
+
+				} else {
+					for ( int i = 0; i < 6; i++ ) {
+						if ( _attackDamages[i + 12] + _attackAirDamages[i + 12] == max )
+							yield return i;
 					}
 				}
-				return index < 0 ? 0 : index;
-			}
-		}
-
-		/// <summary>
-		/// MVPを取得した艦(随伴護衛部隊)
-		/// </summary>
-		public ShipData MVPShipCombined {
-			get {
-				return KCDatabase.Instance.Fleet[2].MembersInstance[MVPShipCombinedIndex];
+				//return index < 0 ? 0 : index;
 			}
 		}
 
@@ -111,7 +103,8 @@ namespace ElectronicObserver.Data.Battle {
 		internal void TakeOverParameters( BattleData prev ) {
 			_attackDamages = (int[])prev._attackDamages.Clone();
 			_attackAirDamages = (int[])prev._attackAirDamages.Clone();
-		}
+            _attackAirBaseDamages = (int[])prev._attackAirBaseDamages.Clone();
+        }
 
 
 

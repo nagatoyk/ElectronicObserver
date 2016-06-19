@@ -263,7 +263,11 @@ namespace Browser {
 
 		private void Browser_Navigating( object sender, WebBrowserNavigatingEventArgs e ) {
 
-			IsKanColleLoaded = false;
+			// note: ここを有効にすると別ページに切り替えた際にきちんとセーフティが働くが、代わりにまれに誤検知して撮影できなくなる時がある
+			// 無効にするとセーフティは働かなくなるが誤検知がなくなる
+			// セーフティを切ってでも誤検知しなくしたほうがいいので無効化
+
+			//IsKanColleLoaded = false;
 
 		}
 
@@ -598,78 +602,74 @@ namespace Browser {
 			NativeMethods.InternetSetOption( IntPtr.Zero, INTERNET_OPTION_PROXY, proxyInfoPtr, proxyInfoSize );
 		}
 
+        private void ClearTemporaryInternetFiles()
+        {
+            System.Diagnostics.Process.Start("rundll32.exe", "InetCpl.cpl,ClearMyTracksByProcess 8").WaitForExit();
+        }
+
 		/// <summary>
 		/// キャッシュを削除します。
 		/// </summary>
 		private void ClearCache() {
 
-			const int CACHEGROUP_SEARCH_ALL = 0x0;
-			const int ERROR_NO_MORE_ITEMS = 259;
-			const uint CACHEENTRYTYPE_COOKIE = 1048577;
-			const uint CACHEENTRYTYPE_HISTORY = 2097153;
+            // No more items have been found.
+            const int ERROR_NO_MORE_ITEMS = 259;
+            // Local variables
+            int cacheEntryInfoBufferSizeInitial = 0;
+            int cacheEntryInfoBufferSize = 0;
+            IntPtr cacheEntryInfoBuffer = IntPtr.Zero;
+            INTERNET_CACHE_ENTRY_INFOA internetCacheEntry;
+            IntPtr enumHandle = IntPtr.Zero;
+            bool returnValue = false;
 
-			long groupId = 0;
+            /*/ Delete the groups first.
+            // Groups may not always exist on the system.
+            // For more information, visit the following Microsoft Web site:
+            // http://msdn.microsoft.com/library/?url=/workshop/networking/wininet/overview/cache.asp        
+            // By default, a URL does not belong to any group. Therefore, that cache may become
+            // empty even when the CacheGroup APIs are not used because the existing URL does not belong to any group.         
+            enumHandle = FindFirstUrlCacheGroup( 0, CACHEGROUP_SEARCH_ALL, IntPtr.Zero, 0, ref groupId, IntPtr.Zero );
+            // If there are no items in the Cache, you are finished.
+            if ( enumHandle != IntPtr.Zero && ERROR_NO_MORE_ITEMS == Marshal.GetLastWin32Error() )
+                return;
+            // Loop through Cache Group, and then delete entries.
+            while ( true ) {
+                // Delete a particular Cache Group.
+                returnValue = DeleteUrlCacheGroup( groupId, CACHEGROUP_FLAG_FLUSHURL_ONDELETE, IntPtr.Zero );
+                if ( !returnValue && ERROR_FILE_NOT_FOUND == Marshal.GetLastWin32Error() ) {
+                    returnValue = FindNextUrlCacheGroup( enumHandle, ref groupId, IntPtr.Zero );
+                }
+                if ( !returnValue && ( ERROR_NO_MORE_ITEMS == Marshal.GetLastWin32Error() || ERROR_FILE_NOT_FOUND == Marshal.GetLastWin32Error() ) )
+                    break;
+            }
+            //*/
 
-			int cacheEntryInfoBufferSizeInitial = 0;
-			int cacheEntryInfoBufferSize = 0;
-			IntPtr cacheEntryInfoBuffer = IntPtr.Zero;
-			IntPtr enumHandle = IntPtr.Zero;
+            // Start to delete URLs that do not belong to any group.
+            enumHandle = FindFirstUrlCacheEntry( null, IntPtr.Zero, ref cacheEntryInfoBufferSizeInitial );
+            if ( enumHandle == IntPtr.Zero && ERROR_NO_MORE_ITEMS == Marshal.GetLastWin32Error() )
+                return;
+            cacheEntryInfoBufferSize = cacheEntryInfoBufferSizeInitial;
+            cacheEntryInfoBuffer = Marshal.AllocHGlobal( cacheEntryInfoBufferSize );
+            enumHandle = FindFirstUrlCacheEntry( null, cacheEntryInfoBuffer, ref cacheEntryInfoBufferSizeInitial );
+            while ( true ) {
+                internetCacheEntry = (INTERNET_CACHE_ENTRY_INFOA)Marshal.PtrToStructure( cacheEntryInfoBuffer, typeof( INTERNET_CACHE_ENTRY_INFOA ) );
+                cacheEntryInfoBufferSizeInitial = cacheEntryInfoBufferSize;
+                returnValue = DeleteUrlCacheEntry( internetCacheEntry.lpszLocalFileName );
+                if ( !returnValue ) {
+                    returnValue = FindNextUrlCacheEntry( enumHandle, cacheEntryInfoBuffer, ref cacheEntryInfoBufferSizeInitial );
+                }
+                if ( !returnValue && ERROR_NO_MORE_ITEMS == Marshal.GetLastWin32Error() ) {
+                    break;
+                }
+                if ( !returnValue && cacheEntryInfoBufferSizeInitial > cacheEntryInfoBufferSize ) {
+                    cacheEntryInfoBufferSize = cacheEntryInfoBufferSizeInitial;
+                    cacheEntryInfoBuffer = Marshal.ReAllocHGlobal( cacheEntryInfoBuffer, (IntPtr)cacheEntryInfoBufferSize );
+                    returnValue = FindNextUrlCacheEntry( enumHandle, cacheEntryInfoBuffer, ref cacheEntryInfoBufferSizeInitial );
+                }
+            }
+            Marshal.FreeHGlobal( cacheEntryInfoBuffer );
 
-
-			enumHandle = FindFirstUrlCacheGroup( 0, CACHEGROUP_SEARCH_ALL, IntPtr.Zero, 0, ref groupId, IntPtr.Zero );
-
-			if ( enumHandle != IntPtr.Zero && ERROR_NO_MORE_ITEMS == Marshal.GetLastWin32Error() )
-				return;
-
-			/*/
-			while ( true ) {
-				bool returnValue = DeleteUrlCacheGroup( groupId, CACHEGROUP_FLAG_FLUSHURL_ONDELETE, IntPtr.Zero );
-				if ( !returnValue && ERROR_FILE_NOT_FOUND == Marshal.GetLastWin32Error() ) {
-					returnValue = FindNextUrlCacheGroup( enumHandle, ref groupId, IntPtr.Zero );
-				}
-
-				if ( !returnValue && ( ERROR_NO_MORE_ITEMS == Marshal.GetLastWin32Error() || ERROR_FILE_NOT_FOUND == Marshal.GetLastWin32Error() ) )
-					break;
-			}
-			//*/
-
-			enumHandle = FindFirstUrlCacheEntry( null, IntPtr.Zero, ref cacheEntryInfoBufferSizeInitial );
-			if ( enumHandle != IntPtr.Zero && ERROR_NO_MORE_ITEMS == Marshal.GetLastWin32Error() )
-				return;
-
-			cacheEntryInfoBufferSize = cacheEntryInfoBufferSizeInitial;
-			cacheEntryInfoBuffer = Marshal.AllocHGlobal( cacheEntryInfoBufferSize );
-			enumHandle = FindFirstUrlCacheEntry( null, cacheEntryInfoBuffer, ref cacheEntryInfoBufferSizeInitial );
-
-			while ( true ) {
-				var internetCacheEntry = (INTERNET_CACHE_ENTRY_INFOA)Marshal.PtrToStructure( cacheEntryInfoBuffer, typeof( INTERNET_CACHE_ENTRY_INFOA ) );
-
-				cacheEntryInfoBufferSizeInitial = cacheEntryInfoBufferSize;
-
-
-				var type = internetCacheEntry.CacheEntryType;
-				bool returnValue = false;
-
-				if ( type != CACHEENTRYTYPE_COOKIE && type != CACHEENTRYTYPE_HISTORY )
-					returnValue = DeleteUrlCacheEntry( internetCacheEntry.lpszSourceUrlName );
-
-				if ( !returnValue ) {
-					returnValue = FindNextUrlCacheEntry( enumHandle, cacheEntryInfoBuffer, ref cacheEntryInfoBufferSizeInitial );
-				}
-				if ( !returnValue && ERROR_NO_MORE_ITEMS == Marshal.GetLastWin32Error() ) {
-					break;
-				}
-				if ( !returnValue && cacheEntryInfoBufferSizeInitial > cacheEntryInfoBufferSize ) {
-					cacheEntryInfoBufferSize = cacheEntryInfoBufferSizeInitial;
-					cacheEntryInfoBuffer = Marshal.ReAllocHGlobal( cacheEntryInfoBuffer, (IntPtr)cacheEntryInfoBufferSize );
-					returnValue = FindNextUrlCacheEntry( enumHandle, cacheEntryInfoBuffer, ref cacheEntryInfoBufferSizeInitial );
-				}
-			}
-
-
-			Marshal.FreeHGlobal( cacheEntryInfoBuffer );
-
-		}
+        }
 
 
 		public void SetIconResource( byte[] canvas ) {
@@ -748,6 +748,10 @@ namespace Browser {
 				control.Value = (decimal)volume;
 				control.Tag = true;
 			}
+
+			Configuration.Volume = volume;
+			Configuration.IsMute = mute;
+			ConfigurationUpdated();
 		}
 
 
@@ -907,27 +911,30 @@ namespace Browser {
 		}
 
 
-		private async void ToolMenu_Other_ClearCache_Click( object sender, EventArgs e ) {
+		private void ToolMenu_Other_ClearCache_Click( object sender, EventArgs e ) {
 
-			if ( MessageBox.Show( "ブラウザのキャッシュを削除します。\nよろしいですか？", "キャッシュの削除", MessageBoxButtons.OKCancel, MessageBoxIcon.Question )
-				== System.Windows.Forms.DialogResult.OK ) {
+            if (MessageBox.Show("这将会删除浏览器缓存的临时文件,可能需要花费一些时间\n确认要这么做？", "删除缓存", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
+                == System.Windows.Forms.DialogResult.OK)
+            {
 
-				try {
+                //try {
 
-					await Task.Factory.StartNew( (Action)( () => ClearCache() ) );
-					MessageBox.Show( "キャッシュの削除が完了しました。", "削除完了", MessageBoxButtons.OK, MessageBoxIcon.Information );
+                //    await Task.Factory.StartNew( (Action)( () => ClearCache() ) );
+                //    MessageBox.Show( "キャッシュの削除が完了しました。", "削除完了", MessageBoxButtons.OK, MessageBoxIcon.Information );
 
-				} catch ( Exception ex ) {
-					BrowserHost.Proxy.SendErrorReport( ex.Message, "清除缓存时出错。" );
-				}
+                //} catch ( Exception ex ) {
+                //    BrowserHost.Proxy.SendErrorReport( ex.Message, "清除缓存时出错。" );
+                //}
 
-			}
+                ClearTemporaryInternetFiles();
+                MessageBox.Show("浏览器缓存已经清空。", "删除缓存成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
 		}
 
 
 
 
-		private void SizeAdjuster_Click( object sender, EventArgs e ) {
+		private void SizeAdjuster_DoubleClick( object sender, EventArgs e ) {
 			ToolMenu.Visible =
 			Configuration.IsToolMenuVisible = true;
 			ConfigurationUpdated();
@@ -979,6 +986,16 @@ namespace Browser {
 					}
 				}
 			}
+
+            if (e.KeyData == Keys.F8)
+            {
+                if (Configuration.IsToolMenuVisible)
+                    ToolMenu_Other_Alignment_Invisible_Click(ToolMenu_Other_Alignment_Invisible, null);
+                else
+                    ContextMenuTool_ShowToolMenu_Click(ContextMenuTool_ShowToolMenu, null);
+                e.Handled = true;
+            }
+
 
 			/*// 有効にするとショートカットが完全に無効化できる代わりに提督コメント・艦隊名が入力不能に
 			if ( IsKanColleLoaded )
@@ -1044,105 +1061,105 @@ namespace Browser {
 		private const int WM_ERASEBKGND = 0x14;
 
 
-		//以下キャッシュ削除用呪文
-		[StructLayout( LayoutKind.Explicit, Size = 80 )]
-		public struct INTERNET_CACHE_ENTRY_INFOA {
-			[FieldOffset( 0 )]
-			public uint dwStructSize;
-			[FieldOffset( 4 )]
-			public IntPtr lpszSourceUrlName;
-			[FieldOffset( 8 )]
-			public IntPtr lpszLocalFileName;
-			[FieldOffset( 12 )]
-			public uint CacheEntryType;
-			[FieldOffset( 16 )]
-			public uint dwUseCount;
-			[FieldOffset( 20 )]
-			public uint dwHitRate;
-			[FieldOffset( 24 )]
-			public uint dwSizeLow;
-			[FieldOffset( 28 )]
-			public uint dwSizeHigh;
-			[FieldOffset( 32 )]
-			public System.Runtime.InteropServices.ComTypes.FILETIME LastModifiedTime;
-			[FieldOffset( 40 )]
-			public System.Runtime.InteropServices.ComTypes.FILETIME ExpireTime;
-			[FieldOffset( 48 )]
-			public System.Runtime.InteropServices.ComTypes.FILETIME LastAccessTime;
-			[FieldOffset( 56 )]
-			public System.Runtime.InteropServices.ComTypes.FILETIME LastSyncTime;
-			[FieldOffset( 64 )]
-			public IntPtr lpHeaderInfo;
-			[FieldOffset( 68 )]
-			public uint dwHeaderInfoSize;
-			[FieldOffset( 72 )]
-			public IntPtr lpszFileExtension;
-			[FieldOffset( 76 )]
-			public uint dwReserved;
-			[FieldOffset( 76 )]
-			public uint dwExemptDelta;
-		}
-
-		[DllImport( @"wininet",
-			SetLastError = true,
-			CharSet = CharSet.Auto,
-			EntryPoint = "FindFirstUrlCacheGroup",
-			CallingConvention = CallingConvention.StdCall )]
-		public static extern IntPtr FindFirstUrlCacheGroup(
-			int dwFlags,
-			int dwFilter,
-			IntPtr lpSearchCondition,
-			int dwSearchCondition,
-			ref long lpGroupId,
-			IntPtr lpReserved );
-
-		[DllImport( @"wininet",
-			SetLastError = true,
-			CharSet = CharSet.Auto,
-			EntryPoint = "FindNextUrlCacheGroup",
-			CallingConvention = CallingConvention.StdCall )]
-		public static extern bool FindNextUrlCacheGroup(
-			IntPtr hFind,
-			ref long lpGroupId,
-			IntPtr lpReserved );
-
-		[DllImport( @"wininet",
-			SetLastError = true,
-			CharSet = CharSet.Auto,
-			EntryPoint = "DeleteUrlCacheGroup",
-			CallingConvention = CallingConvention.StdCall )]
-		public static extern bool DeleteUrlCacheGroup(
-			long GroupId,
-			int dwFlags,
-			IntPtr lpReserved );
-
-		[DllImport( @"wininet",
-			SetLastError = true,
-			CharSet = CharSet.Auto,
-			EntryPoint = "FindFirstUrlCacheEntryA",
-			CallingConvention = CallingConvention.StdCall )]
-		public static extern IntPtr FindFirstUrlCacheEntry(
-			[MarshalAs( UnmanagedType.LPTStr )] string lpszUrlSearchPattern,
-			IntPtr lpFirstCacheEntryInfo,
-			ref int lpdwFirstCacheEntryInfoBufferSize );
-
-		[DllImport( @"wininet",
-			SetLastError = true,
-			CharSet = CharSet.Auto,
-			EntryPoint = "FindNextUrlCacheEntryA",
-			CallingConvention = CallingConvention.StdCall )]
-		public static extern bool FindNextUrlCacheEntry(
-			IntPtr hFind,
-			IntPtr lpNextCacheEntryInfo,
-			ref int lpdwNextCacheEntryInfoBufferSize );
-
-		[DllImport( @"wininet",
-			SetLastError = true,
-			CharSet = CharSet.Auto,
-			EntryPoint = "DeleteUrlCacheEntryA",
-			CallingConvention = CallingConvention.StdCall )]
-		public static extern bool DeleteUrlCacheEntry(
-			IntPtr lpszUrlName );
+        //以下キャッシュ削除用呪文
+        [StructLayout( LayoutKind.Explicit, Size = 80, CharSet = CharSet.Auto )]
+        protected struct INTERNET_CACHE_ENTRY_INFOA {
+            [FieldOffset( 0 )]
+            public uint dwStructSize;
+            [FieldOffset( 4 )]
+            public IntPtr lpszSourceUrlName;
+            [FieldOffset( 8 )]
+            public IntPtr lpszLocalFileName;
+            [FieldOffset( 12 )]
+            public uint CacheEntryType;
+            [FieldOffset( 16 )]
+            public uint dwUseCount;
+            [FieldOffset( 20 )]
+            public uint dwHitRate;
+            [FieldOffset( 24 )]
+            public uint dwSizeLow;
+            [FieldOffset( 28 )]
+            public uint dwSizeHigh;
+            [FieldOffset( 32 )]
+            public System.Runtime.InteropServices.ComTypes.FILETIME LastModifiedTime;
+            [FieldOffset( 40 )]
+            public System.Runtime.InteropServices.ComTypes.FILETIME ExpireTime;
+            [FieldOffset( 48 )]
+            public System.Runtime.InteropServices.ComTypes.FILETIME LastAccessTime;
+            [FieldOffset( 56 )]
+            public System.Runtime.InteropServices.ComTypes.FILETIME LastSyncTime;
+            [FieldOffset( 64 )]
+            public IntPtr lpHeaderInfo;
+            [FieldOffset( 68 )]
+            public uint dwHeaderInfoSize;
+            [FieldOffset( 72 )]
+            public IntPtr lpszFileExtension;
+            [FieldOffset( 76 )]
+            public uint dwReserved;
+            [FieldOffset( 76 )]
+            public uint dwExemptDelta;
+        }
+        // For PInvoke: Initiates the enumeration of the cache groups in the Internet cache
+        [DllImport( @"wininet",
+            SetLastError = true,
+            CharSet = CharSet.Auto,
+            EntryPoint = "FindFirstUrlCacheGroup",
+            CallingConvention = CallingConvention.StdCall )]
+        protected static extern IntPtr FindFirstUrlCacheGroup(
+            int dwFlags,
+            int dwFilter,
+            IntPtr lpSearchCondition,
+            int dwSearchCondition,
+            ref long lpGroupId,
+            IntPtr lpReserved );
+        // For PInvoke: Retrieves the next cache group in a cache group enumeration
+        [DllImport( @"wininet",
+            SetLastError = true,
+            CharSet = CharSet.Auto,
+            EntryPoint = "FindNextUrlCacheGroup",
+            CallingConvention = CallingConvention.StdCall )]
+        protected static extern bool FindNextUrlCacheGroup(
+            IntPtr hFind,
+            ref long lpGroupId,
+            IntPtr lpReserved );
+        // For PInvoke: Releases the specified GROUPID and any associated state in the cache index file
+        [DllImport( @"wininet",
+            SetLastError = true,
+            CharSet = CharSet.Auto,
+            EntryPoint = "DeleteUrlCacheGroup",
+            CallingConvention = CallingConvention.StdCall )]
+        protected static extern bool DeleteUrlCacheGroup(
+            long GroupId,
+            int dwFlags,
+            IntPtr lpReserved );
+        // For PInvoke: Begins the enumeration of the Internet cache
+        [DllImport( @"wininet",
+            SetLastError = true,
+            CharSet = CharSet.Auto,
+            EntryPoint = "FindFirstUrlCacheEntryA",
+            CallingConvention = CallingConvention.StdCall )]
+        protected static extern IntPtr FindFirstUrlCacheEntry(
+            [MarshalAs( UnmanagedType.LPTStr )] string lpszUrlSearchPattern,
+            IntPtr lpFirstCacheEntryInfo,
+            ref int lpdwFirstCacheEntryInfoBufferSize );
+        // For PInvoke: Retrieves the next entry in the Internet cache
+        [DllImport( @"wininet",
+            SetLastError = true,
+            CharSet = CharSet.Auto,
+            EntryPoint = "FindNextUrlCacheEntryA",
+            CallingConvention = CallingConvention.StdCall )]
+        protected static extern bool FindNextUrlCacheEntry(
+            IntPtr hFind,
+            IntPtr lpNextCacheEntryInfo,
+            ref int lpdwNextCacheEntryInfoBufferSize );
+        // For PInvoke: Removes the file that is associated with the source name from the cache, if the file exists
+        [DllImport( @"wininet",
+            SetLastError = true,
+            CharSet = CharSet.Auto,
+            EntryPoint = "DeleteUrlCacheEntryA",
+            CallingConvention = CallingConvention.StdCall )]
+        protected static extern bool DeleteUrlCacheEntry(
+            IntPtr lpszUrlName );
 
 		#endregion
 
