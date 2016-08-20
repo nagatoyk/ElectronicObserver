@@ -96,8 +96,7 @@ namespace LocalCacher {
 
                 if ( oSession.responseCode == 304 ) {
 
-                    string tkey = oSession.id.ToString()+oSession.fullUrl;
-                    string filepath = TaskRecord.GetAndRemove( tkey );
+                    string filepath = TaskRecord.GetAndRemove( oSession.id );
                     //只有TaskRecord中有记录的文件才是验证的文件，才需要修改Header
                     if ( !string.IsNullOrEmpty( filepath ) ) {
 
@@ -134,8 +133,7 @@ namespace LocalCacher {
 
 			if ( Configuration.Config.CacheSettings.CacheEnabled && oSession.responseCode == 200 ) {
 
-                string tkey = oSession.id.ToString()+oSession.fullUrl;
-                string filepath = TaskRecord.GetAndRemove( tkey );
+                string filepath = TaskRecord.GetAndRemove( oSession.id );
 				if ( !string.IsNullOrEmpty( filepath ) ) {
 					if ( File.Exists( filepath ) )
                     {

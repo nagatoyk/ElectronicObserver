@@ -232,7 +232,7 @@ namespace ElectronicObserver.Observer.Cache {
 						// CheckFiles = 3,　check all kinds of resource files (.swf .png .mp3)
 						if ( Configuration.Config.CacheSettings.CheckFiles == 3 && ( filepath.EndsWith( ".swf" ) || filepath.EndsWith( ".png" ) || filepath.EndsWith( ".mp3" ))) {
 							result = filepath;
-							_RecordTask( id, url, filepath );
+							_RecordTask( id, filepath );
 							return Direction.Verify_LocalFile;
 						// CheckFiles = 4, check only .swf and .png files (return .mp3 directly from cache, to be compatible with voice subtitle plugin)
 						} else if ( Configuration.Config.CacheSettings.CheckFiles == 4 ) {
@@ -241,7 +241,7 @@ namespace ElectronicObserver.Observer.Cache {
 								return Direction.NoCache_LocalFile;
 							} else if ( filepath.EndsWith( ".swf" ) || filepath.EndsWith( ".png" )) {
 								result = filepath;
-								_RecordTask( id, url, filepath );
+								_RecordTask( id, filepath );
 								return Direction.Verify_LocalFile;
 							}} else
 						//只有swf文件需要验证时间
@@ -250,7 +250,7 @@ namespace ElectronicObserver.Observer.Cache {
 							//文件存在且需要验证时间
 							//-> 请求服务器验证修改时间（记录读取和保存的位置）
 							result = filepath;
-							_RecordTask( id, url, filepath );
+							_RecordTask( id, filepath );
 							return Direction.Verify_LocalFile;
 						}
 
@@ -265,7 +265,7 @@ namespace ElectronicObserver.Observer.Cache {
 
 					//缓存文件不存在
 					//-> 下载文件 （记录保存地址）
-					_RecordTask( id, url, filepath );
+					_RecordTask( id, filepath );
 					return Direction.Discharge_Response;
 				}
 			}
@@ -333,9 +333,8 @@ namespace ElectronicObserver.Observer.Cache {
 
 		}
 
-		void _RecordTask( int id, string url, string filepath ) {
-			string tkey = id.ToString()+url;
-			TaskRecord.Add( tkey, filepath );
+		void _RecordTask( int id, string filepath ) {
+			TaskRecord.Add( id, filepath );
 		}
 	}
 }
