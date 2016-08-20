@@ -37,7 +37,7 @@ namespace LocalCacher {
 
                 // = KanColleCacher =
                 string filepath;
-                var direction = Cache.GotNewRequest( oSession.fullUrl, out filepath );
+                var direction = Cache.GotNewRequest( oSession.id, oSession.fullUrl, out filepath );
 
                 if ( direction == Direction.Return_LocalFile
                     || direction == Direction.NoCache_LocalFile ) {
@@ -96,7 +96,8 @@ namespace LocalCacher {
 
                 if ( oSession.responseCode == 304 ) {
 
-                    string filepath = TaskRecord.GetAndRemove( oSession.fullUrl );
+                    string tkey = oSession.id.ToString()+oSession.fullUrl;
+                    string filepath = TaskRecord.GetAndRemove( tkey );
                     //只有TaskRecord中有记录的文件才是验证的文件，才需要修改Header
                     if ( !string.IsNullOrEmpty( filepath ) ) {
 
@@ -133,13 +134,18 @@ namespace LocalCacher {
 
 			if ( Configuration.Config.CacheSettings.CacheEnabled && oSession.responseCode == 200 ) {
 
-				string filepath = TaskRecord.GetAndRemove( oSession.fullUrl );
+                string tkey = oSession.id.ToString()+oSession.fullUrl;
+                string filepath = TaskRecord.GetAndRemove( tkey );
 				if ( !string.IsNullOrEmpty( filepath ) ) {
 					if ( File.Exists( filepath ) )
-						File.Delete( filepath );
+                    {
+                        string filetime = _GetModifiedTime( filepath );
+                        if (!(filetime == oSession.oResponse.headers["Last-Modified"]))
+                            File.Delete( filepath );
+                    }
 
 					//保存下载文件并记录Modified-Time
-					try {
+					if ( !File.Exists( filepath ) ) try {
 
 						if ( Configuration.Config.Log.ShowCacheLog ) {
 
