@@ -101,15 +101,18 @@ namespace LocalCacher {
                     if ( !string.IsNullOrEmpty( filepath ) ) {
 
                         //服务器返回304，文件没有修改 -> 返回本地文件
-                        oSession.ResponseBody = File.ReadAllBytes( filepath );
                         oSession.oResponse.headers.HTTPResponseCode = 200;
                         oSession.oResponse.headers.HTTPResponseStatus = "200 OK";
-                        oSession.oResponse.headers["Last-Modified"] = oSession.oRequest.headers["If-Modified-Since"];
-                        oSession.oResponse.headers["Accept-Ranges"] = "bytes";
-                        oSession.oResponse.headers.Remove( "If-Modified-Since" );
-                        oSession.oRequest.headers.Remove( "If-Modified-Since" );
+                        oSession.ResponseBody = File.ReadAllBytes( filepath );
+                        // oSession.ResponseBody will automatically correct Content-Length
                         if ( filepath.EndsWith( ".swf" ) )
-                            oSession.oResponse.headers["Content-Type"] = "application/x-shockwave-flash";
+                          oSession.oResponse.headers.Add("Content-Type", "application/x-shockwave-flash");
+                        else if ( filepath.EndsWith( ".mp3" ) )
+                          oSession.oResponse.headers.Add("Content-Type", "audio/mpeg");
+                        else if ( filepath.EndsWith( ".png" ) )
+                          oSession.oResponse.headers.Add("Content-Type", "image/png");
+                        oSession.oResponse.headers.Add("Accept-Ranges", "bytes");
+                        oSession.oResponse["Connection"] = "close";
                     }
 
                     return true;
