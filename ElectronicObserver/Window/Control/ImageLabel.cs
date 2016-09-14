@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Design;
+using ElectronicObserver.Resource;
 
 namespace ElectronicObserver.Window.Control {
 
@@ -96,12 +97,15 @@ namespace ElectronicObserver.Window.Control {
 
 		[DefaultValue( null )]
 		public new Image Image {
-			get { return base.Image; }
+			get { return this.ImageList[ImageIndex]; }
 			set {
 				base.Image = value;
 				AdjustSize();
 			}
 		}
+
+        [DefaultValue(null)]
+        public new ImageCollection ImageList { get; set; }
 
 		[DefaultValue( true )]
 		public new bool AutoSize {

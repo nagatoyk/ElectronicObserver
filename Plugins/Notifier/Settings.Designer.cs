@@ -94,7 +94,6 @@
 			this.Notification_Silencio.Size = new System.Drawing.Size(131, 19);
 			this.Notification_Silencio.TabIndex = 7;
 			this.Notification_Silencio.Text = "すべての通知をミュート";
-			this.ToolTipInfo.SetToolTip(this.Notification_Silencio, "すべての通知を非表示にし、通知音の発声も停止します。\r\n\r\n「シレンシオ！黙れ！」");
 			this.Notification_Silencio.UseVisualStyleBackColor = true;
 			// 
 			// Notification_AnchorageRepair
@@ -172,6 +171,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Size = new System.Drawing.Size( 400, 270 );
 			this.Controls.Add( tabControl1 );
+			this.Load += new System.EventHandler(this.Settings_Load);
 			this.tabControl1.ResumeLayout( false );
 			this.tabPage11.ResumeLayout( false );
 			this.tabPage11.PerformLayout();

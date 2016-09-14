@@ -2861,7 +2861,6 @@
 		private System.Windows.Forms.Label label25;
 		private System.Windows.Forms.ComboBox FormBrowser_ToolMenuDockStyle;
 		private System.Windows.Forms.Label label30;
-		private System.Windows.Forms.CheckBox FormQuest_ShowOther;
 		private System.Windows.Forms.TabPage SubWindow_Json;
 		private System.Windows.Forms.CheckBox FormJson_AutoUpdate;
 		private System.Windows.Forms.CheckBox FormJson_UpdatesTree;

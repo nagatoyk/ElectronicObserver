@@ -425,15 +425,6 @@ namespace ElectronicObserver.Window.Dialog {
 			FormJson_UpdatesTree.Checked = config.FormJson.UpdatesTree;
 			FormJson_AutoUpdateFilter.Text = config.FormJson.AutoUpdateFilter;
 
-			//[通知]
-			{
-				bool issilenced = NotifierManager.Instance.GetNotifiers().All( no => no.IsSilenced );
-				Notification_Silencio.Checked = issilenced;
-				setSilencioConfig( issilenced );
-			}
-
-			//[データベース]
-
 			//[BGM]
 			BGMPlayer_Enabled.Checked = config.BGMPlayer.Enabled;
 			BGMHandles = config.BGMPlayer.Handles.ToDictionary( h => h.HandleID );
@@ -618,11 +609,6 @@ namespace ElectronicObserver.Window.Dialog {
 			config.FormJson.UpdatesTree = FormJson_UpdatesTree.Checked;
 			config.FormJson.AutoUpdateFilter = FormJson_AutoUpdateFilter.Text;
 
-			//[通知]
-			setSilencioConfig( Notification_Silencio.Checked );
-
-			//[データベース]
-
 			//[BGM]
 			config.BGMPlayer.Enabled = BGMPlayer_Enabled.Checked;
 			for ( int i = 0; i < BGMPlayer_ControlGrid.Rows.Count; i++ ) {
@@ -763,13 +749,6 @@ namespace ElectronicObserver.Window.Dialog {
 				UpdateBGMPlayerUI();
 			}
 
-		}
-
-
-		private void setSilencioConfig( bool silenced ) {
-			foreach ( NotifierBase no in NotifierManager.Instance.GetNotifiers() ) {
-				no.IsSilenced = silenced;
-			}
 		}
 
 

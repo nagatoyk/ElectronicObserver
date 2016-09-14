@@ -1361,6 +1361,20 @@ namespace ElectronicObserver.Window
 
         #region フォーム表示
 
+        /// <summary>
+        /// 子フォームを表示します。既に表示されている場合はフォームをある点に移動します。（失踪対策）
+        /// </summary>
+        /// <param name="form"></param>
+        private void ShowForm(DockContent form)
+        {
+            if (form.IsFloat && form.Visible)
+            {
+                form.FloatPane.FloatWindow.Location = new Point(128, 128);
+            }
+
+            form.Show(MainDockPanel);
+        }
+
         private void StripMenu_View_Fleet_1_Click(object sender, EventArgs e)
         {
             fFleet[0].Show(MainDockPanel);

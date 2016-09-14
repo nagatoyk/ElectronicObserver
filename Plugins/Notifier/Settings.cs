@@ -74,11 +74,30 @@ namespace Notifier
             }
         }
 
+		private void Settings_Load( object sender, EventArgs e )
+		{
+			//[通知]
+			{
+				bool issilenced = NotifierManager.Instance.GetNotifiers().All( no => no.IsSilenced );
+				Notification_Silencio.Checked = issilenced;
+				setSilencioConfig( issilenced );
+			}
+		}
+
         public override bool Save()
 		{
-			NotifierManager.Instance.ApplyToConfiguration();
+
+			//[通知]
+			setSilencioConfig( Notification_Silencio.Checked );
 
 			return true;
+		}
+
+
+		private void setSilencioConfig( bool silenced ) {
+			foreach ( NotifierBase no in NotifierManager.Instance.GetNotifiers() ) {
+				no.IsSilenced = silenced;
+			}
 		}
 	}
 }

@@ -31,9 +31,13 @@
 			this.components = new System.ComponentModel.Container();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage9 = new System.Windows.Forms.TabPage();
+			this.FormArsenal_BlinkAtCompletion = new System.Windows.Forms.CheckBox();
 			this.FormArsenal_ShowShipName = new System.Windows.Forms.CheckBox();
+			this.tabPage19 = new System.Windows.Forms.TabPage();
+			this.FormDock_BlinkAtCompletion = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage9.SuspendLayout();
+			this.tabPage19.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -112,6 +116,8 @@
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage9.ResumeLayout( false );
 			this.tabPage9.PerformLayout();
+			this.tabPage19.ResumeLayout(false);
+			this.tabPage19.PerformLayout();
 			this.ResumeLayout( false );
 
 		}
@@ -120,5 +126,8 @@
 		private System.Windows.Forms.TabControl tabControl1;
 		private System.Windows.Forms.TabPage tabPage9;
 		private System.Windows.Forms.CheckBox FormArsenal_ShowShipName;
+		private System.Windows.Forms.CheckBox FormArsenal_BlinkAtCompletion;
+		private System.Windows.Forms.TabPage tabPage19;
+		private System.Windows.Forms.CheckBox FormDock_BlinkAtCompletion;
 	}
 }

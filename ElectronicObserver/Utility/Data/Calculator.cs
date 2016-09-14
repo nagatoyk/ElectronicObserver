@@ -9,10 +9,251 @@ using System.Threading.Tasks;
 
 namespace ElectronicObserver.Utility.Data {
 
-	/// <summary>
-	/// 汎用計算クラス
-	/// </summary>
-	public static class Calculator {
+    public static class CalculatorEx
+    {
+
+        /// <summary>
+        /// 阵形防空补正系数
+        /// </summary>
+        private static readonly double[] FormationAA = new double[]
+        {
+            45, 35,		// 单纵
+			41,			// 复纵
+			55,			// 轮型
+			35,			// 梯形
+			35,			// 单横
+			0, 0, 0, 0, 0,
+            35,			// 第一警戒航行序列
+			41,			// 第二警戒航行序列
+			55,			// 第三警戒航行序列
+			35			// 第四警戒航行序列
+		};
+
+        /// <summary>
+        /// 计算我方空母火力
+        /// </summary>
+        /// <param name="ship">舰船实体</param>
+        public static double CalculateFire(ShipData ship)
+        {
+            return Math.Floor((ship.FirepowerTotal + ship.TorpedoTotal + Math.Floor(ship.BombTotal * 1.3)) * 1.5 + 55);
+        }
+
+        /// <summary>
+        /// 计算我方加权对空
+        /// </summary>
+        /// <param name="ship"></param>
+        /// <returns></returns>
+        public static double CalculateWeightingAA(ShipData ship)
+        {
+            double aatotal = ship.AABase;
+            foreach (var eq in ship.AllSlotInstance)
+            {
+                if (eq == null)
+                    continue;
+
+                int ratio;
+                var eqmaster = eq.MasterEquipment;
+                switch (eqmaster.IconType)
+                {
+                    case 15:    // 对空机枪
+                        ratio = 6;
+                        break;
+
+                    case 16:    // 高角炮
+                    case 30:    // 高射装置
+                        ratio = 4;
+                        break;
+
+                    case 11:    // 电探
+                        ratio = (eqmaster.AA > 0) ? 3 : 0;
+                        break;
+
+                    default:
+                        ratio = 0;
+                        break;
+                }
+                if (ratio <= 0)
+                    continue;
+
+                aatotal += ratio * (eqmaster.AA + 0.7 * Math.Sqrt(eq.Level));
+            }
+            return aatotal;
+        }
+
+        /// <summary>
+        /// 获取我方舰队防空值
+        /// </summary>
+        /// <param name="fleet">舰队实体</param>
+        /// <param name="formation">阵形id</param>
+        public static double GetFleetAAValue(FleetData fleet, int formation)
+        {
+            if (formation < 0 || formation > 14)
+                return 0;
+
+            double aatotal = fleet.MembersWithoutEscaped.Sum(ship => ship == null ? 0.0 : GetShipAAValue(ship));
+            return Math.Floor(aatotal * FormationAA[formation] * 20 / 45) / 10;
+        }
+
+        /// <summary>
+        /// 计算敌方加权对空
+        /// </summary>
+        /// <param name="shipID">敌舰ID</param>
+        /// <param name="slot">装备ID</param>
+        /// <param name="aa">对空</param>
+        public static double CalculateWeightingAAEnemy(int shipID, int[] slot, int aa)
+        {
+            double aatotal = aa;
+            if (slot != null)
+            {
+                var slots = slot.Select(id => KCDatabase.Instance.MasterEquipments[id]);
+                foreach (var eqmaster in slots)
+                {
+                    if (eqmaster == null)
+                        continue;
+
+                    int ratio;
+                    switch (eqmaster.IconType)
+                    {
+                        case 15:    // 对空机枪
+                            ratio = 6;
+                            break;
+
+                        case 16:    // 高角炮
+                        case 30:    // 高射装置
+                            ratio = 4;
+                            break;
+
+                        case 11:    // 电探
+                            ratio = (eqmaster.AA > 0) ? 3 : 0;
+                            break;
+
+                        default:
+                            ratio = 0;
+                            break;
+                    }
+                    if (ratio <= 0)
+                        continue;
+
+                    aatotal += ratio * eqmaster.AA;
+                }
+            }
+            return aatotal / 2;
+        }
+
+        /// <summary>
+        /// 获取敌舰队防空值
+        /// </summary>
+        /// <param name="fleet">敌舰成员ID</param>
+        /// <param name="formation">敌舰阵形</param>
+        public static double GetEnemyFleetAAValue(int[] fleet, int formation)
+        {
+            if (formation < 0 || formation > 14)
+                return 0;
+
+            double aatotal = 0;
+            foreach (var ship in fleet.Select(id => KCDatabase.Instance.MasterShips[id]))
+            {
+                if (ship == null || ship.DefaultSlot == null)
+                    continue;
+
+                foreach (var eqmaster in ship.DefaultSlot.Select(eid => KCDatabase.Instance.MasterEquipments[eid]))
+                {
+                    if (eqmaster == null)
+                        continue;
+
+                    double ratio;
+                    switch (eqmaster.IconType)
+                    {
+                        case 1:     // 小口径主炮
+                        case 2:     // 中口径主炮
+                        case 3:     // 大口径主炮
+                        case 4:     // 副炮
+                        case 15:    // 对空机枪
+                            ratio = 0.2;
+                            break;
+
+                        case 16:    // 高角炮
+                        case 30:    // 高射装置
+                            ratio = 0.35;
+                            break;
+
+                        case 11:    // 电探
+                            ratio = (eqmaster.AA > 0) ? 0.4 : 0;
+                            break;
+
+                        case 12:    // 対空強化弾
+                            ratio = 0.6;
+                            break;
+
+                        default:
+                            ratio = 0;
+                            break;
+                    }
+                    if (ratio <= 0)
+                        continue;
+
+                    aatotal += ratio * eqmaster.AA;
+                }
+
+            }
+            return Math.Floor(aatotal * FormationAA[formation] * 10 / 45) / 10;
+        }
+
+        /// <summary>
+        /// 获取我方舰娘防空值
+        /// </summary>
+        /// <param name="ship">舰娘实体</param>
+        public static double GetShipAAValue(ShipData ship)
+        {
+            double aavalue = 0;
+            foreach (var eq in ship.AllSlotInstance)
+            {
+                if (eq == null)
+                    continue;
+
+                double ratio;
+                var eqmaster = eq.MasterEquipment;
+                switch (eqmaster.IconType)
+                {
+                    case 1:     // 小口径主炮
+                    case 2:     // 中口径主炮
+                    case 3:     // 大口径主炮
+                    case 4:     // 副炮
+                    case 15:    // 对空机枪
+                        ratio = 0.2;
+                        break;
+
+                    case 16:    // 高角炮
+                    case 30:    // 高射装置
+                        ratio = 0.35;
+                        break;
+
+                    case 11:    // 电探
+                        ratio = (eqmaster.AA > 0) ? 0.4 : 0;
+                        break;
+
+                    case 12:    // 対空強化弾
+                        ratio = 0.6;
+                        break;
+
+                    default:
+                        ratio = 0;
+                        break;
+                }
+                if (ratio <= 0)
+                    continue;
+
+                aavalue += ratio * eqmaster.AA;
+            }
+            return aavalue;
+        }
+
+    }
+
+    /// <summary>
+    /// 汎用計算クラス
+    /// </summary>
+    public static class Calculator {
 
 		/// <summary>
 		/// レベルに依存するパラメータ値を求めます。
@@ -30,7 +271,7 @@ namespace ElectronicObserver.Utility.Data {
 		/// <summary>
 		/// 各装備カテゴリにおける制空値の熟練度ボーナス
 		/// </summary>
-		private static readonly Dictionary<int, int[]> AircraftLevelBonus = new Dictionary<int, int[]>() {
+		public static readonly Dictionary<int, int[]> AircraftLevelBonus = new Dictionary<int, int[]>() {
 			{ 6, new int[] { 0, 0, 2, 5, 9, 14, 14, 22, 22 } },		//艦上戦闘機
 			{ 7, new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 } },			//艦上爆撃機
 			{ 8, new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 } },			//艦上攻撃機

@@ -49,7 +49,7 @@ namespace ElectronicObserver.Window {
 					lbl.ImageIndex = (int)ResourceManager.IconContent.ConditionNormal;
 					lbl.ImageAlign = ContentAlignment.MiddleLeft;
 					lbl.AutoSize = false;
-					lbl.ShowText = !Utility.Configuration.Config.FormBattle.IsShortDamage;
+					//lbl.ShowText = !Utility.Configuration.Config.FormBattle.IsShortDamage;
 					lbl.Size = new Size( 56, 20 );
 					lbl.Margin = new Padding( 2, 0, 2, 0 );
 					lbl.Anchor = AnchorStyles.Left | AnchorStyles.Right;
@@ -1109,7 +1109,7 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 			if ( pd.IsStage1Available ) {
 
 				AirSuperiority.Text = Constants.GetAirSuperiority( pd.AirSuperiority );
-				ToolTipInfo.SetToolTip( AirSuperiority, string.Format( "航空伤害: {0}", pd.TotalDamage ) );
+				//ToolTipInfo.SetToolTip( AirSuperiority, string.Format( "航空伤害: {0}", pd.TotalDamage ) );
 
 				int[] planeFriend = { pd.AircraftLostStage1Friend, pd.AircraftTotalStage1Friend };
 				AirStage1Friend.Text = string.Format( "-{0}/{1}", planeFriend[0], planeFriend[1] );
@@ -1246,11 +1246,13 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 
 				AirSuperiority.Text = Constants.GetAirSuperiority( pd1.AirSuperiority );
 				if ( isBattle2Enabled ) {
-					ToolTipInfo.SetToolTip( AirSuperiority, string.Format( "第2次: {0}\r\n航空伤害: {1}",
-						Constants.GetAirSuperiority( pd2.AirSuperiority ),
-						pd1.TotalDamage + pd2.TotalDamage ) );
+					//ToolTipInfo.SetToolTip( AirSuperiority, string.Format( "第2次: {0}\r\n航空伤害: {1}",
+					//	Constants.GetAirSuperiority( pd2.AirSuperiority ),
+					//	pd1.TotalDamage + pd2.TotalDamage ) );
+					ToolTipInfo.SetToolTip( AirSuperiority, "第2次: " + Constants.GetAirSuperiority( pd2.AirSuperiority ) );
 				} else {
-					ToolTipInfo.SetToolTip( AirSuperiority, string.Format( "航空伤害: {0}", pd1.TotalDamage ) );
+					//ToolTipInfo.SetToolTip( AirSuperiority, string.Format( "航空伤害: {0}", pd1.TotalDamage ) );
+					ToolTipInfo.SetToolTip( AirSuperiority, null );
 				}
 
 
@@ -2313,10 +2315,10 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 				return;
 
 
-			for ( int i = 0; i < 12; i++ ) {
+			//for ( int i = 0; i < 12; i++ ) {
 
-				DamageLabels[i].ShowText = !shorten;
-			}
+			//	DamageLabels[i].ShowText = !shorten;
+			//}
 
 		}
 
