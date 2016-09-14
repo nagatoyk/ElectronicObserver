@@ -75,6 +75,14 @@
       <Link>Dialog\DialogBattleReport.designer.cs</Link>
       <DependentUpon>DialogBattleReport.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\..\ElectronicObserver\Window\FormBaseAirCorps.cs">
+      <Link>FormBaseAirCorps.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\..\ElectronicObserver\Window\FormBaseAirCorps.Designer.cs">
+      <Link>FormBaseAirCorps.Designer.cs</Link>
+      <DependentUpon>FormBaseAirCorps.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\..\ElectronicObserver\Window\FormBattle.cs">
       <Link>FormBattle.cs</Link>
       <SubType>Form</SubType>
@@ -104,6 +112,10 @@
     <EmbeddedResource Include="..\..\ElectronicObserver\Window\Dialog\DialogBattleReport.resx">
       <Link>Dialog\DialogBattleReport.resx</Link>
       <DependentUpon>DialogBattleReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\ElectronicObserver\Window\FormBaseAirCorps.resx">
+      <Link>FormBaseAirCorps.resx</Link>
+      <DependentUpon>FormBaseAirCorps.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\ElectronicObserver\Window\FormBattle.resx">
       <Link>FormBattle.resx</Link>

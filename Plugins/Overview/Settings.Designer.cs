@@ -39,6 +39,7 @@
 			// tabControl1
 			// 
 			this.tabControl1.Controls.Add(this.tabPage9);
+			this.tabControl1.Controls.Add(this.tabPage19);
 			this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tabControl1.Location = new System.Drawing.Point(0, 0);
 			this.tabControl1.Multiline = true;
@@ -49,24 +50,56 @@
 			// 
 			// tabPage9
 			// 
-			this.tabPage9.Controls.Add( this.FormArsenal_ShowShipName );
-			this.tabPage9.Location = new System.Drawing.Point( 4, 24 );
+			this.tabPage9.Controls.Add(this.FormArsenal_BlinkAtCompletion);
+			this.tabPage9.Controls.Add(this.FormArsenal_ShowShipName);
+			this.tabPage9.Location = new System.Drawing.Point(4, 22);
 			this.tabPage9.Name = "tabPage9";
-			this.tabPage9.Padding = new System.Windows.Forms.Padding( 3 );
-			this.tabPage9.Size = new System.Drawing.Size( 442, 199 );
+			this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage9.Size = new System.Drawing.Size(562, 260);
 			this.tabPage9.TabIndex = 1;
-			this.tabPage9.Text = "工厂";
+			this.tabPage9.Text = "工廠";
 			this.tabPage9.UseVisualStyleBackColor = true;
+			// 
+			// FormArsenal_BlinkAtCompletion
+			// 
+			this.FormArsenal_BlinkAtCompletion.AutoSize = true;
+			this.FormArsenal_BlinkAtCompletion.Location = new System.Drawing.Point(6, 31);
+			this.FormArsenal_BlinkAtCompletion.Name = "FormArsenal_BlinkAtCompletion";
+			this.FormArsenal_BlinkAtCompletion.Size = new System.Drawing.Size(122, 19);
+			this.FormArsenal_BlinkAtCompletion.TabIndex = 2;
+			this.FormArsenal_BlinkAtCompletion.Text = "完了時に点滅させる";
+			this.FormArsenal_BlinkAtCompletion.UseVisualStyleBackColor = true;
 			// 
 			// FormArsenal_ShowShipName
 			// 
 			this.FormArsenal_ShowShipName.AutoSize = true;
-			this.FormArsenal_ShowShipName.Location = new System.Drawing.Point( 6, 6 );
+			this.FormArsenal_ShowShipName.Location = new System.Drawing.Point(6, 6);
 			this.FormArsenal_ShowShipName.Name = "FormArsenal_ShowShipName";
-			this.FormArsenal_ShowShipName.Size = new System.Drawing.Size( 115, 27 );
+			this.FormArsenal_ShowShipName.Size = new System.Drawing.Size(102, 19);
 			this.FormArsenal_ShowShipName.TabIndex = 1;
-			this.FormArsenal_ShowShipName.Text = "显示舰名";
+			this.FormArsenal_ShowShipName.Text = "艦名を表示する";
 			this.FormArsenal_ShowShipName.UseVisualStyleBackColor = true;
+			// 
+			// tabPage19
+			// 
+			this.tabPage19.Controls.Add(this.FormDock_BlinkAtCompletion);
+			this.tabPage19.Location = new System.Drawing.Point(4, 22);
+			this.tabPage19.Name = "tabPage19";
+			this.tabPage19.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage19.Size = new System.Drawing.Size(562, 260);
+			this.tabPage19.TabIndex = 8;
+			this.tabPage19.Text = "入渠";
+			this.tabPage19.UseVisualStyleBackColor = true;
+			// 
+			// FormDock_BlinkAtCompletion
+			// 
+			this.FormDock_BlinkAtCompletion.AutoSize = true;
+			this.FormDock_BlinkAtCompletion.Location = new System.Drawing.Point(6, 6);
+			this.FormDock_BlinkAtCompletion.Name = "FormDock_BlinkAtCompletion";
+			this.FormDock_BlinkAtCompletion.Size = new System.Drawing.Size(122, 19);
+			this.FormDock_BlinkAtCompletion.TabIndex = 3;
+			this.FormDock_BlinkAtCompletion.Text = "完了時に点滅させる";
+			this.FormDock_BlinkAtCompletion.UseVisualStyleBackColor = true;
 			// 
 			// Settings
 			// 

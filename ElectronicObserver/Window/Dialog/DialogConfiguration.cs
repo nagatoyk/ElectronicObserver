@@ -18,12 +18,12 @@ using System.Windows.Forms;
 namespace ElectronicObserver.Window.Dialog {
 	public partial class DialogConfiguration : Form {
 
-		private static readonly string RegistryPathMaster = @"Software\Microsoft\Internet Explorer\Main\FeatureControl\";
-		private static readonly string RegistryPathBrowserVersion = @"FEATURE_BROWSER_EMULATION\";
-		private static readonly string RegistryPathGPURendering = @"FEATURE_GPU_RENDERING\";
+		public const string RegistryPathMaster = @"Software\Microsoft\Internet Explorer\Main\FeatureControl\";
+		public const string RegistryPathBrowserVersion = @"FEATURE_BROWSER_EMULATION\";
+		public const  string RegistryPathGPURendering = @"FEATURE_GPU_RENDERING\";
 
-		private static readonly int DefaultBrowserVersion = 7000;
-		private static readonly bool DefaultGPURendering = false;
+		public const int DefaultBrowserVersion = 11001;
+		public const bool DefaultGPURendering = false;
 
 
 		private System.Windows.Forms.Control _UIControl;
@@ -36,7 +36,6 @@ namespace ElectronicObserver.Window.Dialog {
 		public DialogConfiguration() {
 			this.SuspendLayoutForDpiScale();
 			InitializeComponent();
-
 			// 加载索敌式列表
 			FormFleet_SearchingAbilityMethod.Items.AddRange( Configuration.Config.FormFleet.SearchingAbilities.Split( ';' ) );
 
@@ -422,6 +421,17 @@ namespace ElectronicObserver.Window.Dialog {
 
 			FormCompass_CandidateDisplayCount.Value = config.FormCompass.CandidateDisplayCount;
 
+			FormJson_AutoUpdate.Checked = config.FormJson.AutoUpdate;
+			FormJson_UpdatesTree.Checked = config.FormJson.UpdatesTree;
+			FormJson_AutoUpdateFilter.Text = config.FormJson.AutoUpdateFilter;
+
+			//[通知]
+			{
+				bool issilenced = NotifierManager.Instance.GetNotifiers().All( no => no.IsSilenced );
+				Notification_Silencio.Checked = issilenced;
+				setSilencioConfig( issilenced );
+			}
+
 			//[データベース]
 
 			//[BGM]
@@ -604,6 +614,13 @@ namespace ElectronicObserver.Window.Dialog {
 
 			config.FormCompass.CandidateDisplayCount = (int)FormCompass_CandidateDisplayCount.Value;
 
+			config.FormJson.AutoUpdate = FormJson_AutoUpdate.Checked;
+			config.FormJson.UpdatesTree = FormJson_UpdatesTree.Checked;
+			config.FormJson.AutoUpdateFilter = FormJson_AutoUpdateFilter.Text;
+
+			//[通知]
+			setSilencioConfig( Notification_Silencio.Checked );
+
 			//[データベース]
 
 			//[BGM]
@@ -746,6 +763,13 @@ namespace ElectronicObserver.Window.Dialog {
 				UpdateBGMPlayerUI();
 			}
 
+		}
+
+
+		private void setSilencioConfig( bool silenced ) {
+			foreach ( NotifierBase no in NotifierManager.Instance.GetNotifiers() ) {
+				no.IsSilenced = silenced;
+			}
 		}
 
 

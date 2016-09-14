@@ -56,6 +56,8 @@ namespace ElectronicObserver.Window
 
         #endregion
 
+		public FormBaseAirCorps fBaseAirCorps;
+		public FormJson fJson;
 
         #region Forms
 
@@ -131,6 +133,8 @@ namespace ElectronicObserver.Window
             Menu.DropDownItems.Add("停止(&S)").Click += StopBGM_Click;
             Menu.DropDownItems.Add("-");
 
+			StripMenu_View_BaseAirCorps.Image = ResourceManager.Instance.Icons.Images[(int)ResourceManager.IconContent.FormBaseAirCorps];
+			StripMenu_View_Json.Image = ResourceManager.Instance.Icons.Images[(int)ResourceManager.IconContent.FormJson];
 
             foreach (var bgm in KCDatabase.Instance.BGM_List)
             {
@@ -197,7 +201,6 @@ namespace ElectronicObserver.Window
             Utility.Configuration.Instance.ConfigurationChanged += ConfigurationChanged;
 
             Utility.Logger.Add(2, SoftwareInformation.SoftwareNameJapanese + " 开始启动…");
-
 
             this.Text = SoftwareInformation.VersionJapanese + "（迷彩型）";
             SyncBGMPlayer.Instance.ConfigurationChanged();
@@ -268,6 +271,8 @@ namespace ElectronicObserver.Window
             SubForms.Add(fShipGroup = new FormShipGroup(this));
             SubForms.Add(fBrowser = new FormBrowserHost(this));
             SubForms.Add(fWindowCapture = new FormWindowCapture(this));
+			SubForms.Add( fBaseAirCorps = new FormBaseAirCorps( this ) );
+			SubForms.Add( fJson = new FormJson( this ) );
 
             PluginUpdateManager.ApplyUpdates();
 
@@ -765,6 +770,10 @@ namespace ElectronicObserver.Window
                     return fBrowser;
                 case "WindowCapture":
                     return fWindowCapture;
+				case "BaseAirCorps":
+					return fBaseAirCorps;
+				case "Json":
+					return fJson;
                 default:
                     if (persistString.StartsWith("ShipGroup"))
                     {
@@ -1386,6 +1395,14 @@ namespace ElectronicObserver.Window
         {
             fWindowCapture.Show(MainDockPanel);
         }
+
+		private void StripMenu_View_BaseAirCorps_Click( object sender, EventArgs e ) {
+			ShowForm( fBaseAirCorps );
+		}
+
+		private void StripMenu_View_Json_Click( object sender, EventArgs e ) {
+			ShowForm( fJson );
+		}
 
         #endregion
 

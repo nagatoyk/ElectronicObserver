@@ -31,11 +31,11 @@
 			this.components = new System.ComponentModel.Container();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage10 = new System.Windows.Forms.TabPage();
-			this.FormQuest_ShowOther = new System.Windows.Forms.CheckBox();
 			this.FormQuest_AllowUserToSortRows = new System.Windows.Forms.CheckBox();
 			this.FormQuest_ProgressAutoSaving = new System.Windows.Forms.ComboBox();
 			this.label27 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.FormQuest_ShowOther = new System.Windows.Forms.CheckBox();
 			this.FormQuest_ShowMonthly = new System.Windows.Forms.CheckBox();
 			this.FormQuest_ShowWeekly = new System.Windows.Forms.CheckBox();
 			this.FormQuest_ShowDaily = new System.Windows.Forms.CheckBox();
@@ -64,10 +64,10 @@
 			this.tabPage10.Controls.Add(this.label27);
 			this.tabPage10.Controls.Add(this.groupBox1);
 			this.tabPage10.Controls.Add(this.FormQuest_ShowRunningOnly);
-			this.tabPage10.Location = new System.Drawing.Point(4, 24);
+			this.tabPage10.Location = new System.Drawing.Point(4, 22);
 			this.tabPage10.Name = "tabPage10";
 			this.tabPage10.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage10.Size = new System.Drawing.Size(442, 199);
+			this.tabPage10.Size = new System.Drawing.Size(562, 260);
 			this.tabPage10.TabIndex = 2;
 			this.tabPage10.Text = "任務";
 			this.tabPage10.UseVisualStyleBackColor = true;
@@ -104,16 +104,6 @@
 			this.label27.TabIndex = 4;
 			this.label27.Text = "任務進捗の自動保存：";
 			// 
-			// FormQuest_ShowOther
-			// 
-			this.FormQuest_ShowOther.AutoSize = true;
-			this.FormQuest_ShowOther.Location = new System.Drawing.Point(6, 122);
-			this.FormQuest_ShowOther.Name = "FormQuest_ShowOther";
-			this.FormQuest_ShowOther.Size = new System.Drawing.Size(57, 19);
-			this.FormQuest_ShowOther.TabIndex = 5;
-			this.FormQuest_ShowOther.Text = "その他";
-			this.FormQuest_ShowOther.UseVisualStyleBackColor = true;
-			// 
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.FormQuest_ShowOther);
@@ -127,6 +117,16 @@
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "フィルタ";
+			// 
+			// FormQuest_ShowOther
+			// 
+			this.FormQuest_ShowOther.AutoSize = true;
+			this.FormQuest_ShowOther.Location = new System.Drawing.Point(6, 122);
+			this.FormQuest_ShowOther.Name = "FormQuest_ShowOther";
+			this.FormQuest_ShowOther.Size = new System.Drawing.Size(57, 19);
+			this.FormQuest_ShowOther.TabIndex = 5;
+			this.FormQuest_ShowOther.Text = "その他";
+			this.FormQuest_ShowOther.UseVisualStyleBackColor = true;
 			// 
 			// FormQuest_ShowMonthly
 			// 
