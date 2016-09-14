@@ -15,7 +15,7 @@ namespace ElectronicObserver.Window.Control {
 	/// <summary>
 	/// 画像付きの Label です。
 	/// </summary>
-	public partial class ImageLabel : Label {
+	public partial class ImageLabel : UserControl {
 
 		private Size _imageSize = new Size( 16, 16 );
 		[Browsable( true ), DefaultValue( typeof( Size ), "16, 16" ), Category( "Appearance" )]
@@ -58,56 +58,66 @@ namespace ElectronicObserver.Window.Control {
 			}
 		}
 
+        private bool _autoEllipsis = false;
 		[DefaultValue( false )]
-		public new bool AutoEllipsis {
-			get { return base.AutoEllipsis; }
+		public bool AutoEllipsis {
+			get { return _autoEllipsis; }
 			set {
 				_measureTextCache = null;
-				base.AutoEllipsis = value;
+				_autoEllipsis = value;
 			}
 		}
 
-		[DefaultValue( ContentAlignment.MiddleLeft )]
-		public override ContentAlignment TextAlign {
-			get { return base.TextAlign; }
+        private ContentAlignment _textAlign = ContentAlignment.MiddleLeft;
+        [DefaultValue( ContentAlignment.MiddleLeft )]
+		public ContentAlignment TextAlign {
+			get { return _textAlign; }
 			set {
 				_measureTextCache = null;
-				base.TextAlign = value;
+				_textAlign = value;
 			}
 		}
 
-		[DefaultValue( ContentAlignment.MiddleLeft )]
-		public new ContentAlignment ImageAlign {
-			get { return base.ImageAlign; }
+        private ContentAlignment _imageAlign = ContentAlignment.MiddleLeft;
+        [DefaultValue( ContentAlignment.MiddleLeft )]
+		public ContentAlignment ImageAlign {
+			get { return _imageAlign; }
 			set {
-				base.ImageAlign = value;
+				_imageAlign = value;
 				AdjustSize();
 			}
 		}
 
-		[DefaultValue( false )]
-		public new bool UseMnemonic {
-			get { return base.UseMnemonic; }
+        private bool _useMnemonic = false;
+        [DefaultValue( false )]
+		public bool UseMnemonic {
+			get { return _useMnemonic; }
 			set {
 				_measureTextCache = null;
-				base.UseMnemonic = value;
+                _useMnemonic = value;
 				AdjustSize();
 			}
 		}
 
+        private Image _image = null;
 		[DefaultValue( null )]
-		public new Image Image {
-			get { return this.ImageList[ImageIndex]; }
+		public Image Image {
+			get {
+                _image = (ImageIndex >= 0 && ImageList != null && ImageList.Count > ImageIndex) ? ImageList[ImageIndex] : null;
+				return _image;
+			}
 			set {
-				base.Image = value;
+				_image = value;
 				AdjustSize();
 			}
 		}
 
+        [DefaultValue(0)]
+        public int ImageIndex { get; set; }
         [DefaultValue(null)]
-        public new ImageCollection ImageList { get; set; }
+        public ImageCollection ImageList { get; set; }
 
-		[DefaultValue( true )]
+        [DefaultValue( true )]
 		public new bool AutoSize {
 			get { return base.AutoSize; }
 			set {

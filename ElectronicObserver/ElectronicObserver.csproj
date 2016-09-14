@@ -296,7 +296,7 @@
     </Compile>
     <Compile Include="Window\Control\DataGridViewEnableButtonColumn.cs" />
     <Compile Include="Window\Control\ImageLabel.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Window\Control\ImageLabel.Designer.cs">
       <DependentUpon>ImageLabel.cs</DependentUpon>
