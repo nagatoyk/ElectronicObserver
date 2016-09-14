@@ -37,7 +37,7 @@ namespace LocalCacher {
 
                 // = KanColleCacher =
                 string filepath;
-                var direction = Cache.GotNewRequest( oSession.fullUrl, out filepath );
+                var direction = Cache.GotNewRequest( oSession.id, oSession.fullUrl, out filepath );
 
                 if ( direction == Direction.Return_LocalFile
                     || direction == Direction.NoCache_LocalFile ) {
@@ -96,20 +96,23 @@ namespace LocalCacher {
 
                 if ( oSession.responseCode == 304 ) {
 
-                    string filepath = TaskRecord.GetAndRemove( oSession.fullUrl );
+                    string filepath = TaskRecord.GetAndRemove( oSession.id );
                     //只有TaskRecord中有记录的文件才是验证的文件，才需要修改Header
                     if ( !string.IsNullOrEmpty( filepath ) ) {
 
                         //服务器返回304，文件没有修改 -> 返回本地文件
-                        oSession.ResponseBody = File.ReadAllBytes( filepath );
                         oSession.oResponse.headers.HTTPResponseCode = 200;
                         oSession.oResponse.headers.HTTPResponseStatus = "200 OK";
-                        oSession.oResponse.headers["Last-Modified"] = oSession.oRequest.headers["If-Modified-Since"];
-                        oSession.oResponse.headers["Accept-Ranges"] = "bytes";
-                        oSession.oResponse.headers.Remove( "If-Modified-Since" );
-                        oSession.oRequest.headers.Remove( "If-Modified-Since" );
+                        oSession.ResponseBody = File.ReadAllBytes( filepath );
+                        // oSession.ResponseBody will automatically correct Content-Length
                         if ( filepath.EndsWith( ".swf" ) )
-                            oSession.oResponse.headers["Content-Type"] = "application/x-shockwave-flash";
+                          oSession.oResponse.headers.Add("Content-Type", "application/x-shockwave-flash");
+                        else if ( filepath.EndsWith( ".mp3" ) )
+                          oSession.oResponse.headers.Add("Content-Type", "audio/mpeg");
+                        else if ( filepath.EndsWith( ".png" ) )
+                          oSession.oResponse.headers.Add("Content-Type", "image/png");
+                        oSession.oResponse.headers.Add("Accept-Ranges", "bytes");
+                        oSession.oResponse["Connection"] = "close";
                     }
 
                     return true;
@@ -133,13 +136,17 @@ namespace LocalCacher {
 
 			if ( Configuration.Config.CacheSettings.CacheEnabled && oSession.responseCode == 200 ) {
 
-				string filepath = TaskRecord.GetAndRemove( oSession.fullUrl );
+                string filepath = TaskRecord.GetAndRemove( oSession.id );
 				if ( !string.IsNullOrEmpty( filepath ) ) {
 					if ( File.Exists( filepath ) )
-						File.Delete( filepath );
+                    {
+                        string filetime = _GetModifiedTime( filepath );
+                        if (!(filetime == oSession.oResponse.headers["Last-Modified"]))
+                            File.Delete( filepath );
+                    }
 
 					//保存下载文件并记录Modified-Time
-					try {
+					if ( !File.Exists( filepath ) ) try {
 
 						if ( Configuration.Config.Log.ShowCacheLog ) {
 
