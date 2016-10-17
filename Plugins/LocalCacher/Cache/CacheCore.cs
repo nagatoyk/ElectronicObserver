@@ -128,7 +128,7 @@ namespace ElectronicObserver.Observer.Cache {
 		/// <param name="url">请求的url</param>
 		/// <param name="result">本地文件地址 or 记录的修改日期</param>
 		/// <returns>下一步我们该做什么？忽略请求；返回缓存文件；验证缓存文件</returns>
-		public Direction GotNewRequest( string url, out string result ) {
+		public Direction GotNewRequest( int id, string url, out string result ) {
 			result = "";
 			string filepath = "";
 
@@ -229,15 +229,31 @@ namespace ElectronicObserver.Observer.Cache {
 					//存在本地缓存文件 -> 检查文件的最后修改时间
 					//（验证所有文件 或 只验证非资源文件）
 					if ( Configuration.Config.CacheSettings.CheckFiles > 1 || ( Configuration.Config.CacheSettings.CheckFiles > 0 && type != filetype.resources ) ) {
+						// CheckFiles = 3,　check all kinds of resource files (.swf .png .mp3)
+						if ( Configuration.Config.CacheSettings.CheckFiles == 3 && ( filepath.EndsWith( ".swf" ) || filepath.EndsWith( ".png" ) || filepath.EndsWith( ".mp3" ))) {
+							result = filepath;
+							_RecordTask( id, filepath );
+							return Direction.Verify_LocalFile;
+						// CheckFiles = 4, check only .swf and .png files (return .mp3 directly from cache, to be compatible with voice subtitle plugin)
+						} else if ( Configuration.Config.CacheSettings.CheckFiles == 4 ) {
+							if (filepath.EndsWith( ".mp3" )) { // Skip check, return with no-cache
+								result = filepath;
+								return Direction.NoCache_LocalFile;
+							} else if ( filepath.EndsWith( ".swf" ) || filepath.EndsWith( ".png" )) {
+								result = filepath;
+								_RecordTask( id, filepath );
+								return Direction.Verify_LocalFile;
+							}} else
 						//只有swf文件需要验证时间
 						if ( filepath.EndsWith( ".swf" ) ) {
 
 							//文件存在且需要验证时间
 							//-> 请求服务器验证修改时间（记录读取和保存的位置）
 							result = filepath;
-							_RecordTask( url, filepath );
+							_RecordTask( id, filepath );
 							return Direction.Verify_LocalFile;
 						}
+
 					}
 
 					//文件不需验证
@@ -249,7 +265,7 @@ namespace ElectronicObserver.Observer.Cache {
 
 					//缓存文件不存在
 					//-> 下载文件 （记录保存地址）
-					_RecordTask( url, filepath );
+					_RecordTask( id, filepath );
 					return Direction.Discharge_Response;
 				}
 			}
@@ -317,8 +333,8 @@ namespace ElectronicObserver.Observer.Cache {
 
 		}
 
-		void _RecordTask( string url, string filepath ) {
-			TaskRecord.Add( url, filepath );
+		void _RecordTask( int id, string filepath ) {
+			TaskRecord.Add( id, filepath );
 		}
 	}
 }

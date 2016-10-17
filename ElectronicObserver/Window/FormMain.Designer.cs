@@ -42,6 +42,8 @@
 			this.StripMenu_File_Layout_Change = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.StripMenu_File_Layout_LockLayout = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+			this.StripMenu_File_Layout_TopMost = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.StripMenu_File_Configuration = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -86,6 +88,8 @@
 			this.StripStatus_Clock = new System.Windows.Forms.ToolStripStatusLabel();
 			this.UIUpdateTimer = new System.Windows.Forms.Timer(this.components);
 			this.MainDockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+			this.StripMenu_View_BaseAirCorps = new System.Windows.Forms.ToolStripMenuItem();
+			this.StripMenu_View_Json = new System.Windows.Forms.ToolStripMenuItem();
 			this.StripMenu.SuspendLayout();
 			this.StripStatus.SuspendLayout();
 			this.SuspendLayout();
@@ -151,13 +155,13 @@
 			this.toolStripSeparatorAnother2,
             this.StripMenu_File_Layout_Save,
             this.StripMenu_File_Layout_Change,
-			this.toolStripSeparatorAnother3,
-			this.StripMenu_File_Layout_Lock,
-            //this.toolStripSeparator9,
-            //this.StripMenu_File_Layout_LockLayout
-			});
-
+            this.toolStripSeparator9,
+            this.StripMenu_File_Layout_LockLayout,
+            this.toolStripSeparator10,
+            this.StripMenu_File_Layout_TopMost});
+			this.StripMenu_File_Layout.Name = "StripMenu_File_Layout";
 			this.StripMenu_File_Layout.Size = new System.Drawing.Size(135, 22);
+			this.StripMenu_File_Layout.Text = "レイアウト(&L)";
 			this.StripMenu_File_Layout.Text = "布局(&L)";
 			// 
 			// StripMenu_File_Layout_Load
@@ -237,6 +241,19 @@
 			this.StripMenu_File_Layout_LockLayout.Text = "レイアウトのロック(&T)";
 			this.StripMenu_File_Layout_LockLayout.Click += new System.EventHandler(this.StripMenu_File_Layout_LockLayout_Click);
 			// 
+			// toolStripSeparator10
+			// 
+			this.toolStripSeparator10.Name = "toolStripSeparator10";
+			this.toolStripSeparator10.Size = new System.Drawing.Size(200, 6);
+			// 
+			// StripMenu_File_Layout_TopMost
+			// 
+			this.StripMenu_File_Layout_TopMost.CheckOnClick = true;
+			this.StripMenu_File_Layout_TopMost.Name = "StripMenu_File_Layout_TopMost";
+			this.StripMenu_File_Layout_TopMost.Size = new System.Drawing.Size(203, 22);
+			this.StripMenu_File_Layout_TopMost.Text = "最前面に表示(&M)";
+			this.StripMenu_File_Layout_TopMost.Click += new System.EventHandler(this.StripMenu_File_Layout_TopMost_Click);
+			// 
 			// toolStripSeparator6
 			// 
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
@@ -266,9 +283,11 @@
 			this.StripMenu_View.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.StripMenu_View_Fleet,
             this.StripMenu_View_ShipGroup,
+            this.StripMenu_View_BaseAirCorps,
             this.toolStripSeparator4,
             this.StripMenu_View_Browser,
-            this.StripMenu_WindowCapture});
+            this.StripMenu_WindowCapture,
+            this.StripMenu_View_Json});
 			this.StripMenu_View.Name = "StripMenu_View";
 			this.StripMenu_View.Size = new System.Drawing.Size(61, 20);
 			this.StripMenu_View.Text = "视图(&V)";
@@ -566,6 +585,20 @@
 			}
 			this.MainDockPanel.TabIndex = 0;
 			// 
+			// StripMenu_View_BaseAirCorps
+			// 
+			this.StripMenu_View_BaseAirCorps.Name = "StripMenu_View_BaseAirCorps";
+			this.StripMenu_View_BaseAirCorps.Size = new System.Drawing.Size(182, 22);
+			this.StripMenu_View_BaseAirCorps.Text = "基地航空隊(&S)";
+			this.StripMenu_View_BaseAirCorps.Click += new System.EventHandler(this.StripMenu_View_BaseAirCorps_Click);
+			// 
+			// StripMenu_View_Json
+			// 
+			this.StripMenu_View_Json.Name = "StripMenu_View_Json";
+			this.StripMenu_View_Json.Size = new System.Drawing.Size(182, 22);
+			this.StripMenu_View_Json.Text = "JSON(&J)";
+			this.StripMenu_View_Json.Click += new System.EventHandler(this.StripMenu_View_Json_Click);
+			// 
 			// FormMain
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -655,5 +688,9 @@
 		private System.Windows.Forms.ToolStripMenuItem StripMenu_File_Layout_Change;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
 		private System.Windows.Forms.ToolStripMenuItem StripMenu_File_Layout_LockLayout;
+		private System.Windows.Forms.ToolStripMenuItem StripMenu_View_BaseAirCorps;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
+		private System.Windows.Forms.ToolStripMenuItem StripMenu_File_Layout_TopMost;
+		private System.Windows.Forms.ToolStripMenuItem StripMenu_View_Json;
 	}
 }

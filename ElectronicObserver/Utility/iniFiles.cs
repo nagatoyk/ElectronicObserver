@@ -78,7 +78,7 @@ namespace ElectronicObserver.Utility
                 return Convert.ToInt32(intStr);
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 return Default;
@@ -98,7 +98,7 @@ namespace ElectronicObserver.Utility
             {
                 return Convert.ToBoolean(ReadString(Section, Ident, Convert.ToString(Default)));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 return Default;

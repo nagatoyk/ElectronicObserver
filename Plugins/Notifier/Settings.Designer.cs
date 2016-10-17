@@ -31,10 +31,12 @@
 			components = new System.ComponentModel.Container();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage11 = new System.Windows.Forms.TabPage();
+			this.silenceFullscreen = new System.Windows.Forms.CheckBox();
+			this.Notification_Silencio = new System.Windows.Forms.CheckBox();
+			this.Notification_AnchorageRepair = new System.Windows.Forms.Button();
 			this.label10 = new System.Windows.Forms.Label();
 			this.Notification_Damage = new System.Windows.Forms.Button();
-            this.Notification_AnchorageRepair = new System.Windows.Forms.Button();
-            this.Notification_Condition = new System.Windows.Forms.Button();
+			this.Notification_Condition = new System.Windows.Forms.Button();
 			this.Notification_Repair = new System.Windows.Forms.Button();
 			this.Notification_Construction = new System.Windows.Forms.Button();
 			this.Notification_Expedition = new System.Windows.Forms.Button();
@@ -55,35 +57,48 @@
 			// 
 			// tabPage11
 			// 
-			this.tabPage11.Controls.Add( this.label10 );
-			this.tabPage11.Controls.Add( this.Notification_Damage );
-			this.tabPage11.Controls.Add( this.Notification_Condition );
-			this.tabPage11.Controls.Add( this.Notification_Repair );
-			this.tabPage11.Controls.Add( this.Notification_Construction );
-			this.tabPage11.Controls.Add( this.Notification_Expedition );
-            this.tabPage11.Controls.Add( this.Notification_AnchorageRepair );
-			this.tabPage11.Location = new System.Drawing.Point( 4, 24 );
+			this.tabPage11.Controls.Add(this.silenceFullscreen);
+			this.tabPage11.Controls.Add(this.Notification_Silencio);
+			this.tabPage11.Controls.Add(this.Notification_AnchorageRepair);
+			this.tabPage11.Controls.Add(this.label10);
+			this.tabPage11.Controls.Add(this.Notification_Damage);
+			this.tabPage11.Controls.Add(this.Notification_Condition);
+			this.tabPage11.Controls.Add(this.Notification_Repair);
+			this.tabPage11.Controls.Add(this.Notification_Construction);
+			this.tabPage11.Controls.Add(this.Notification_Expedition);
+			this.tabPage11.Location = new System.Drawing.Point(4, 24);
 			this.tabPage11.Name = "tabPage11";
-			this.tabPage11.Padding = new System.Windows.Forms.Padding( 3 );
-			this.tabPage11.Size = new System.Drawing.Size( 456, 253 );
+			this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage11.Size = new System.Drawing.Size(576, 292);
 			this.tabPage11.TabIndex = 7;
 			this.tabPage11.Text = "通知";
 			this.tabPage11.UseVisualStyleBackColor = true;
 			// 
-			// label10
+			// silenceFullscreen
 			// 
-			this.label10.Anchor = ( (System.Windows.Forms.AnchorStyles)( System.Windows.Forms.AnchorStyles.Bottom
-			| System.Windows.Forms.AnchorStyles.Left ) );
-			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point( 3, 235 );
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size( 238, 15 );
-			this.label10.TabIndex = 5;
-			this.label10.Text = "＊每个设置对话框点OK时生效";
+			this.silenceFullscreen.AutoSize = true;
+			this.silenceFullscreen.Enabled = false;
+			this.silenceFullscreen.Location = new System.Drawing.Point(8, 207);
+			this.silenceFullscreen.Name = "silenceFullscreen";
+			this.silenceFullscreen.Size = new System.Drawing.Size(160, 19);
+			this.silenceFullscreen.TabIndex = 8;
+			this.silenceFullscreen.Text = "Silence while fullscreen";
+			this.silenceFullscreen.UseVisualStyleBackColor = true;
+			this.silenceFullscreen.Visible = false;
+			// 
+			// Notification_Silencio
+			// 
+			this.Notification_Silencio.AutoSize = true;
+			this.Notification_Silencio.Location = new System.Drawing.Point(8, 181);
+			this.Notification_Silencio.Name = "Notification_Silencio";
+			this.Notification_Silencio.Size = new System.Drawing.Size(131, 19);
+			this.Notification_Silencio.TabIndex = 7;
+			this.Notification_Silencio.Text = "すべての通知をミュート";
+			this.Notification_Silencio.UseVisualStyleBackColor = true;
 			// 
 			// Notification_AnchorageRepair
 			// 
-			this.Notification_AnchorageRepair.Location = new System.Drawing.Point(8, 151);
+			this.Notification_AnchorageRepair.Location = new System.Drawing.Point(8, 152);
 			this.Notification_AnchorageRepair.Name = "Notification_AnchorageRepair";
 			this.Notification_AnchorageRepair.Size = new System.Drawing.Size(150, 23);
 			this.Notification_AnchorageRepair.TabIndex = 6;
@@ -91,61 +106,72 @@
 			this.Notification_AnchorageRepair.UseVisualStyleBackColor = true;
 			this.Notification_AnchorageRepair.Click += new System.EventHandler(this.Notification_AnchorageRepair_Click);
 			// 
+			// label10
+			// 
+			this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(3, 302);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(238, 15);
+			this.label10.TabIndex = 5;
+			this.label10.Text = "＊各ダイアログでOKを押した時点で適用されます";
+			// 
 			// Notification_Damage
 			// 
-			this.Notification_Damage.Location = new System.Drawing.Point( 8, 122 );
+			this.Notification_Damage.Location = new System.Drawing.Point(8, 122);
 			this.Notification_Damage.Name = "Notification_Damage";
-			this.Notification_Damage.Size = new System.Drawing.Size( 150, 23 );
+			this.Notification_Damage.Size = new System.Drawing.Size(150, 23);
 			this.Notification_Damage.TabIndex = 4;
-			this.Notification_Damage.Text = "大破进击通知的设置...";
+			this.Notification_Damage.Text = "大破進撃通知の設定...";
 			this.Notification_Damage.UseVisualStyleBackColor = true;
-			this.Notification_Damage.Click += new System.EventHandler( this.Notification_Damage_Click );
+			this.Notification_Damage.Click += new System.EventHandler(this.Notification_Damage_Click);
 			// 
 			// Notification_Condition
 			// 
-			this.Notification_Condition.Location = new System.Drawing.Point( 8, 93 );
+			this.Notification_Condition.Location = new System.Drawing.Point(8, 93);
 			this.Notification_Condition.Name = "Notification_Condition";
-			this.Notification_Condition.Size = new System.Drawing.Size( 150, 23 );
+			this.Notification_Condition.Size = new System.Drawing.Size(150, 23);
 			this.Notification_Condition.TabIndex = 3;
-			this.Notification_Condition.Text = "疲劳恢复通知的设置...";
+			this.Notification_Condition.Text = "疲労回復通知の設定...";
 			this.Notification_Condition.UseVisualStyleBackColor = true;
-			this.Notification_Condition.Click += new System.EventHandler( this.Notification_Condition_Click );
+			this.Notification_Condition.Click += new System.EventHandler(this.Notification_Condition_Click);
 			// 
 			// Notification_Repair
 			// 
-			this.Notification_Repair.Location = new System.Drawing.Point( 8, 64 );
+			this.Notification_Repair.Location = new System.Drawing.Point(8, 64);
 			this.Notification_Repair.Name = "Notification_Repair";
-			this.Notification_Repair.Size = new System.Drawing.Size( 150, 23 );
+			this.Notification_Repair.Size = new System.Drawing.Size(150, 23);
 			this.Notification_Repair.TabIndex = 2;
-			this.Notification_Repair.Text = "入渠结束通知的设置...";
+			this.Notification_Repair.Text = "入渠完了通知の設定...";
 			this.Notification_Repair.UseVisualStyleBackColor = true;
-			this.Notification_Repair.Click += new System.EventHandler( this.Notification_Repair_Click );
+			this.Notification_Repair.Click += new System.EventHandler(this.Notification_Repair_Click);
 			// 
 			// Notification_Construction
 			// 
-			this.Notification_Construction.Location = new System.Drawing.Point( 8, 35 );
+			this.Notification_Construction.Location = new System.Drawing.Point(8, 35);
 			this.Notification_Construction.Name = "Notification_Construction";
-			this.Notification_Construction.Size = new System.Drawing.Size( 150, 23 );
+			this.Notification_Construction.Size = new System.Drawing.Size(150, 23);
 			this.Notification_Construction.TabIndex = 1;
-			this.Notification_Construction.Text = "建造完毕通知的设置...";
+			this.Notification_Construction.Text = "建造完了通知の設定...";
 			this.Notification_Construction.UseVisualStyleBackColor = true;
-			this.Notification_Construction.Click += new System.EventHandler( this.Notification_Construction_Click );
+			this.Notification_Construction.Click += new System.EventHandler(this.Notification_Construction_Click);
 			// 
 			// Notification_Expedition
 			// 
-			this.Notification_Expedition.Location = new System.Drawing.Point( 8, 6 );
+			this.Notification_Expedition.Location = new System.Drawing.Point(8, 6);
 			this.Notification_Expedition.Name = "Notification_Expedition";
-			this.Notification_Expedition.Size = new System.Drawing.Size( 150, 23 );
+			this.Notification_Expedition.Size = new System.Drawing.Size(150, 23);
 			this.Notification_Expedition.TabIndex = 0;
-			this.Notification_Expedition.Text = "远征结束通知的设置...";
+			this.Notification_Expedition.Text = "遠征帰投通知の設定...";
 			this.Notification_Expedition.UseVisualStyleBackColor = true;
-			this.Notification_Expedition.Click += new System.EventHandler( this.Notification_Expedition_Click );
-			//
+			this.Notification_Expedition.Click += new System.EventHandler(this.Notification_Expedition_Click);
+			// 
 			// this
 			//
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Size = new System.Drawing.Size( 400, 270 );
 			this.Controls.Add( tabControl1 );
+			this.Load += new System.EventHandler(this.Settings_Load);
 			this.tabControl1.ResumeLayout( false );
 			this.tabPage11.ResumeLayout( false );
 			this.tabPage11.PerformLayout();
@@ -159,8 +185,10 @@
 		private System.Windows.Forms.Button Notification_Construction;
 		private System.Windows.Forms.Button Notification_Repair;
 		private System.Windows.Forms.Button Notification_Damage;
-        private System.Windows.Forms.Button Notification_AnchorageRepair;
-        private System.Windows.Forms.Button Notification_Condition;
+		private System.Windows.Forms.Button Notification_AnchorageRepair;
+		private System.Windows.Forms.Button Notification_Condition;
 		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.CheckBox silenceFullscreen;
+		private System.Windows.Forms.CheckBox Notification_Silencio;
 	}
 }

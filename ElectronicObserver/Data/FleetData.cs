@@ -342,32 +342,8 @@ namespace ElectronicObserver.Data {
 		/// 疲労回復にかかる時間を取得します。
 		/// </summary>
 		/// <param name="cond">コンディション。</param>
-		private int GetConditionRecoverySecond( int cond ) {
-			return Math.Max( (int)Math.Ceiling( ( Utility.Configuration.Config.Control.ConditionBorder - cond ) / 3.0 ) * 180, 0 );
-		}
-
-		/// <summary>
-		/// 验证已有疲劳值
-		/// </summary>
-		/// <param name="minute"></param>
-		private bool CheckSolongConditionTimer( ref int second )
-		{
-			// 判断是否已有 ConditionTime
-			if ( ConditionTime != null )
-			{
-				int soffset = (int)Math.Ceiling( ConditionTime.Value.Subtract( DateTime.Now ).TotalSeconds );
-				if ( second > soffset )
-				{
-					second = soffset;
-					if ( soffset <= 0 )
-					{
-						ConditionTime = null;
-						return true;
-					}
-				}
-			}
-
-			return false;
+		private int GetConditionRecoveryMinute( int cond ) {
+			return Math.Max( (int)Math.Ceiling( ( Utility.Configuration.Config.Control.ConditionBorder - cond ) / 3.0 ) * 3, 0 );
 		}
 
 		//*/
@@ -377,38 +353,26 @@ namespace ElectronicObserver.Data {
 		/// </summary>
 		private void SetConditionTimer() {
 
-			int sec = GetConditionRecoverySecond( MembersInstance.Min( s => s != null ? s.Condition : 100 ) );
+			int minute = GetConditionRecoveryMinute( MembersInstance.Min( s => s != null ? s.Condition : 100 ) );
 
-			if ( sec > 0 )
-			{
-				if ( CheckSolongConditionTimer( ref sec ) )
-					return;
-
-				ConditionTime = DateTime.Now.AddSeconds( sec );
-			}
+			if ( minute > 0 )
+				ConditionTime = DateTime.Now.AddMinutes( minute );
 			else
 				ConditionTime = null;
 
 			//Utility.Logger.Add( 1, string.Format( "Fleet #{0}: 疲労 再設定 {1:D2}:00", FleetID, minute ) );
 		}
 		/*/
-
 		private void SetConditionTimer() {
-
 			int minute = GetConditionRecoveryMinute( MembersInstance.Min( s => s != null ? s.Condition : 100 ) );
-
 			if ( minute <= 0 ) {
 				ConditionTime = null;
-
 			} else if ( ConditionTime != null && (DateTime)ConditionTime > DateTime.Now ) {
 				TimeSpan ts = (DateTime)ConditionTime - DateTime.Now;
-
 				ConditionTime = DateTime.Now + ts.Add( TimeSpan.FromMinutes( minute - 3 - (int)( ts.TotalMinutes / 3 ) * 3 ) );
-
 			} else {
 				ConditionTime = DateTime.Now.AddMinutes( minute );
 			}
-
 		}
 		//*/
 
@@ -418,17 +382,13 @@ namespace ElectronicObserver.Data {
 		/// </summary>
 		private void ShortenConditionTimer() {
 
-			int sec = GetConditionRecoverySecond( MembersInstance.Min( s => s != null ? s.Condition : 100 ) );
+			int minute = GetConditionRecoveryMinute( MembersInstance.Min( s => s != null ? s.Condition : 100 ) );
 
-			if ( sec == 0 ) {
+			if ( minute == 0 ) {
 				ConditionTime = null;
 
 			} else {
-
-				if ( CheckSolongConditionTimer( ref sec ) )
-					return;
-
-				DateTime target = DateTime.Now.AddSeconds( sec );
+				DateTime target = DateTime.Now.AddMinutes( minute );
 
 				if ( ConditionTime != null && ConditionTime < DateTime.Now ) {
 					ConditionTime = null;
@@ -476,30 +436,40 @@ namespace ElectronicObserver.Data {
 			_escapedShipList.Add( _members[index] );
 		}
 
-		/// <summary>
-		/// 获取计算了舰载机熟练度的制空值
-		/// </summary>
-		/// <returns></returns>
-		public int GetAirSuperiority()
-		{
-			return CalculatorEx.GetAirSuperiorityEnhance( this );
-		}
 
 		/// <summary>
 		/// 制空戦力を取得します。
 		/// </summary>
 		/// <returns>制空戦力。</returns>
-        public int GetAirSuperiority_New(int FullExp = 0)
-        {
-            return Calculator.GetAirSuperiority(this, FullExp);
-        }
+		public int GetAirSuperiority() {
+			switch ( Utility.Configuration.Config.FormFleet.AirSuperiorityMethod ) {
+				case 0:
+				default:
+					return Calculator.GetAirSuperiorityIgnoreLevel( this );
+				case 1:
+					return Calculator.GetAirSuperiority( this );
+			}
+		}
 
 
 		/// <summary>
 		/// 現在の設定に応じて、索敵能力を取得します。
 		/// </summary>
 		public double GetSearchingAbility() {
-			return CalculatorEx.GetSearchingAbility( this, Utility.Configuration.Config.FormFleet.SearchingAbilityMethod );
+			switch ( Utility.Configuration.Config.FormFleet.SearchingAbilityMethod ) {
+				default:
+				case 0:
+					return Calculator.GetSearchingAbility_Old( this );
+
+				case 1:
+					return Calculator.GetSearchingAbility_Autumn( this );
+
+				case 2:
+					return Calculator.GetSearchingAbility_TinyAutumn( this );
+
+				case 3:
+					return Calculator.GetSearchingAbility_33( this );
+			}
 		}
 
 		/// <summary>
@@ -514,8 +484,20 @@ namespace ElectronicObserver.Data {
 		/// </summary>
 		/// <param name="index">計算式。0-3</param>
 		public string GetSearchingAbilityString( int index ) {
+			switch ( index ) {
+				default:
+				case 0:
+					return Calculator.GetSearchingAbility_Old( this ).ToString();
 
-			return CalculatorEx.GetSearchingAbility( this, index ).ToString( "F2" );
+				case 1:
+					return Calculator.GetSearchingAbility_Autumn( this ).ToString( "F1" );
+
+				case 2:
+					return Calculator.GetSearchingAbility_TinyAutumn( this ).ToString();
+
+				case 3:
+					return ( (int)( Calculator.GetSearchingAbility_33( this ) * 100 ) / 100 ).ToString( "F2" );
+			}
 		}
 
 		/// <summary>
@@ -659,8 +641,31 @@ namespace ElectronicObserver.Data {
 					label.Text = "泊地修理中 " + DateTimeHelper.ToTimeElapsedString( KCDatabase.Instance.Fleet.AnchorageRepairingTimer );
 					label.ImageIndex = (int)ResourceManager.IconContent.FleetAnchorageRepairing;
 
-					tooltip.SetToolTip( label, string.Format( "開始日時 : {0}",
-						DateTimeHelper.TimeToCSVString( KCDatabase.Instance.Fleet.AnchorageRepairingTimer ) ) );
+					StringBuilder sb = new StringBuilder();
+					sb.AppendFormat( "開始日時 : {0}\r\n修理時間 :\r\n",
+						DateTimeHelper.TimeToCSVString( KCDatabase.Instance.Fleet.AnchorageRepairingTimer ) );
+
+					for ( int i = 0; i < fleet.Members.Count; i++ ) {
+						var ship = fleet.MembersInstance[i];
+						if ( ship != null && ship.HPRate < 1.0 ) {
+							var totaltime = DateTimeHelper.FromAPITimeSpan( ship.RepairTime );
+							var unittime = Calculator.CalculateDockingUnitTime( ship );
+							sb.AppendFormat( "#{0} : {1:00}:{2:00}:{3:00} @ {4:00}:{5:00}:{6:00} x -{7} HP\r\n",
+								i + 1,
+								(int)totaltime.TotalHours,
+								totaltime.Minutes,
+								totaltime.Seconds,
+								(int)unittime.TotalHours,
+								unittime.Minutes,
+								unittime.Seconds,
+								ship.HPMax - ship.HPCurrent
+								);
+						} else {
+							sb.Append( "#" ).Append( i + 1 ).Append( " : ----\r\n" );
+						}
+					}
+
+					tooltip.SetToolTip( label, sb.ToString() );
 
 					return FleetStates.AnchorageRepairing;
 				}

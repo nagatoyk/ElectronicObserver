@@ -49,7 +49,7 @@ namespace ElectronicObserver.Window {
 					lbl.ImageIndex = (int)ResourceManager.IconContent.ConditionNormal;
 					lbl.ImageAlign = ContentAlignment.MiddleLeft;
 					lbl.AutoSize = false;
-					lbl.ShowText = !Utility.Configuration.Config.FormBattle.IsShortDamage;
+					//lbl.ShowText = !Utility.Configuration.Config.FormBattle.IsShortDamage;
 					lbl.Size = new Size( 56, 20 );
 					lbl.Margin = new Padding( 2, 0, 2, 0 );
 					lbl.Anchor = AnchorStyles.Left | AnchorStyles.Right;
@@ -86,6 +86,7 @@ namespace ElectronicObserver.Window {
 			TableBottom.ResumeLayout();
 
 
+			Searching.ImageList =
 			SearchingFriend.ImageList =
 			SearchingEnemy.ImageList =
 			AACutin.ImageList =
@@ -897,6 +898,7 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 
 						SetFormation( bm.BattleDay );
 						SetSearchingResult( bm.BattleDay );
+						SetBaseAirAttack( bm.BattleDay.BaseAirAttack );
 						SetAerialWarfare( bm.BattleDay.AirBattle );
 						SetHPNormal( bm.BattleDay );
 						SetDamageRateNormal( bm.BattleDay, bm.BattleDay.Initial.InitialHPs );
@@ -917,6 +919,7 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 				case "api_req_battle_midnight/sp_midnight": {
 
 						SetFormation( bm.BattleNight );
+						ClearBaseAirAttack();
 						ClearAerialWarfare();
 						ClearSearchingResult();
 						SetNightBattleEvent( bm.BattleNight.NightBattle );
@@ -930,6 +933,7 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 
 						SetFormation( bm.BattleDay );
 						SetSearchingResult( bm.BattleDay );
+						SetBaseAirAttack( bm.BattleDay.BaseAirAttack );
 						SetAerialWarfareAirBattle( bm.BattleDay.AirBattle, ( (BattleAirBattle)bm.BattleDay ).AirBattle2 );
 						SetHPNormal( bm.BattleDay );
 						SetDamageRateNormal( bm.BattleDay, bm.BattleDay.Initial.InitialHPs );
@@ -943,6 +947,7 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 
 						SetFormation( bm.BattleDay );
 						SetSearchingResult( bm.BattleDay );
+						SetBaseAirAttack( bm.BattleDay.BaseAirAttack );
 						SetAerialWarfare( bm.BattleDay.AirBattle );
 						SetHPCombined( bm.BattleDay );
 						SetDamageRateCombined( bm.BattleDay, bm.BattleDay.Initial.InitialHPs );
@@ -954,6 +959,7 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 
 						SetFormation( bm.BattleDay );
 						SetSearchingResult( bm.BattleDay );
+						SetBaseAirAttack( bm.BattleDay.BaseAirAttack );
 						SetAerialWarfareAirBattle( bm.BattleDay.AirBattle, ( (BattleCombinedAirBattle)bm.BattleDay ).AirBattle2 );
 						SetHPCombined( bm.BattleDay );
 						SetDamageRateCombined( bm.BattleDay, bm.BattleDay.Initial.InitialHPs );
@@ -975,6 +981,7 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 						SetFormation( bm.BattleNight );
 						ClearAerialWarfare();
 						ClearSearchingResult();
+						ClearBaseAirAttack();
 						SetNightBattleEvent( bm.BattleNight.NightBattle );
 						SetHPCombined( bm.BattleNight );
 						SetDamageRateCombined( bm.BattleNight, bm.BattleNight.Initial.InitialHPs );
@@ -1040,6 +1047,60 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 		}
 
 		/// <summary>
+		/// 基地航空隊フェーズの結果を設定します。
+		/// </summary>
+		private void SetBaseAirAttack( PhaseBaseAirAttack pd ) {
+
+			if ( pd != null && pd.IsAvailable ) {
+
+				Searching.Text = "基地航空隊";
+				Searching.ImageAlign = ContentAlignment.MiddleLeft;
+				Searching.ImageIndex = (int)ResourceManager.EquipmentContent.LandAttacker;
+
+				var sb = new StringBuilder();
+				int index = 1;
+
+				foreach ( var phase in pd.AirAttackUnits ) {
+
+					sb.AppendFormat( "{0} 回目 - #{1} :\r\n",
+						index, phase.AirUnitID );
+
+					if ( phase.IsStage1Available ) {
+						sb.AppendFormat( "　St1: 自軍 -{0}/{1} | 敵軍 -{2}/{3} | {4}\r\n",
+							phase.AircraftLostStage1Friend, phase.AircraftTotalStage1Friend,
+							phase.AircraftLostStage1Enemy, phase.AircraftTotalStage1Enemy,
+							Constants.GetAirSuperiority( phase.AirSuperiority ) );
+					}
+					if ( phase.IsStage2Available ) {
+						sb.AppendFormat( "　St2: 自軍 -{0}/{1} | 敵軍 -{2}/{3}\r\n",
+							phase.AircraftLostStage2Friend, phase.AircraftTotalStage2Friend,
+							phase.AircraftLostStage2Enemy, phase.AircraftTotalStage2Enemy );
+					}
+
+					index++;
+				}
+
+				ToolTipInfo.SetToolTip( Searching, sb.ToString() );
+
+
+			} else {
+				ClearBaseAirAttack();
+			}
+
+		}
+
+		/// <summary>
+		/// 基地航空隊フェーズの結果をクリアします。
+		/// </summary>
+		private void ClearBaseAirAttack() {
+			Searching.Text = "索敵";
+			Searching.ImageAlign = ContentAlignment.MiddleCenter;
+			Searching.ImageIndex = -1;
+			ToolTipInfo.SetToolTip( Searching, null );
+		}
+
+
+		/// <summary>
 		/// 航空戦情報を設定します。
 		/// </summary>
 		private void SetAerialWarfare( PhaseAirBattle pd ) {
@@ -1048,7 +1109,7 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 			if ( pd.IsStage1Available ) {
 
 				AirSuperiority.Text = Constants.GetAirSuperiority( pd.AirSuperiority );
-				ToolTipInfo.SetToolTip( AirSuperiority, string.Format( "航空伤害: {0}", pd.TotalDamage ) );
+				//ToolTipInfo.SetToolTip( AirSuperiority, string.Format( "航空伤害: {0}", pd.TotalDamage ) );
 
 				int[] planeFriend = { pd.AircraftLostStage1Friend, pd.AircraftTotalStage1Friend };
 				AirStage1Friend.Text = string.Format( "-{0}/{1}", planeFriend[0], planeFriend[1] );
@@ -1185,11 +1246,13 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 
 				AirSuperiority.Text = Constants.GetAirSuperiority( pd1.AirSuperiority );
 				if ( isBattle2Enabled ) {
-					ToolTipInfo.SetToolTip( AirSuperiority, string.Format( "第2次: {0}\r\n航空伤害: {1}",
-						Constants.GetAirSuperiority( pd2.AirSuperiority ),
-						pd1.TotalDamage + pd2.TotalDamage ) );
+					//ToolTipInfo.SetToolTip( AirSuperiority, string.Format( "第2次: {0}\r\n航空伤害: {1}",
+					//	Constants.GetAirSuperiority( pd2.AirSuperiority ),
+					//	pd1.TotalDamage + pd2.TotalDamage ) );
+					ToolTipInfo.SetToolTip( AirSuperiority, "第2次: " + Constants.GetAirSuperiority( pd2.AirSuperiority ) );
 				} else {
-					ToolTipInfo.SetToolTip( AirSuperiority, string.Format( "航空伤害: {0}", pd1.TotalDamage ) );
+					//ToolTipInfo.SetToolTip( AirSuperiority, string.Format( "航空伤害: {0}", pd1.TotalDamage ) );
+					ToolTipInfo.SetToolTip( AirSuperiority, null );
 				}
 
 
@@ -1473,21 +1536,96 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 				if ( initialHPs[i] != -1 ) {
 					ShipData ship = bd.Initial.FriendFleet.MembersInstance[i];
 
-					DamageLabels[i].Text = ( attackAirDamages[i] + attackDamages[i] ) > 0 ? ( attackAirDamages[i] + attackDamages[i] ).ToString() : string.Empty;
 
-					ToolTipInfo.SetToolTip( HPBars[i],
-						string.Format( "{0} {1} Lv. {2}\r\nHP: ({3} → {4})/{5} ({6}) [{7}]\r\n造成伤害: {8}",
-							ship.MasterShip.ShipTypeName,
-							ship.MasterShip.NameWithClass,
-							ship.Level,
-							Math.Max( HPBars[i].PrevValue, 0 ),
-							Math.Max( HPBars[i].Value, 0 ),
-							HPBars[i].MaximumValue,
-							HPBars[i].Value - HPBars[i].PrevValue,
-							Constants.GetDamageState( (double)HPBars[i].Value / HPBars[i].MaximumValue, isPractice, ship.MasterShip.IsLandBase ),
-							( attackAirDamages[i] > 0 ) ? string.Format( "{0} (+{1})", attackDamages[i], attackAirDamages[i] ) : attackDamages[i].ToString()
-							)
-						);
+					StringBuilder builder = new StringBuilder();
+					builder.AppendFormat(
+						"{0} {1} Lv. {2}\r\nHP: ({3} → {4})/{5} ({6}) [{7}]\r\n与ダメージ: {8}\r\n\r\n",
+						ship.MasterShip.ShipTypeName,
+						ship.MasterShip.NameWithClass,
+						ship.Level,
+						Math.Max( HPBars[i].PrevValue, 0 ),
+						Math.Max( HPBars[i].Value, 0 ),
+						HPBars[i].MaximumValue,
+						HPBars[i].Value - HPBars[i].PrevValue,
+						Constants.GetDamageState( (double)HPBars[i].Value / HPBars[i].MaximumValue, isPractice, ship.MasterShip.IsLandBase ),
+						attackDamages[i]
+							);
+
+
+					if ( bd is BattleNormalDay || bd is BattlePracticeDay ) {
+						var shipAirBattleDetail = SelectBattleDetail( ( (BattleDay)bd ).AirBattle.BattleDetails, i );
+						var shipOpeningASWDetail = SelectBattleDetail( ( (BattleDay)bd ).OpeningASW.BattleDetails, i );
+						var shipOpeningTorpedoDetail = SelectBattleDetail( ( (BattleDay)bd ).OpeningTorpedo.BattleDetails, i );
+						var shipShelling1Detail = SelectBattleDetail( ( (BattleDay)bd ).Shelling1.BattleDetails, i );
+						var shipShelling2Detail = SelectBattleDetail( ( (BattleDay)bd ).Shelling2.BattleDetails, i );
+						var shipShelling3Detail = SelectBattleDetail( ( (BattleDay)bd ).Shelling3.BattleDetails, i );
+						var shipTorpedoDetail = SelectBattleDetail( ( (BattleDay)bd ).Torpedo.BattleDetails, i );
+
+						if ( shipAirBattleDetail.Any() ) {
+							builder.AppendLine( "《航空戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipAirBattleDetail ) );
+						}
+						if ( shipOpeningASWDetail.Any() ) {
+							builder.AppendLine( "《開幕対潜》" );
+							builder.Append( FriendShipBattleDetail( bd, shipOpeningASWDetail ) );
+						}
+						if ( shipOpeningTorpedoDetail.Any() ) {
+							builder.AppendLine( "《開幕雷撃》" );
+							builder.Append( FriendShipBattleDetail( bd, shipOpeningTorpedoDetail ) );
+						}
+						if ( shipShelling1Detail.Any() ) {
+							builder.AppendLine( "《第一次砲撃戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipShelling1Detail ) );
+						}
+						if ( shipShelling2Detail.Any() ) {
+							builder.AppendLine( "《第二次砲撃戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipShelling2Detail ) );
+						}
+						if ( shipShelling3Detail.Any() ) {
+							builder.AppendLine( "《第三次砲撃戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipShelling3Detail ) );
+						}
+						if ( shipTorpedoDetail.Any() ) {
+							builder.AppendLine( "《雷撃戦》" );
+							builder.AppendLine( FriendShipBattleDetail( bd, shipTorpedoDetail ) );
+						}
+
+
+					} else if ( bd is BattleNight ) {
+						var shipNightBattleDetail = SelectBattleDetail( ( (BattleNight)bd ).NightBattle.BattleDetails, i );
+
+						if ( shipNightBattleDetail.Any() ) {
+							builder.AppendLine( "《夜戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipNightBattleDetail ) );
+						}
+
+
+					} else if ( bd is BattleAirBattle ) {
+						var shipAirBattle1Detail = SelectBattleDetail( ( (BattleAirBattle)bd ).AirBattle.BattleDetails, i );
+						var shipAirBattle2Detail = SelectBattleDetail( ( (BattleAirBattle)bd ).AirBattle2.BattleDetails, i );
+
+						if ( shipAirBattle1Detail.Any() ) {
+							builder.AppendLine( "《第一次航空戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipAirBattle1Detail ) );
+						}
+						if ( shipAirBattle2Detail.Any() ) {
+							builder.AppendLine( "《第二次航空戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipAirBattle2Detail ) );
+						}
+
+
+					} else if ( bd is BattleAirRaid ) {
+						var shipAirBattleDetail = SelectBattleDetail( ( (BattleDay)bd ).AirBattle.BattleDetails, i );
+
+						if ( shipAirBattleDetail.Any() ) {
+							builder.AppendLine( "《空襲戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipAirBattleDetail ) );
+						}
+
+
+					}
+
+					ToolTipInfo.SetToolTip( HPBars[i], builder.ToString() );
 				}
 			}
 
@@ -1591,25 +1729,82 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 					ShipData ship = bd.Initial.FriendFleet.MembersInstance[i];
 					bool isEscaped =  bd.Initial.FriendFleet.EscapedShipList.Contains( ship.MasterID );
 
-					DamageLabels[i].Text = ( attackAirDamages[i] + attackDamages[i] ) > 0 ? ( attackAirDamages[i] + attackDamages[i] ).ToString() : string.Empty;
 
-					ToolTipInfo.SetToolTip( HPBars[i],
-						string.Format( "{0} Lv. {1}\r\nHP: ({2} → {3})/{4} ({5}) [{6}]\r\n\r\n造成伤害: {7}",
-							ship.MasterShip.NameWithClass,
-							ship.Level,
-							Math.Max( HPBars[i].PrevValue, 0 ),
-							Math.Max( HPBars[i].Value, 0 ),
-							HPBars[i].MaximumValue,
-							HPBars[i].Value - HPBars[i].PrevValue,
-							Constants.GetDamageState( (double)HPBars[i].Value / HPBars[i].MaximumValue, isPractice, ship.MasterShip.IsLandBase, isEscaped ),
-							( attackAirDamages[i] > 0 ) ? string.Format( "{0} (+{1})", attackDamages[i], attackAirDamages[i] ) : attackDamages[i].ToString()
-							)
+					StringBuilder builder = new StringBuilder();
+					builder.AppendFormat( "{0} Lv. {1}\r\nHP: ({2} → {3})/{4} ({5}) [{6}]\r\n与ダメージ: {7}\r\n\r\n",
+						ship.MasterShip.NameWithClass,
+						ship.Level,
+						Math.Max( HPBars[i].PrevValue, 0 ),
+						Math.Max( HPBars[i].Value, 0 ),
+						HPBars[i].MaximumValue,
+						HPBars[i].Value - HPBars[i].PrevValue,
+						Constants.GetDamageState( (double)HPBars[i].Value / HPBars[i].MaximumValue, isPractice, ship.MasterShip.IsLandBase, isEscaped ),
+						attackDamages[i]
+
+
 						);
+
+
+					if ( bd is BattleCombinedWater ) {
+						var shipShelling1Detail = SelectBattleDetail( ( (BattleDay)bd ).Shelling1.BattleDetails, i );
+						var shipShelling2Detail = SelectBattleDetail( ( (BattleDay)bd ).Shelling2.BattleDetails, i );
+
+						if ( shipShelling1Detail.Any() ) {
+							builder.AppendLine( "《第一次砲撃戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipShelling1Detail ) );
+						}
+						if ( shipShelling2Detail.Any() ) {
+							builder.AppendLine( "《第二次砲撃戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipShelling2Detail ) );
+						}
+
+
+					} else if ( bd is BattleCombinedNormalDay ) {
+						var shipShelling2Detail = SelectBattleDetail( ( (BattleDay)bd ).Shelling2.BattleDetails, i );
+						var shipShelling3Detail = SelectBattleDetail( ( (BattleDay)bd ).Shelling3.BattleDetails, i );
+
+						if ( shipShelling2Detail.Any() ) {
+							builder.AppendLine( "《第二次砲撃戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipShelling2Detail ) );
+						}
+						if ( shipShelling3Detail.Any() ) {
+							builder.AppendLine( "《第三次砲撃戦》" );
+							builder.AppendLine( FriendShipBattleDetail( bd, shipShelling3Detail ) );
+						}
+
+
+					} else if ( bd is BattleCombinedAirBattle ) {
+						var shipAirBattle1Detail = SelectBattleDetail( ( (BattleCombinedAirBattle)bd ).AirBattle.BattleDetails, i );
+						var shipAirBattle2Detail = SelectBattleDetail( ( (BattleCombinedAirBattle)bd ).AirBattle2.BattleDetails, i );
+
+						if ( shipAirBattle1Detail.Any() ) {
+							builder.AppendLine( "《第一次航空戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipAirBattle1Detail ) );
+						}
+						if ( shipAirBattle2Detail.Any() ) {
+							builder.AppendLine( "《第二次航空戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipAirBattle2Detail ) );
+						}
+
+
+					} else if ( bd is BattleCombinedAirRaid ) {
+						var shipAirBattleDetail = SelectBattleDetail( ( (BattleDay)bd ).AirBattle.BattleDetails, i );
+
+						if ( shipAirBattleDetail.Any() ) {
+							builder.AppendLine( "《空襲戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipAirBattleDetail ) );
+						}
+
+					}
+
+
+					ToolTipInfo.SetToolTip( HPBars[i], builder.ToString() );
 
 					if ( isEscaped ) HPBars[i].BackColor = Color.Silver;
 					else HPBars[i].BackColor = Utility.Configuration.Config.UI.BackColor;
 				}
 			}
+
 
 			for ( int i = 0; i < 6; i++ ) {
 				if ( initialHPs[i + 6] != -1 ) {
@@ -1629,25 +1824,115 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 				}
 			}
 
+
 			for ( int i = 0; i < 6; i++ ) {
 				if ( initialHPs[i + 12] != -1 ) {
 					ShipData ship = db.Fleet[2].MembersInstance[i];
 					bool isEscaped = db.Fleet[2].EscapedShipList.Contains( ship.MasterID );
 
-					DamageLabels[i + 6].Text = ( attackAirDamages[i + 12] + attackDamages[i + 12] ) > 0 ? ( attackAirDamages[i + 12] + attackDamages[i + 12] ).ToString() : string.Empty;
 
-					ToolTipInfo.SetToolTip( HPBars[i + 12],
-						string.Format( "{0} Lv. {1}\r\nHP: ({2} → {3})/{4} ({5}) [{6}]\r\n\r\n造成伤害: {7}",
-							ship.MasterShip.NameWithClass,
-							ship.Level,
-							Math.Max( HPBars[i + 12].PrevValue, 0 ),
-							Math.Max( HPBars[i + 12].Value, 0 ),
-							HPBars[i + 12].MaximumValue,
-							HPBars[i + 12].Value - HPBars[i + 12].PrevValue,
-							Constants.GetDamageState( (double)HPBars[i + 12].Value / HPBars[i + 12].MaximumValue, isPractice, ship.MasterShip.IsLandBase, isEscaped ),
-							( attackAirDamages[i + 12] > 0 ) ? string.Format( "{0} (+{1})", attackDamages[i + 12], attackAirDamages[i + 12] ) : attackDamages[i + 12].ToString()
-							)
+					StringBuilder builder = new StringBuilder();
+					builder.AppendFormat( "{0} Lv. {1}\r\nHP: ({2} → {3})/{4} ({5}) [{6}]\r\n与ダメージ: {7}\r\n\r\n",
+						ship.MasterShip.NameWithClass,
+						ship.Level,
+						Math.Max( HPBars[i + 12].PrevValue, 0 ),
+						Math.Max( HPBars[i + 12].Value, 0 ),
+						HPBars[i + 12].MaximumValue,
+						HPBars[i + 12].Value - HPBars[i + 12].PrevValue,
+						Constants.GetDamageState( (double)HPBars[i + 12].Value / HPBars[i + 12].MaximumValue, isPractice, ship.MasterShip.IsLandBase, isEscaped ),
+						attackDamages[i + 12]
+
+
 						);
+
+
+					if ( bd is BattleCombinedNormalDay ) {
+						var shipOpeningASWDetail = SelectBattleDetail( ( (BattleDay)bd ).OpeningASW.BattleDetails, i + 12 );
+						var shipOpeningTorpedoDetail = SelectBattleDetail( ( (BattleDay)bd ).OpeningTorpedo.BattleDetails, i + 12 );
+						var shipShelling1Detail = SelectBattleDetail( ( (BattleDay)bd ).Shelling1.BattleDetails, i + 12 );
+						var shipTorpedoDetail = SelectBattleDetail( ( (BattleDay)bd ).Torpedo.BattleDetails, i + 12 );
+
+
+						if ( shipOpeningASWDetail.Any() ) {
+							builder.AppendLine( "《開幕対潜》" );
+							builder.Append( FriendShipBattleDetail( bd, shipOpeningASWDetail ) );
+						}
+						if ( shipOpeningTorpedoDetail.Any() ) {
+							builder.AppendLine( "《開幕雷撃》" );
+							builder.Append( FriendShipBattleDetail( bd, shipOpeningTorpedoDetail ) );
+						}
+						if ( shipShelling1Detail.Any() ) {
+							builder.AppendLine( "《第一次砲撃戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipShelling1Detail ) );
+						}
+						if ( shipTorpedoDetail.Any() ) {
+							builder.AppendLine( "《雷撃戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipTorpedoDetail ) );
+						}
+
+
+					} else if ( bd is BattleCombinedWater ) {
+						var shipOpeningASWDetail = SelectBattleDetail( ( (BattleDay)bd ).OpeningASW.BattleDetails, i + 12 );
+						var shipOpeningTorpedoDetail = SelectBattleDetail( ( (BattleDay)bd ).OpeningTorpedo.BattleDetails, i + 12 );
+						var shipShelling3Detail = SelectBattleDetail( ( (BattleDay)bd ).Shelling3.BattleDetails, i + 12 );
+						var shipTorpedoDetail = SelectBattleDetail( ( (BattleDay)bd ).Torpedo.BattleDetails, i + 12 );
+
+
+						if ( shipOpeningASWDetail.Any() ) {
+							builder.AppendLine( "《開幕対潜》" );
+							builder.Append( FriendShipBattleDetail( bd, shipOpeningASWDetail ) );
+						}
+						if ( shipOpeningTorpedoDetail.Any() ) {
+							builder.AppendLine( "《開幕雷撃》" );
+							builder.Append( FriendShipBattleDetail( bd, shipOpeningTorpedoDetail ) );
+						}
+						if ( shipShelling3Detail.Any() ) {
+							builder.AppendLine( "《第三次砲撃戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipShelling3Detail ) );
+						}
+						if ( shipTorpedoDetail.Any() ) {
+							builder.AppendLine( "《雷撃戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipTorpedoDetail ) );
+						}
+
+
+					} else if ( bd is BattleNight ) {
+						var shipNightBattleDetail = SelectBattleDetail( ( (BattleNight)bd ).NightBattle.BattleDetails, i + 12 );
+
+
+						if ( shipNightBattleDetail.Any() ) {
+							builder.AppendLine( "《夜戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipNightBattleDetail ) );
+						}
+
+
+					} else if ( bd is BattleCombinedAirBattle ) {
+						var shipAirBattle1Detail = SelectBattleDetail( ( (BattleCombinedAirBattle)bd ).AirBattle.BattleDetails, i + 12 );
+						var shipAirBattle2Detail = SelectBattleDetail( ( (BattleCombinedAirBattle)bd ).AirBattle2.BattleDetails, i + 12 );
+
+						if ( shipAirBattle1Detail.Any() ) {
+							builder.AppendLine( "《第一次航空戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipAirBattle1Detail ) );
+						}
+						if ( shipAirBattle2Detail.Any() ) {
+							builder.AppendLine( "《第二次航空戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipAirBattle2Detail ) );
+						}
+
+
+					} else if ( bd is BattleCombinedAirRaid ) {
+						var shipAirBattleDetail = SelectBattleDetail( ( (BattleDay)bd ).AirBattle.BattleDetails, i + 12 );
+
+						if ( shipAirBattleDetail.Any() ) {
+							builder.AppendLine( "《空襲戦》" );
+							builder.Append( FriendShipBattleDetail( bd, shipAirBattleDetail ) );
+						}
+
+					}
+
+
+
+					ToolTipInfo.SetToolTip( HPBars[i + 12], builder.ToString() );
 
 					if ( isEscaped ) HPBars[i + 12].BackColor = Color.Silver;
 					else HPBars[i + 12].BackColor = Utility.Configuration.Config.UI.BackColor;
@@ -1961,6 +2246,23 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 		}
 
 
+		private string FriendShipBattleDetail( BattleData bd, IEnumerable<BattleDetail> details ) {
+
+			StringBuilder builder = new StringBuilder();
+			foreach ( BattleDetail detail in details ) {
+				if ( detail != null ) {
+					builder.AppendLine( detail.BattleDescription() );
+				}
+			}
+			return builder.ToString();
+
+		}
+
+
+		private IEnumerable<BattleDetail> SelectBattleDetail( List<BattleDetail> details, int index ) {
+			return details.Where( d => d.AttackerIndex == index || d.DefenderIndex == index );
+		}
+
 
 		void ConfigurationChanged() {
 
@@ -2013,10 +2315,10 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 				return;
 
 
-			for ( int i = 0; i < 12; i++ ) {
+			//for ( int i = 0; i < 12; i++ ) {
 
-				DamageLabels[i].ShowText = !shorten;
-			}
+			//	DamageLabels[i].ShowText = !shorten;
+			//}
 
 		}
 
@@ -2037,7 +2339,6 @@ Constants.GetAirSuperiority(AirBaseAttack.AirSuperiority),
 		{
 			return "Battle";
 		}
-
 
 	}
 

@@ -24,7 +24,7 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabControlUIColor = new System.Windows.Forms.TabControl();
 			this.tabPageColorUI = new System.Windows.Forms.TabPage();
@@ -160,9 +160,13 @@
 			this.FormCompass_CandidateDisplayCount = new System.Windows.Forms.NumericUpDown();
 			this.label2 = new System.Windows.Forms.Label();
 			this.tabPage13 = new System.Windows.Forms.TabPage();
+			this.FormShipGroup_ShipNameSortMethod = new System.Windows.Forms.ComboBox();
+			this.label25 = new System.Windows.Forms.Label();
 			this.FormShipGroup_ShowStatusBar = new System.Windows.Forms.CheckBox();
 			this.FormShipGroup_AutoUpdate = new System.Windows.Forms.CheckBox();
 			this.tabPage12 = new System.Windows.Forms.TabPage();
+			this.FormBrowser_ToolMenuDockStyle = new System.Windows.Forms.ComboBox();
+			this.label30 = new System.Windows.Forms.Label();
 			this.FormBrowser_ZoomFit = new System.Windows.Forms.CheckBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.FormBrowser_BrowserVersion = new System.Windows.Forms.ComboBox();
@@ -192,6 +196,20 @@
 			this.FormBrowser_FlashWMode = new System.Windows.Forms.ComboBox();
 			this.label20 = new System.Windows.Forms.Label();
 			this.FormBrowser_FlashQuality = new System.Windows.Forms.ComboBox();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.FormBrowser_BrowserVersion = new System.Windows.Forms.ComboBox();
+			this.FormBrowser_DeleteRegistry = new System.Windows.Forms.Button();
+			this.FormBrowser_GPURendering = new System.Windows.Forms.CheckBox();
+			this.FormBrowser_ApplyRegistry = new System.Windows.Forms.Button();
+			this.label19 = new System.Windows.Forms.Label();
+			this.SubWindow_Json = new System.Windows.Forms.TabPage();
+			this.SubWindow_Json_SealingPanel = new System.Windows.Forms.Panel();
+			this.FormJson_AutoUpdate = new System.Windows.Forms.CheckBox();
+			this.label32 = new System.Windows.Forms.Label();
+			this.FormJson_UpdatesTree = new System.Windows.Forms.CheckBox();
+			this.FormJson_AutoUpdateFilter = new System.Windows.Forms.TextBox();
+			this.label31 = new System.Windows.Forms.Label();
+			this.label33 = new System.Windows.Forms.Label();
 			this.tabPage17 = new System.Windows.Forms.TabPage();
 			this.BGMPlayer_SyncBrowserMute = new System.Windows.Forms.CheckBox();
 			this.BGMPlayer_SetVolumeAll = new System.Windows.Forms.Button();
@@ -208,8 +226,6 @@
 			this.FolderBrowser = new System.Windows.Forms.FolderBrowserDialog();
 			this.FontSelector = new System.Windows.Forms.FontDialog();
 			this.LayoutFileBrowser = new System.Windows.Forms.OpenFileDialog();
-			this.FormShipGroup_ShipNameSortMethod = new System.Windows.Forms.ComboBox();
-			this.label25 = new System.Windows.Forms.Label();
 			this.FormFleet_BlinkAtCompletion = new System.Windows.Forms.CheckBox();
 			this.tabControlUIColor.SuspendLayout();
 			this.tabPageColorUI.SuspendLayout();
@@ -243,6 +259,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.FormBrowser_ZoomRate)).BeginInit();
 			this.tabPage14.SuspendLayout();
 			this.groupBox4.SuspendLayout();
+			this.SubWindow_Json.SuspendLayout();
+			this.SubWindow_Json_SealingPanel.SuspendLayout();
 			this.tabPage17.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BGMPlayer_VolumeAll)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.BGMPlayer_ControlGrid)).BeginInit();
@@ -264,7 +282,7 @@
 			this.tabControl1.Multiline = true;
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(524, 291);
+			this.tabControl1.Size = new System.Drawing.Size(584, 320);
 			this.tabControl1.TabIndex = 0;
 			// 
 			// tabPage1
@@ -282,10 +300,10 @@
 			this.tabPage1.Controls.Add(this.Connection_SaveReceivedData);
 			this.tabPage1.Controls.Add(this.Connection_Port);
 			this.tabPage1.Controls.Add(this.label1);
-			this.tabPage1.Location = new System.Drawing.Point(4, 44);
+			this.tabPage1.Location = new System.Drawing.Point(4, 24);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(456, 233);
+			this.tabPage1.Size = new System.Drawing.Size(576, 292);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "通信";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -402,7 +420,7 @@
 			this.Connection_PanelSaveData.Controls.Add(this.Connection_SaveDataPath);
 			this.Connection_PanelSaveData.Location = new System.Drawing.Point(8, 119);
 			this.Connection_PanelSaveData.Name = "Connection_PanelSaveData";
-			this.Connection_PanelSaveData.Size = new System.Drawing.Size(442, 56);
+			this.Connection_PanelSaveData.Size = new System.Drawing.Size(562, 56);
 			this.Connection_PanelSaveData.TabIndex = 7;
 			// 
 			// Connection_ApplyVersion
@@ -463,7 +481,7 @@
 			// Connection_SaveDataPathSearch
 			// 
 			this.Connection_SaveDataPathSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.Connection_SaveDataPathSearch.Location = new System.Drawing.Point(404, 3);
+			this.Connection_SaveDataPathSearch.Location = new System.Drawing.Point(524, 3);
 			this.Connection_SaveDataPathSearch.Name = "Connection_SaveDataPathSearch";
 			this.Connection_SaveDataPathSearch.Size = new System.Drawing.Size(32, 23);
 			this.Connection_SaveDataPathSearch.TabIndex = 4;
@@ -487,7 +505,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.Connection_SaveDataPath.Location = new System.Drawing.Point(64, 3);
 			this.Connection_SaveDataPath.Name = "Connection_SaveDataPath";
-			this.Connection_SaveDataPath.Size = new System.Drawing.Size(334, 23);
+			this.Connection_SaveDataPath.Size = new System.Drawing.Size(454, 23);
 			this.Connection_SaveDataPath.TabIndex = 3;
 			this.Connection_SaveDataPath.TextChanged += new System.EventHandler(this.Connection_SaveDataPath_TextChanged);
 			// 
@@ -540,7 +558,7 @@
 			this.tabPage2.Location = new System.Drawing.Point(4, 24);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(456, 253);
+			this.tabPage2.Size = new System.Drawing.Size(576, 292);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "UI";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -1049,7 +1067,7 @@
 			// UI_SubFontApply
 			// 
 			this.UI_SubFontApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.UI_SubFontApply.Location = new System.Drawing.Point(378, 35);
+			this.UI_SubFontApply.Location = new System.Drawing.Point(498, 35);
 			this.UI_SubFontApply.Name = "UI_SubFontApply";
 			this.UI_SubFontApply.Size = new System.Drawing.Size(32, 23);
 			this.UI_SubFontApply.TabIndex = 6;
@@ -1061,7 +1079,7 @@
 			// UI_MainFontApply
 			// 
 			this.UI_MainFontApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.UI_MainFontApply.Location = new System.Drawing.Point(378, 6);
+			this.UI_MainFontApply.Location = new System.Drawing.Point(498, 6);
 			this.UI_MainFontApply.Name = "UI_MainFontApply";
 			this.UI_MainFontApply.Size = new System.Drawing.Size(32, 23);
 			this.UI_MainFontApply.TabIndex = 2;
@@ -1082,7 +1100,7 @@
 			// UI_SubFontSelect
 			// 
 			this.UI_SubFontSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.UI_SubFontSelect.Location = new System.Drawing.Point(416, 35);
+			this.UI_SubFontSelect.Location = new System.Drawing.Point(536, 35);
 			this.UI_SubFontSelect.Name = "UI_SubFontSelect";
 			this.UI_SubFontSelect.Size = new System.Drawing.Size(32, 23);
 			this.UI_SubFontSelect.TabIndex = 7;
@@ -1096,7 +1114,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.UI_SubFont.Location = new System.Drawing.Point(92, 35);
 			this.UI_SubFont.Name = "UI_SubFont";
-			this.UI_SubFont.Size = new System.Drawing.Size(280, 23);
+			this.UI_SubFont.Size = new System.Drawing.Size(400, 23);
 			this.UI_SubFont.TabIndex = 5;
 			// 
 			// label8
@@ -1111,7 +1129,7 @@
 			// UI_MainFontSelect
 			// 
 			this.UI_MainFontSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.UI_MainFontSelect.Location = new System.Drawing.Point(416, 6);
+			this.UI_MainFontSelect.Location = new System.Drawing.Point(536, 6);
 			this.UI_MainFontSelect.Name = "UI_MainFontSelect";
 			this.UI_MainFontSelect.Size = new System.Drawing.Size(32, 23);
 			this.UI_MainFontSelect.TabIndex = 3;
@@ -1125,7 +1143,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.UI_MainFont.Location = new System.Drawing.Point(92, 6);
 			this.UI_MainFont.Name = "UI_MainFont";
-			this.UI_MainFont.Size = new System.Drawing.Size(280, 23);
+			this.UI_MainFont.Size = new System.Drawing.Size(400, 23);
 			this.UI_MainFont.TabIndex = 1;
 			// 
 			// label5
@@ -1154,7 +1172,7 @@
 			this.tabPage3.Location = new System.Drawing.Point(4, 44);
 			this.tabPage3.Name = "tabPage3";
 			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage3.Size = new System.Drawing.Size(456, 253);
+			this.tabPage3.Size = new System.Drawing.Size(576, 292);
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "日志";
 			this.tabPage3.UseVisualStyleBackColor = true;
@@ -1173,7 +1191,7 @@
 			// label12
 			// 
 			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(6, 141);
+			this.label12.Location = new System.Drawing.Point(5, 111);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(318, 15);
 			this.label12.TabIndex = 9;
@@ -1302,7 +1320,7 @@
 			this.tabPage4.Location = new System.Drawing.Point(4, 24);
 			this.tabPage4.Name = "tabPage4";
 			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage4.Size = new System.Drawing.Size(456, 253);
+			this.tabPage4.Size = new System.Drawing.Size(576, 292);
 			this.tabPage4.TabIndex = 3;
 			this.tabPage4.Text = "操作";
 			this.tabPage4.UseVisualStyleBackColor = true;
@@ -1386,11 +1404,11 @@
 			this.label7.Size = new System.Drawing.Size(94, 15);
 			this.label7.TabIndex = 0;
 			this.label7.Text = "疲劳度界限：";
-            // 
-            // tabPage6
-            // 
-            this.tabPage6.Controls.Add(this.Life_ScreenDock);
-            this.tabPage6.Controls.Add(this.Life_CanCloseFloatWindowInLock);
+			// 
+			// tabPage6
+			// 
+			this.tabPage6.Controls.Add(this.Life_ScreenDock);
+			this.tabPage6.Controls.Add(this.Life_CanCloseFloatWindowInLock);
 			this.tabPage6.Controls.Add(this.Life_LockLayout);
 			this.tabPage6.Controls.Add(this.label24);
 			this.tabPage6.Controls.Add(this.Life_ClockFormat);
@@ -1405,7 +1423,7 @@
 			this.tabPage6.Location = new System.Drawing.Point(4, 24);
 			this.tabPage6.Name = "tabPage6";
 			this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage6.Size = new System.Drawing.Size(456, 253);
+			this.tabPage6.Size = new System.Drawing.Size(576, 292);
 			this.tabPage6.TabIndex = 5;
 			this.tabPage6.Text = "窗口";
 			this.tabPage6.UseVisualStyleBackColor = true;
@@ -1497,7 +1515,7 @@
 			// Life_LayoutFilePathSearch
 			// 
 			this.Life_LayoutFilePathSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.Life_LayoutFilePathSearch.Location = new System.Drawing.Point(416, 6);
+			this.Life_LayoutFilePathSearch.Location = new System.Drawing.Point(536, 6);
 			this.Life_LayoutFilePathSearch.Name = "Life_LayoutFilePathSearch";
 			this.Life_LayoutFilePathSearch.Size = new System.Drawing.Size(32, 23);
 			this.Life_LayoutFilePathSearch.TabIndex = 2;
@@ -1511,7 +1529,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.Life_LayoutFilePath.Location = new System.Drawing.Point(103, 6);
 			this.Life_LayoutFilePath.Name = "Life_LayoutFilePath";
-			this.Life_LayoutFilePath.Size = new System.Drawing.Size(307, 23);
+			this.Life_LayoutFilePath.Size = new System.Drawing.Size(427, 23);
 			this.Life_LayoutFilePath.TabIndex = 1;
 			// 
 			// label14
@@ -1546,10 +1564,10 @@
 			// tabPage7
 			// 
 			this.tabPage7.Controls.Add(this.tabControl2);
-			this.tabPage7.Location = new System.Drawing.Point(4, 44);
+			this.tabPage7.Location = new System.Drawing.Point(4, 24);
 			this.tabPage7.Name = "tabPage7";
 			this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage7.Size = new System.Drawing.Size(456, 233);
+			this.tabPage7.Size = new System.Drawing.Size(576, 292);
 			this.tabPage7.TabIndex = 6;
 			this.tabPage7.Text = "子窗口";
 			this.tabPage7.UseVisualStyleBackColor = true;
@@ -1561,11 +1579,12 @@
 			this.tabControl2.Controls.Add(this.tabPage13);
 			this.tabControl2.Controls.Add(this.tabPage12);
 			this.tabControl2.Controls.Add(this.tabPage14);
+			this.tabControl2.Controls.Add(this.SubWindow_Json);
 			this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tabControl2.Location = new System.Drawing.Point(3, 3);
 			this.tabControl2.Name = "tabControl2";
 			this.tabControl2.SelectedIndex = 0;
-			this.tabControl2.Size = new System.Drawing.Size(450, 227);
+			this.tabControl2.Size = new System.Drawing.Size(570, 286);
 			this.tabControl2.TabIndex = 0;
 			// 
 			// tabPage8
@@ -1588,7 +1607,7 @@
 			this.tabPage8.Location = new System.Drawing.Point(4, 24);
 			this.tabPage8.Name = "tabPage8";
 			this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage8.Size = new System.Drawing.Size(442, 199);
+			this.tabPage8.Size = new System.Drawing.Size(562, 258);
 			this.tabPage8.TabIndex = 0;
 			this.tabPage8.Text = "舰队";
 			this.tabPage8.UseVisualStyleBackColor = true;
@@ -1751,7 +1770,7 @@
 			this.tabPage18.Location = new System.Drawing.Point(4, 22);
 			this.tabPage18.Name = "tabPage18";
 			this.tabPage18.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage18.Size = new System.Drawing.Size(442, 201);
+			this.tabPage18.Size = new System.Drawing.Size(562, 260);
 			this.tabPage18.TabIndex = 7;
 			this.tabPage18.Text = "羅針盤";
 			this.tabPage18.UseVisualStyleBackColor = true;
@@ -1794,13 +1813,34 @@
 			this.tabPage13.Controls.Add(this.label25);
 			this.tabPage13.Controls.Add(this.FormShipGroup_ShowStatusBar);
 			this.tabPage13.Controls.Add(this.FormShipGroup_AutoUpdate);
-			this.tabPage13.Location = new System.Drawing.Point(4, 24);
+			this.tabPage13.Location = new System.Drawing.Point(4, 22);
 			this.tabPage13.Name = "tabPage13";
 			this.tabPage13.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage13.Size = new System.Drawing.Size(442, 199);
+			this.tabPage13.Size = new System.Drawing.Size(562, 260);
 			this.tabPage13.TabIndex = 4;
 			this.tabPage13.Text = "编成";
 			this.tabPage13.UseVisualStyleBackColor = true;
+			// 
+			// FormShipGroup_ShipNameSortMethod
+			// 
+			this.FormShipGroup_ShipNameSortMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.FormShipGroup_ShipNameSortMethod.FormattingEnabled = true;
+			this.FormShipGroup_ShipNameSortMethod.Items.AddRange(new object[] {
+            "図鑑番号順",
+            "あいうえお順"});
+			this.FormShipGroup_ShipNameSortMethod.Location = new System.Drawing.Point(116, 56);
+			this.FormShipGroup_ShipNameSortMethod.Name = "FormShipGroup_ShipNameSortMethod";
+			this.FormShipGroup_ShipNameSortMethod.Size = new System.Drawing.Size(121, 23);
+			this.FormShipGroup_ShipNameSortMethod.TabIndex = 7;
+			// 
+			// label25
+			// 
+			this.label25.AutoSize = true;
+			this.label25.Location = new System.Drawing.Point(6, 59);
+			this.label25.Name = "label25";
+			this.label25.Size = new System.Drawing.Size(104, 15);
+			this.label25.TabIndex = 6;
+			this.label25.Text = "艦名列のソート順：";
 			// 
 			// FormShipGroup_ShowStatusBar
 			// 
@@ -1826,6 +1866,8 @@
 			// 
 			// tabPage12
 			// 
+			this.tabPage12.Controls.Add(this.FormBrowser_ToolMenuDockStyle);
+			this.tabPage12.Controls.Add(this.label30);
 			this.tabPage12.Controls.Add(this.FormBrowser_ZoomFit);
 			this.tabPage12.Controls.Add(this.FormBrowser_AppliesStyleSheet);
 			this.tabPage12.Controls.Add(this.FormBrowser_ConfirmAtRefresh);
@@ -1841,10 +1883,34 @@
 			this.tabPage12.Location = new System.Drawing.Point(4, 22);
 			this.tabPage12.Name = "tabPage12";
 			this.tabPage12.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage12.Size = new System.Drawing.Size(442, 201);
+			this.tabPage12.Size = new System.Drawing.Size(562, 260);
 			this.tabPage12.TabIndex = 3;
 			this.tabPage12.Text = "浏览器";
 			this.tabPage12.UseVisualStyleBackColor = true;
+			// 
+			// FormBrowser_ToolMenuDockStyle
+			// 
+			this.FormBrowser_ToolMenuDockStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.FormBrowser_ToolMenuDockStyle.FormattingEnabled = true;
+			this.FormBrowser_ToolMenuDockStyle.Items.AddRange(new object[] {
+            "上",
+            "下",
+            "左",
+            "右",
+            "非表示"});
+			this.FormBrowser_ToolMenuDockStyle.Location = new System.Drawing.Point(129, 88);
+			this.FormBrowser_ToolMenuDockStyle.Name = "FormBrowser_ToolMenuDockStyle";
+			this.FormBrowser_ToolMenuDockStyle.Size = new System.Drawing.Size(121, 23);
+			this.FormBrowser_ToolMenuDockStyle.TabIndex = 11;
+			// 
+			// label30
+			// 
+			this.label30.AutoSize = true;
+			this.label30.Location = new System.Drawing.Point(6, 91);
+			this.label30.Name = "label30";
+			this.label30.Size = new System.Drawing.Size(117, 15);
+			this.label30.TabIndex = 10;
+			this.label30.Text = "ツールメニューの配置：";
 			// 
 			// FormBrowser_ZoomFit
 			// 
@@ -1986,9 +2052,9 @@
 			this.groupBox2.Controls.Add(this.FormBrowser_ScreenShotPathSearch);
 			this.groupBox2.Controls.Add(this.FormBrowser_ScreenShotPath);
 			this.groupBox2.Controls.Add(this.FormBrowser_ScreenShotFormat_JPEG);
-			this.groupBox2.Location = new System.Drawing.Point(6, 108);
+			this.groupBox2.Location = new System.Drawing.Point(6, 116);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(430, 77);
+			this.groupBox2.Size = new System.Drawing.Size(550, 77);
 			this.groupBox2.TabIndex = 11;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "屏幕截图";
@@ -2016,7 +2082,7 @@
 			// FormBrowser_ScreenShotPathSearch
 			// 
 			this.FormBrowser_ScreenShotPathSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.FormBrowser_ScreenShotPathSearch.Location = new System.Drawing.Point(432, 47);
+			this.FormBrowser_ScreenShotPathSearch.Location = new System.Drawing.Point(512, 47);
 			this.FormBrowser_ScreenShotPathSearch.Name = "FormBrowser_ScreenShotPathSearch";
 			this.FormBrowser_ScreenShotPathSearch.Size = new System.Drawing.Size(32, 23);
 			this.FormBrowser_ScreenShotPathSearch.TabIndex = 4;
@@ -2030,7 +2096,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.FormBrowser_ScreenShotPath.Location = new System.Drawing.Point(76, 48);
 			this.FormBrowser_ScreenShotPath.Name = "FormBrowser_ScreenShotPath";
-			this.FormBrowser_ScreenShotPath.Size = new System.Drawing.Size(350, 23);
+			this.FormBrowser_ScreenShotPath.Size = new System.Drawing.Size(430, 23);
 			this.FormBrowser_ScreenShotPath.TabIndex = 3;
 			// 
 			// FormBrowser_ScreenShotFormat_JPEG
@@ -2076,7 +2142,7 @@
 			// 
 			this.FormBrowser_LogInPageURL.Location = new System.Drawing.Point(82, 59);
 			this.FormBrowser_LogInPageURL.Name = "FormBrowser_LogInPageURL";
-			this.FormBrowser_LogInPageURL.Size = new System.Drawing.Size(394, 23);
+			this.FormBrowser_LogInPageURL.Size = new System.Drawing.Size(474, 23);
 			this.FormBrowser_LogInPageURL.TabIndex = 9;
 			// 
 			// FormBrowser_ZoomRate
@@ -2118,7 +2184,7 @@
 			this.tabPage14.Location = new System.Drawing.Point(4, 22);
 			this.tabPage14.Name = "tabPage14";
 			this.tabPage14.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage14.Size = new System.Drawing.Size(442, 201);
+			this.tabPage14.Size = new System.Drawing.Size(562, 260);
 			this.tabPage14.TabIndex = 5;
 			this.tabPage14.Text = "浏览器2";
 			this.tabPage14.UseVisualStyleBackColor = true;
@@ -2180,6 +2246,174 @@
 			this.FormBrowser_FlashQuality.TabIndex = 1;
 			this.ToolTipInfo.SetToolTip(this.FormBrowser_FlashQuality, "设置Flash品质。\r\n默认值是 high 。");
 			// 
+			// groupBox3
+			// 
+			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox3.Controls.Add(this.FormBrowser_BrowserVersion);
+			this.groupBox3.Controls.Add(this.FormBrowser_DeleteRegistry);
+			this.groupBox3.Controls.Add(this.FormBrowser_GPURendering);
+			this.groupBox3.Controls.Add(this.FormBrowser_ApplyRegistry);
+			this.groupBox3.Controls.Add(this.label19);
+			this.groupBox3.Location = new System.Drawing.Point(6, 6);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(550, 46);
+			this.groupBox3.TabIndex = 0;
+			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = "レジストリ";
+			// 
+			// FormBrowser_BrowserVersion
+			// 
+			this.FormBrowser_BrowserVersion.FormattingEnabled = true;
+			this.FormBrowser_BrowserVersion.Items.AddRange(new object[] {
+            "7000",
+            "8000",
+            "8888",
+            "9000",
+            "9999",
+            "10000",
+            "10001",
+            "11000",
+            "11001"});
+			this.FormBrowser_BrowserVersion.Location = new System.Drawing.Point(112, 16);
+			this.FormBrowser_BrowserVersion.Name = "FormBrowser_BrowserVersion";
+			this.FormBrowser_BrowserVersion.Size = new System.Drawing.Size(60, 23);
+			this.FormBrowser_BrowserVersion.TabIndex = 1;
+			this.FormBrowser_BrowserVersion.Text = "7000";
+			this.ToolTipInfo.SetToolTip(this.FormBrowser_BrowserVersion, "内蔵ブラウザのバージョンを指定します。\r\n7000がIE7相当、8000がIE8相当、11000がIE11相当です。\r\nバージョンによって動作が変わる可能性があり" +
+        "ます。");
+			// 
+			// FormBrowser_DeleteRegistry
+			// 
+			this.FormBrowser_DeleteRegistry.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.FormBrowser_DeleteRegistry.Location = new System.Drawing.Point(494, 15);
+			this.FormBrowser_DeleteRegistry.Name = "FormBrowser_DeleteRegistry";
+			this.FormBrowser_DeleteRegistry.Size = new System.Drawing.Size(50, 23);
+			this.FormBrowser_DeleteRegistry.TabIndex = 4;
+			this.FormBrowser_DeleteRegistry.Text = "削除";
+			this.ToolTipInfo.SetToolTip(this.FormBrowser_DeleteRegistry, "レジストリを削除します。");
+			this.FormBrowser_DeleteRegistry.UseVisualStyleBackColor = true;
+			this.FormBrowser_DeleteRegistry.Click += new System.EventHandler(this.FormBrowser_DeleteRegistry_Click);
+			// 
+			// FormBrowser_GPURendering
+			// 
+			this.FormBrowser_GPURendering.AutoSize = true;
+			this.FormBrowser_GPURendering.Location = new System.Drawing.Point(180, 18);
+			this.FormBrowser_GPURendering.Name = "FormBrowser_GPURendering";
+			this.FormBrowser_GPURendering.Size = new System.Drawing.Size(103, 19);
+			this.FormBrowser_GPURendering.TabIndex = 2;
+			this.FormBrowser_GPURendering.Text = "GPUレンダリング";
+			this.ToolTipInfo.SetToolTip(this.FormBrowser_GPURendering, "内蔵ブラウザでGPUレンダリングを使用するかを指定します。\r\n環境によっては処理が高速化します。");
+			this.FormBrowser_GPURendering.UseVisualStyleBackColor = true;
+			// 
+			// FormBrowser_ApplyRegistry
+			// 
+			this.FormBrowser_ApplyRegistry.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.FormBrowser_ApplyRegistry.Location = new System.Drawing.Point(438, 15);
+			this.FormBrowser_ApplyRegistry.Name = "FormBrowser_ApplyRegistry";
+			this.FormBrowser_ApplyRegistry.Size = new System.Drawing.Size(50, 23);
+			this.FormBrowser_ApplyRegistry.TabIndex = 3;
+			this.FormBrowser_ApplyRegistry.Text = "適用";
+			this.ToolTipInfo.SetToolTip(this.FormBrowser_ApplyRegistry, "レジストリに対して設定を適用します。\r\n下の[OK]ボタンでは反映されないのでご注意ください。");
+			this.FormBrowser_ApplyRegistry.UseVisualStyleBackColor = true;
+			this.FormBrowser_ApplyRegistry.Click += new System.EventHandler(this.FormBrowser_ApplyRegistry_Click);
+			// 
+			// label19
+			// 
+			this.label19.AutoSize = true;
+			this.label19.Location = new System.Drawing.Point(6, 19);
+			this.label19.Name = "label19";
+			this.label19.Size = new System.Drawing.Size(100, 15);
+			this.label19.TabIndex = 0;
+			this.label19.Text = "ブラウザバージョン：";
+			// 
+			// SubWindow_Json
+			// 
+			this.SubWindow_Json.Controls.Add(this.SubWindow_Json_SealingPanel);
+			this.SubWindow_Json.Controls.Add(this.label33);
+			this.SubWindow_Json.Location = new System.Drawing.Point(4, 22);
+			this.SubWindow_Json.Name = "SubWindow_Json";
+			this.SubWindow_Json.Padding = new System.Windows.Forms.Padding(3);
+			this.SubWindow_Json.Size = new System.Drawing.Size(562, 260);
+			this.SubWindow_Json.TabIndex = 9;
+			this.SubWindow_Json.Text = "JSON";
+			this.SubWindow_Json.UseVisualStyleBackColor = true;
+			// 
+			// SubWindow_Json_SealingPanel
+			// 
+			this.SubWindow_Json_SealingPanel.BackColor = System.Drawing.SystemColors.Window;
+			this.SubWindow_Json_SealingPanel.Controls.Add(this.FormJson_AutoUpdate);
+			this.SubWindow_Json_SealingPanel.Controls.Add(this.label32);
+			this.SubWindow_Json_SealingPanel.Controls.Add(this.FormJson_UpdatesTree);
+			this.SubWindow_Json_SealingPanel.Controls.Add(this.FormJson_AutoUpdateFilter);
+			this.SubWindow_Json_SealingPanel.Controls.Add(this.label31);
+			this.SubWindow_Json_SealingPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.SubWindow_Json_SealingPanel.Location = new System.Drawing.Point(3, 3);
+			this.SubWindow_Json_SealingPanel.Margin = new System.Windows.Forms.Padding(0);
+			this.SubWindow_Json_SealingPanel.Name = "SubWindow_Json_SealingPanel";
+			this.SubWindow_Json_SealingPanel.Size = new System.Drawing.Size(556, 254);
+			this.SubWindow_Json_SealingPanel.TabIndex = 6;
+			// 
+			// FormJson_AutoUpdate
+			// 
+			this.FormJson_AutoUpdate.AutoSize = true;
+			this.FormJson_AutoUpdate.Location = new System.Drawing.Point(3, 3);
+			this.FormJson_AutoUpdate.Name = "FormJson_AutoUpdate";
+			this.FormJson_AutoUpdate.Size = new System.Drawing.Size(93, 19);
+			this.FormJson_AutoUpdate.TabIndex = 0;
+			this.FormJson_AutoUpdate.Text = "自動更新する";
+			this.ToolTipInfo.SetToolTip(this.FormJson_AutoUpdate, "API の送受信時に、自動で表示を更新するかを指定します。\r\n多少重くなる可能性があります。\r\n");
+			this.FormJson_AutoUpdate.UseVisualStyleBackColor = true;
+			// 
+			// label32
+			// 
+			this.label32.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.label32.Location = new System.Drawing.Point(765, 3);
+			this.label32.Name = "label32";
+			this.label32.Size = new System.Drawing.Size(144, 44);
+			this.label32.TabIndex = 5;
+			this.label32.Text = "※自動更新を有効にすると、\r\n　重くなる可能性があります";
+			this.label32.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// FormJson_UpdatesTree
+			// 
+			this.FormJson_UpdatesTree.AutoSize = true;
+			this.FormJson_UpdatesTree.Location = new System.Drawing.Point(3, 28);
+			this.FormJson_UpdatesTree.Name = "FormJson_UpdatesTree";
+			this.FormJson_UpdatesTree.Size = new System.Drawing.Size(104, 19);
+			this.FormJson_UpdatesTree.TabIndex = 1;
+			this.FormJson_UpdatesTree.Text = "Treeも更新する";
+			this.ToolTipInfo.SetToolTip(this.FormJson_UpdatesTree, "API の送受信時に、自動で Tree 表示を更新するかを指定します。\r\n上の「自動更新する」が有効の時のみ更新されます。\r\n多少重くなる可能性があります。");
+			this.FormJson_UpdatesTree.UseVisualStyleBackColor = true;
+			// 
+			// FormJson_AutoUpdateFilter
+			// 
+			this.FormJson_AutoUpdateFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.FormJson_AutoUpdateFilter.Location = new System.Drawing.Point(109, 53);
+			this.FormJson_AutoUpdateFilter.Name = "FormJson_AutoUpdateFilter";
+			this.FormJson_AutoUpdateFilter.Size = new System.Drawing.Size(444, 23);
+			this.FormJson_AutoUpdateFilter.TabIndex = 3;
+			this.ToolTipInfo.SetToolTip(this.FormJson_AutoUpdateFilter, "自動更新時に読み込む API を選択するフィルタです。\r\n正規表現も利用可能です。");
+			// 
+			// label31
+			// 
+			this.label31.AutoSize = true;
+			this.label31.Location = new System.Drawing.Point(3, 56);
+			this.label31.Name = "label31";
+			this.label31.Size = new System.Drawing.Size(100, 15);
+			this.label31.TabIndex = 2;
+			this.label31.Text = "自動更新フィルタ：";
+			// 
+			// label33
+			// 
+			this.label33.AutoSize = true;
+			this.label33.Location = new System.Drawing.Point(24, 24);
+			this.label33.Name = "label33";
+			this.label33.Size = new System.Drawing.Size(253, 15);
+			this.label33.TabIndex = 0;
+			this.label33.Text = "(非表示です。デバッグメニューを有効にしてください。)";
+			// 
 			// tabPage17
 			// 
 			this.tabPage17.Controls.Add(this.BGMPlayer_SyncBrowserMute);
@@ -2187,10 +2421,10 @@
 			this.tabPage17.Controls.Add(this.BGMPlayer_VolumeAll);
 			this.tabPage17.Controls.Add(this.BGMPlayer_Enabled);
 			this.tabPage17.Controls.Add(this.BGMPlayer_ControlGrid);
-			this.tabPage17.Location = new System.Drawing.Point(4, 44);
+			this.tabPage17.Location = new System.Drawing.Point(4, 24);
 			this.tabPage17.Name = "tabPage17";
 			this.tabPage17.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage17.Size = new System.Drawing.Size(456, 233);
+			this.tabPage17.Size = new System.Drawing.Size(576, 292);
 			this.tabPage17.TabIndex = 9;
 			this.tabPage17.Text = "BGM";
 			this.tabPage17.UseVisualStyleBackColor = true;
@@ -2255,21 +2489,21 @@
             this.BGMPlayer_ColumnContent,
             this.BGMPlayer_ColumnPath,
             this.BGMPlayer_ColumnSetting});
-			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-			dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-			dataGridViewCellStyle1.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-			dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-			dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Window;
-			dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-			this.BGMPlayer_ControlGrid.DefaultCellStyle = dataGridViewCellStyle1;
+			dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+			dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+			dataGridViewCellStyle2.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+			dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+			dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Window;
+			dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+			dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+			this.BGMPlayer_ControlGrid.DefaultCellStyle = dataGridViewCellStyle2;
 			this.BGMPlayer_ControlGrid.Location = new System.Drawing.Point(6, 35);
 			this.BGMPlayer_ControlGrid.MultiSelect = false;
 			this.BGMPlayer_ControlGrid.Name = "BGMPlayer_ControlGrid";
 			this.BGMPlayer_ControlGrid.RowHeadersVisible = false;
 			this.BGMPlayer_ControlGrid.RowTemplate.Height = 21;
 			this.BGMPlayer_ControlGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-			this.BGMPlayer_ControlGrid.Size = new System.Drawing.Size(444, 136);
+			this.BGMPlayer_ControlGrid.Size = new System.Drawing.Size(564, 279);
 			this.BGMPlayer_ControlGrid.TabIndex = 0;
 			this.BGMPlayer_ControlGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.BGMPlayer_ControlGrid_CellContentClick);
 			this.BGMPlayer_ControlGrid.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.BGMPlayer_ControlGrid_CellFormatting);
@@ -2315,7 +2549,7 @@
 			// 
 			this.ButtonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.ButtonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.ButtonOK.Location = new System.Drawing.Point(336, 297);
+			this.ButtonOK.Location = new System.Drawing.Point(416, 326);
 			this.ButtonOK.Name = "ButtonOK";
 			this.ButtonOK.Size = new System.Drawing.Size(75, 23);
 			this.ButtonOK.TabIndex = 1;
@@ -2326,7 +2560,7 @@
 			// 
 			this.ButtonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.ButtonCancel.Location = new System.Drawing.Point(417, 297);
+			this.ButtonCancel.Location = new System.Drawing.Point(497, 326);
 			this.ButtonCancel.Name = "ButtonCancel";
 			this.ButtonCancel.Size = new System.Drawing.Size(75, 23);
 			this.ButtonCancel.TabIndex = 2;
@@ -2359,33 +2593,12 @@
 			this.FormFleet_AirSuperiorityMethod.TabIndex = 9;
 			this.FormFleet_AirSuperiorityMethod.Visible = false;
 			// 
-			// FormShipGroup_ShipNameSortMethod
-			// 
-			this.FormShipGroup_ShipNameSortMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.FormShipGroup_ShipNameSortMethod.FormattingEnabled = true;
-			this.FormShipGroup_ShipNameSortMethod.Items.AddRange(new object[] {
-            "図鑑番号順",
-            "あいうえお順"});
-			this.FormShipGroup_ShipNameSortMethod.Location = new System.Drawing.Point(116, 56);
-			this.FormShipGroup_ShipNameSortMethod.Name = "FormShipGroup_ShipNameSortMethod";
-			this.FormShipGroup_ShipNameSortMethod.Size = new System.Drawing.Size(121, 23);
-			this.FormShipGroup_ShipNameSortMethod.TabIndex = 7;
-			// 
-			// label25
-			// 
-			this.label25.AutoSize = true;
-			this.label25.Location = new System.Drawing.Point(6, 59);
-			this.label25.Name = "label25";
-			this.label25.Size = new System.Drawing.Size(104, 15);
-			this.label25.TabIndex = 6;
-			this.label25.Text = "艦名列のソート順：";
-			// 
 			// DialogConfiguration
 			// 
 			this.AcceptButton = this.ButtonOK;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.ButtonCancel;
-			this.ClientSize = new System.Drawing.Size(524, 332);
+			this.ClientSize = new System.Drawing.Size(584, 361);
 			this.Controls.Add(this.ButtonCancel);
 			this.Controls.Add(this.ButtonOK);
 			this.Controls.Add(this.tabControl1);
@@ -2446,6 +2659,10 @@
 			this.tabPage14.ResumeLayout(false);
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
+			this.SubWindow_Json.ResumeLayout(false);
+			this.SubWindow_Json.PerformLayout();
+			this.SubWindow_Json_SealingPanel.ResumeLayout(false);
+			this.SubWindow_Json_SealingPanel.PerformLayout();
 			this.tabPage17.ResumeLayout(false);
 			this.tabPage17.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BGMPlayer_VolumeAll)).EndInit();
@@ -2642,5 +2859,15 @@
 		private System.Windows.Forms.Label label29;
 		private System.Windows.Forms.ComboBox FormShipGroup_ShipNameSortMethod;
 		private System.Windows.Forms.Label label25;
+		private System.Windows.Forms.ComboBox FormBrowser_ToolMenuDockStyle;
+		private System.Windows.Forms.Label label30;
+		private System.Windows.Forms.TabPage SubWindow_Json;
+		private System.Windows.Forms.CheckBox FormJson_AutoUpdate;
+		private System.Windows.Forms.CheckBox FormJson_UpdatesTree;
+		private System.Windows.Forms.TextBox FormJson_AutoUpdateFilter;
+		private System.Windows.Forms.Label label31;
+		private System.Windows.Forms.Label label32;
+		private System.Windows.Forms.Panel SubWindow_Json_SealingPanel;
+		private System.Windows.Forms.Label label33;
 	}
 }

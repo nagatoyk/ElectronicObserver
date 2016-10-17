@@ -205,7 +205,7 @@ namespace ElectronicObserver.Window {
 				label.ForeColor = Parent.MainFontColor;
 				label.ImageAlign = ContentAlignment.MiddleCenter;
 				label.Padding = new Padding( 0, 1, 0, 1 );
-				label.Margin = new Padding( 4, 0, 4, 0 );
+				label.Margin = new Padding( 4, 0, 4, 1 );
 				label.MaximumSize = new Size( 60, 20 );
 				label.AutoEllipsis = true;
 				label.AutoSize = true;
@@ -488,8 +488,9 @@ namespace ElectronicObserver.Window {
 			if ( ship == null || slot == null ) return null;
 
 			for ( int i = 0; i < slot.Length; i++ ) {
-				if ( slot[i] != -1 )
-					sb.AppendFormat( "[{0}] {1}\r\n", ship.Aircraft[i], KCDatabase.Instance.MasterEquipments[slot[i]].Name );
+				var eq = KCDatabase.Instance.MasterEquipments[slot[i]];
+				if ( eq != null )
+					sb.AppendFormat( "[{0}] {1}\r\n", ship.Aircraft[i], eq.Name );
 			}
 
 			sb.AppendFormat( "\r\n昼戦: {0}\r\n夜戦: {1}\r\n",

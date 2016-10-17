@@ -18,12 +18,12 @@ using System.Windows.Forms;
 namespace ElectronicObserver.Window.Dialog {
 	public partial class DialogConfiguration : Form {
 
-		private static readonly string RegistryPathMaster = @"Software\Microsoft\Internet Explorer\Main\FeatureControl\";
-		private static readonly string RegistryPathBrowserVersion = @"FEATURE_BROWSER_EMULATION\";
-		private static readonly string RegistryPathGPURendering = @"FEATURE_GPU_RENDERING\";
+		public const string RegistryPathMaster = @"Software\Microsoft\Internet Explorer\Main\FeatureControl\";
+		public const string RegistryPathBrowserVersion = @"FEATURE_BROWSER_EMULATION\";
+		public const  string RegistryPathGPURendering = @"FEATURE_GPU_RENDERING\";
 
-		private static readonly int DefaultBrowserVersion = 7000;
-		private static readonly bool DefaultGPURendering = false;
+		public const int DefaultBrowserVersion = 11001;
+		public const bool DefaultGPURendering = false;
 
 
 		private System.Windows.Forms.Control _UIControl;
@@ -36,7 +36,6 @@ namespace ElectronicObserver.Window.Dialog {
 		public DialogConfiguration() {
 			this.SuspendLayoutForDpiScale();
 			InitializeComponent();
-
 			// 加载索敌式列表
 			FormFleet_SearchingAbilityMethod.Items.AddRange( Configuration.Config.FormFleet.SearchingAbilities.Split( ';' ) );
 
@@ -415,10 +414,16 @@ namespace ElectronicObserver.Window.Dialog {
 			}
 			FormBrowser_FlashQuality.Text = config.FormBrowser.FlashQuality;
 			FormBrowser_FlashWMode.Text = config.FormBrowser.FlashWmode;
+			if ( !config.FormBrowser.IsToolMenuVisible )
+				FormBrowser_ToolMenuDockStyle.SelectedIndex = 4;
+			else
+				FormBrowser_ToolMenuDockStyle.SelectedIndex = (int)config.FormBrowser.ToolMenuDockStyle - 1;
 
 			FormCompass_CandidateDisplayCount.Value = config.FormCompass.CandidateDisplayCount;
 
-			//[データベース]
+			FormJson_AutoUpdate.Checked = config.FormJson.AutoUpdate;
+			FormJson_UpdatesTree.Checked = config.FormJson.UpdatesTree;
+			FormJson_AutoUpdateFilter.Text = config.FormJson.AutoUpdateFilter;
 
 			//[BGM]
 			BGMPlayer_Enabled.Checked = config.BGMPlayer.Enabled;
@@ -591,10 +596,18 @@ namespace ElectronicObserver.Window.Dialog {
 			config.FormBrowser.ModifyCookieRegion = FormBrowser_ModifyCookieRegion.Checked;
 			config.FormBrowser.FlashQuality = FormBrowser_FlashQuality.Text;
 			config.FormBrowser.FlashWmode = FormBrowser_FlashWMode.Text;
+			if ( FormBrowser_ToolMenuDockStyle.SelectedIndex == 4 ) {
+				config.FormBrowser.IsToolMenuVisible = false;
+			} else {
+				config.FormBrowser.IsToolMenuVisible = true;
+				config.FormBrowser.ToolMenuDockStyle = (DockStyle)( FormBrowser_ToolMenuDockStyle.SelectedIndex + 1 );
+			}
 
 			config.FormCompass.CandidateDisplayCount = (int)FormCompass_CandidateDisplayCount.Value;
 
-			//[データベース]
+			config.FormJson.AutoUpdate = FormJson_AutoUpdate.Checked;
+			config.FormJson.UpdatesTree = FormJson_UpdatesTree.Checked;
+			config.FormJson.AutoUpdateFilter = FormJson_AutoUpdateFilter.Text;
 
 			//[BGM]
 			config.BGMPlayer.Enabled = BGMPlayer_Enabled.Checked;
